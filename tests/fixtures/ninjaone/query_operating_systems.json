@@ -1,0 +1,55 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0001",
+    "offset": 0,
+    "count": 3,
+    "expires": 1789656609.354843
+  },
+  "results": [
+    {
+      "manufacturer": "Microsoft Corporation",
+      "name": "Microsoft Windows 11 Pro Edition",
+      "architecture": "64-bit",
+      "lastBootTime": 1787500000.0,
+      "buildNumber": "22631",
+      "releaseId": "23H2",
+      "servicePackMajorVersion": 0,
+      "servicePackMinorVersion": 0,
+      "locale": "en-US",
+      "language": "English (United States)",
+      "needsReboot": true,
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "manufacturer": "Microsoft Corporation",
+      "name": "Microsoft Windows Server 2022 Standard",
+      "architecture": "64-bit",
+      "lastBootTime": 1780000000.0,
+      "buildNumber": "20348",
+      "releaseId": "21H2",
+      "servicePackMajorVersion": 0,
+      "servicePackMinorVersion": 0,
+      "locale": "en-US",
+      "language": "English (United States)",
+      "needsReboot": false,
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    },
+    {
+      "manufacturer": "Microsoft Corporation",
+      "name": "Microsoft Windows 11 Pro Edition",
+      "architecture": "64-bit",
+      "lastBootTime": 1788700000.0,
+      "buildNumber": "22631",
+      "releaseId": "23H2",
+      "servicePackMajorVersion": 0,
+      "servicePackMinorVersion": 0,
+      "locale": "en-US",
+      "language": "English (United States)",
+      "needsReboot": true,
+      "deviceId": 1005,
+      "timestamp": 1788780600.0
+    }
+  ]
+}

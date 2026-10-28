@@ -1,0 +1,81 @@
+{
+  "fields": [
+    {
+      "name": "status",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "1",
+          "label": "New",
+          "isActive": true
+        },
+        {
+          "value": "5",
+          "label": "Complete",
+          "isActive": true
+        },
+        {
+          "value": "8",
+          "label": "In Progress",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "priority",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "1",
+          "label": "Critical",
+          "isActive": true
+        },
+        {
+          "value": "2",
+          "label": "High",
+          "isActive": true
+        },
+        {
+          "value": "3",
+          "label": "Medium",
+          "isActive": true
+        },
+        {
+          "value": "4",
+          "label": "Low",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "title",
+      "dataType": "string",
+      "isPickList": false,
+      "picklistValues": null
+    },
+    {
+      "name": "queueID",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "5",
+          "label": "Client Portal",
+          "isActive": true
+        },
+        {
+          "value": "14046773",
+          "label": "Help Desk",
+          "isActive": true
+        },
+        {
+          "value": "29682859",
+          "label": "Escalation",
+          "isActive": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users",
+  "value": [
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "displayName": "Priya Raman",
+      "userPrincipalName": "priya.raman@contoso.example",
+      "mail": "priya.raman@contoso.example",
+      "accountEnabled": true,
+      "createdDateTime": "2026-09-30T11:00:00Z",
+      "userType": "Guest",
+      "department": null,
+      "jobTitle": null,
+      "officeLocation": null,
+      "assignedLicenses": [],
+      "signInActivity": {"lastSignInDateTime": null, "lastNonInteractiveSignInDateTime": null}
+    }
+  ]
+}

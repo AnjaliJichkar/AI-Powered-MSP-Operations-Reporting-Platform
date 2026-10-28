@@ -1,0 +1,44 @@
+[
+  {
+    "uid": "11111111-1111-4111-8111-000000000001",
+    "deviceId": 1002,
+    "message": "Device has not checked in for 10 days",
+    "subject": "Agent offline",
+    "createTime": 1787918400.0,
+    "updateTime": 1787918400.0,
+    "sourceType": "CONDITION_AGENT_OFFLINE",
+    "sourceName": "Agent Offline",
+    "severity": "MAJOR",
+    "priority": "HIGH",
+    "conditionName": "Agent Offline",
+    "device": {
+      "id": 1002,
+      "organizationId": 42,
+      "locationId": 7,
+      "systemName": "TL-AUS-WS14",
+      "displayName": "TL-AUS-WS14",
+      "nodeClass": "WINDOWS_WORKSTATION"
+    }
+  },
+  {
+    "uid": "11111111-1111-4111-8111-000000000009",
+    "deviceId": 2001,
+    "message": "not ours",
+    "subject": "Agent offline",
+    "createTime": 1788739200.0,
+    "updateTime": 1788739200.0,
+    "sourceType": "CONDITION_AGENT_OFFLINE",
+    "sourceName": "Agent Offline",
+    "severity": "MAJOR",
+    "priority": "HIGH",
+    "conditionName": "Agent Offline",
+    "device": {
+      "id": 2001,
+      "organizationId": 99,
+      "locationId": 7,
+      "systemName": "OTHER-MSP-WS01",
+      "displayName": "OTHER-MSP-WS01",
+      "nodeClass": "WINDOWS_WORKSTATION"
+    }
+  }
+]

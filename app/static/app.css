@@ -1,0 +1,2653 @@
+/* Desk — one stylesheet for every page.
+ *
+ * There is no build step and there is not going to be one: this is plain CSS
+ * with custom properties, served as a file and cached by its mtime. Everything
+ * a page needs is here, so a new page is a template and a block of markup
+ * rather than another copy of a header and another set of colours.
+ *
+ * READ FIRST, BEFORE CHANGING A SIZE OR A COLOUR.
+ *
+ * The pages are calm. A reader should be able to tell what a page is about
+ * from across a desk without reading a word of it. Five rules decide the rest:
+ *
+ *   - **Cards, not clutter.** A page is drawn on a tinted ground, and the
+ *     things on it — a summary tile, a table, a grouped panel — sit on cards
+ *     held by a hairline. Cards do not nest: inside a card, sections are held
+ *     apart by space, and a table there is borderless. Space still does most
+ *     of the work: 40px between major sections, 20px between items in a list.
+ *   - **Three sizes and two weights.** 26px for a page title, 15px for body,
+ *     13px for metadata, labels and buttons; 400 and 600. A heading is not
+ *     bigger text, it is heavier text with more room around it.
+ *   - **One primary action a page.** Everything else is a quieter button, a
+ *     link, or an item in a More menu. Detail goes behind a tab, a slide-out
+ *     panel or a link, never stacked under the thing it elaborates.
+ *   - **Status is a dot and a word**, 8px, never a coloured box and never
+ *     colour alone: the word carries the meaning and the dot repeats it, so a
+ *     reader who cannot tell the colours apart loses nothing.
+ *   - **Nothing is truncated.** No ellipsis, no `substring`. A long value
+ *     wraps, or its own container scrolls (`.scroller`). Half a device name is
+ *     worse than a scrollbar, because the reader cannot tell whether the rest
+ *     was cut off or was never there.
+ *
+ * Two themes, and **every colour comes from a token**. A literal colour in a
+ * rule below is a rule that is light-theme only, and nobody finds out until
+ * somebody switches. The scale is 4px: spacing, radii and line heights are
+ * multiples of it, so two pages written months apart still line up.
+ */
+
+/* The tokens. Every colour, size and space on every page comes from here, and
+ * each one is declared twice: once for the light theme and once for the dark.
+ * A page that reaches past these for a literal colour is a page that is light
+ * only, and nobody finds out until somebody switches.
+ *
+ * Reading order: the ground a page is drawn on, the ink on it, the one accent,
+ * the four status colours, then the scale. */
+:root {
+  color-scheme: light;
+
+  /* The grounds, outermost first: the application's own backdrop, the panels
+     and cards on it, the faint fill inside those, and the hairline. Four
+     grounds rather than one is what lets a card sit on a page without a
+     border doing the work. */
+  --ground: #f6f7fb;
+  --panel: #ffffff;
+  --nav-ground: #ffffff;
+  --surface: #f2f3f8;
+  --surface-sunk: #f2f3f8;
+  --hover: #eceef6;
+  --line: #d0d5e4;
+  --line-strong: #c8cde0;
+
+  /* Ink. One for reading, one for everything that supports it. A page that
+     needs a third grey is a page with too much on it. */
+  --ink: #232b3f;
+  --ink-muted: #626d83;
+  --ink-faint: #626d83;
+
+  /* The one accent: the primary button, a link, the page you are on in the
+     nav, the underline under the tab you are reading. Nothing else. */
+  --accent: #6255ce;
+  --accent-dark: #554ab6;
+  --accent-soft: #f0eefb;
+  --accent-line: #cfc9f0;
+  --on-accent: #ffffff;
+
+  /* Status, for a dot and a short word. Never a filled badge, never a row
+     tint, and never the only signal: the word beside the dot is what a reader
+     who cannot tell them apart reads. */
+  --good: #39745d;
+  --good-soft: #eaf4ef;
+  --warn: #95641b;
+  --warn-soft: #f8f1e6;
+  --bad: #b44351;
+  --bad-soft: #fbedef;
+  --neutral: #626d83;
+
+  /* The ring drawn around whatever has the keyboard. Its own token because it
+     has to clear both grounds, and in the dark theme the accent alone does
+     not. */
+  --focus: #6255ce;
+
+  /* A card is held by a hairline and the faintest lift. In the dark theme the
+     lift is gone and the hairline does all of it: a shadow on a dark ground
+     is a smudge. */
+  --shadow: 0 1px 2px rgba(23, 33, 58, 0.04);
+  --shadow-lifted: 0 8px 24px rgba(23, 33, 58, 0.08);
+
+  /* The wash behind a dialog, a drawer or the palette, and the shadow a
+     `.scroller` draws at its edge to say there is more sideways. Both are
+     tokens because both are the ink of the theme at low opacity: a dark wash
+     over a dark page is invisible, and a page where the only sign of a hidden
+     column is invisible is a page that quietly loses a column. */
+  --scrim: rgba(20, 24, 31, 0.45);
+  --scrim-soft: rgba(26, 31, 38, 0.18);
+  --edge-shadow: rgba(26, 31, 38, 0.07);
+
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  /* The two that carry the layout: between major sections, and between items
+     in a list. Everything else is one of the steps above. */
+  --space-section: 40px;
+  --space-item: 20px;
+
+  --nav-width: 232px;
+  /* What the nav shrinks to when it is collapsed: wide enough for the glyph
+     and its hit area, and nothing else. */
+  --nav-width-collapsed: 68px;
+  --header-height: 64px;
+  /* The line length prose is held to: past about eighty characters the eye
+     loses the start of the next line. */
+  --measure: 78ch;
+  --rail-width: 300px;
+  --rail-gap: 56px;
+
+  --control-height: 36px;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif;
+  --mono: "SFMono-Regular", ui-monospace, "Cascadia Mono", Consolas,
+    "Liberation Mono", monospace;
+
+  /* Three sizes, and only three names for them. A heading is not bigger text,
+     it is heavier text with more room above it. */
+  --text-title: 26px;
+  --text-body: 15px;
+  --text-meta: 13px;
+}
+
+/* The dark theme, written once and applied two ways: to anybody whose system
+ * asks for it, and to anybody who picked it here. The media query is guarded
+ * with `:not([data-theme="light"])` so choosing light on a machine set to dark
+ * is a choice the page keeps rather than one the system overrules.
+ *
+ * It is not the light theme inverted. The grounds are lifted in steps so a
+ * card still reads as nearer than the page behind it, the accent is lightened
+ * until it clears a dark ground, and the status colours are desaturated —
+ * a light theme's red on a dark ground vibrates. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --ground: #11151f;
+    --panel: #1b2130;
+    --nav-ground: #171c28;
+    --surface: #242c3d;
+    --surface-sunk: #242c3d;
+    --hover: #2b3448;
+    --line: #323c50;
+    --line-strong: #3f4a61;
+
+    --ink: #eef1f8;
+    --ink-muted: #a7b2c7;
+    --ink-faint: #a7b2c7;
+
+    --accent: #b2a8ff;
+    --accent-dark: #c5bdff;
+    --accent-soft: #252a42;
+    --accent-line: #3c3a66;
+    --on-accent: #171c28;
+
+    --good: #8dc9ab;
+    --good-soft: #1b2a26;
+    --warn: #edc27e;
+    --warn-soft: #2a2520;
+    --bad: #f39aa7;
+    --bad-soft: #2c1f26;
+    --neutral: #a7b2c7;
+
+    --focus: #b2a8ff;
+
+    --shadow: none;
+    --shadow-lifted: 0 12px 32px rgba(0, 0, 0, 0.45);
+    --scrim: rgba(0, 0, 0, 0.62);
+    --scrim-soft: rgba(0, 0, 0, 0.38);
+    --edge-shadow: rgba(0, 0, 0, 0.42);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --ground: #11151f;
+  --panel: #1b2130;
+  --nav-ground: #171c28;
+  --surface: #242c3d;
+  --surface-sunk: #242c3d;
+  --hover: #2b3448;
+  --line: #323c50;
+  --line-strong: #3f4a61;
+
+  --ink: #eef1f8;
+  --ink-muted: #a7b2c7;
+  --ink-faint: #a7b2c7;
+
+  --accent: #b2a8ff;
+  --accent-dark: #c5bdff;
+  --accent-soft: #252a42;
+  --accent-line: #3c3a66;
+  --on-accent: #171c28;
+
+  --good: #8dc9ab;
+  --good-soft: #1b2a26;
+  --warn: #edc27e;
+  --warn-soft: #2a2520;
+  --bad: #f39aa7;
+  --bad-soft: #2c1f26;
+  --neutral: #a7b2c7;
+
+  --focus: #b2a8ff;
+
+  --shadow: none;
+  --shadow-lifted: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --scrim: rgba(0, 0, 0, 0.62);
+  --scrim-soft: rgba(0, 0, 0, 0.38);
+  --edge-shadow: rgba(0, 0, 0, 0.42);
+}
+
+/* --- reset ---------------------------------------------------------------- */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--text-body);
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--ground);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { margin: 0; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; }
+h1 { font-size: var(--text-title); }
+/* Everything below a page title is body size and heavier. Three sizes means
+   three, and a section heading earns its place with the space above it. */
+h2, h3, h4 { font-size: var(--text-body); line-height: 1.4; letter-spacing: 0; }
+p { margin: 0 0 var(--space-3); }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+
+code, pre, .mono { font-family: var(--mono); font-size: 0.94em; }
+
+/* The ring is its own token, not the accent, because the two are free to
+   diverge: the accent has to read as a link against the page, and the ring has
+   to be findable against a control's own fill. Checked against both grounds in
+   both themes before either value moved. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+[hidden] { display: none !important; }
+
+/* A label a screen reader reads and nobody sees: the search box's own, where
+   the placeholder is the visible label and a placeholder is not a label. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- icons ----------------------------------------------------------------
+ *
+ * One line-icon set, drawn inline by `_icons.html`. No icon font, no sprite
+ * sheet and no third-party asset: there is no build step, and an icon drawn in
+ * `currentColor` takes the colour of whatever it sits in, so a nav entry's
+ * icon is muted, the accent on the page you are on, and ink in a menu —
+ * without a second copy of anything per theme.
+ *
+ * An icon never carries meaning alone. Every one of them is `aria-hidden` and
+ * has a word beside it or a `.sr-only` name on its control. */
+.icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* --- the shell -------------------------------------------------------------
+ *
+ * The shell, the nav and the header moved to `aurora.css`, which is the
+ * design system now and loads after this file. Two stylesheets describing one
+ * `.shell` is two layouts fighting, and the one that wins depends on which
+ * rule somebody edited last: this one was a grid of named areas and the other
+ * is a fixed sidebar with a margin beside it, so together they drew a page
+ * with the header inside the content column.
+ *
+ * What is left below is the parts of pages that have not been rebuilt on the
+ * new components yet. A page moves over one at a time, and whatever of this
+ * file it stops using goes with it.
+ */
+
+/* --- a menu hung off a header control ---------------------------------------
+ *
+ * One popover, used by the account menu and anything else that needs a short
+ * list of actions next to the control that opened it. It is `position: fixed`
+ * and placed by script against the button's own rectangle, so it cannot be
+ * clipped by the header's overflow.
+ *
+ * Named `header-menu` rather than `menu`, because `.menu` is already the
+ * relatively-positioned wrapper a page's More button uses and the later rule
+ * would quietly take this one's `position` away. */
+.header-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 240px;
+  max-width: calc(100vw - var(--space-4) * 2);
+  padding: var(--space-2);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lifted);
+}
+
+.header-menu[hidden] { display: none; }
+
+.header-menu-head {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--space-2);
+}
+
+.header-menu-head strong { display: block; font-size: var(--text-body); }
+.header-menu-head span { display: block; font-size: var(--text-meta); color: var(--ink-muted); margin-top: 2px; }
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  min-height: 34px;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--text-body);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menu-item:hover { background: var(--hover); }
+.menu-item .glyph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  flex-shrink: 0;
+  color: var(--neutral);
+}
+.menu-item .trailing { margin-left: auto; font-size: var(--text-meta); color: var(--ink-muted); }
+
+/* --- the command palette ------------------------------------------------------
+ *
+ * Everywhere you can go, in one list: the pages this role may open, and — for
+ * Inputiv staff — the clients they may switch to. Both are things the shell
+ * already knows, so the palette invents nothing. */
+.palette {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12vh var(--space-4) var(--space-4);
+  background: var(--scrim);
+}
+
+.palette[hidden] { display: none; }
+
+.palette-box {
+  width: 560px;
+  max-width: 100%;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lifted);
+  overflow: hidden;
+}
+
+.palette-box input {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  font-size: 17px;
+  min-height: 52px;
+  padding: 0 var(--space-4);
+}
+/* The ring is drawn inside the box rather than outside it: the input is the
+   full width of the palette, so an offset ring would hang over the rounded
+   corners. It is still drawn — a focused text field with no indicator is a
+   field a keyboard user cannot find. */
+.palette-box input:focus-visible { outline-offset: -2px; border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+
+.palette-results {
+  overflow-y: auto;
+  min-height: 0;
+  padding: var(--space-2);
+}
+
+.palette-results .menu-item[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
+.palette-results .empty { padding: var(--space-5); text-align: center; color: var(--ink-muted); font-size: var(--text-body); }
+
+.palette-foot {
+  border-top: 1px solid var(--line);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+}
+
+/* --- buttons -------------------------------------------------------------
+ *
+ * One family, three variants, and every button in the application says which
+ * one it is:
+ *
+ *   .btn.primary      filled accent. One a page.
+ *   .btn.secondary    a faint fill and no border. Everything else that is
+ *                     shaped like a button.
+ *   .btn.destructive  the same faint fill carrying the bad token, filling red
+ *                     only under the pointer — quiet until it is pressed,
+ *                     because a column of red blocks in a table is a column of
+ *                     alarm, and the word beside it carries the meaning for
+ *                     anybody who cannot see the colour.
+ *
+ * A text action that is not shaped like a button is `.action`, below, which is
+ * drawn as a link. What this replaced was four spellings of three ideas —
+ * `button.secondary`, `button.quiet`, `button.danger` and `.button` on an
+ * anchor — and `tests/test_design_vocabulary.py` fails if one comes back.
+ *
+ * A bare `.btn` draws as secondary: an unmarked button is a button, not an
+ * invisible one. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: var(--text-meta);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+/* The hairline is what makes a quiet button findable now that the page is
+   tinted rather than white: the fill and the ground are a hundredth of a step
+   apart, and an edge nobody can see is a button nobody can see. The filled
+   and the link variants have no use for it. */
+.btn { border: 1px solid var(--line); }
+.btn:hover:not(:disabled) { background: var(--hover); }
+.btn.primary { background: var(--accent); color: var(--on-accent); border-color: transparent; }
+.btn.primary:hover:not(:disabled) { background: var(--accent-dark); }
+.btn.destructive { background: var(--surface); color: var(--bad); }
+.btn.destructive:hover:not(:disabled) { background: var(--bad); color: var(--panel); }
+.btn.small { min-height: 28px; padding: 0 var(--space-3); }
+/* A button that reads as a link: an alternative beside the real action,
+   never the action itself. */
+.btn.link {
+  background: none;
+  border-color: transparent;
+  color: var(--accent);
+  padding: 0 var(--space-2);
+  text-decoration: underline;
+}
+.btn.link:hover:not(:disabled) { background: none; color: var(--accent-dark); }
+
+/* A button carries the page's type and nothing else, so a `<button>` that is
+   not one of the above — a tab, a menu item, a filter chip, a thread in the
+   rail — is drawn entirely by its own component and never half by this. */
+button {
+  font: inherit;
+  font-size: var(--text-meta);
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+button:disabled, .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+/* Every input that is a text box, said the other way round.
+ *
+ * This used to be a list of types — text, email, password, month, number — and
+ * `search` was not on it, so the Devices search box was 21 pixels tall with a
+ * hairline border beside a 40-pixel drop-down, and its label sat 19 pixels
+ * lower than the one next to it. A list of what to style has to be added to
+ * every time HTML gains a type; naming the handful that are *not* text boxes
+ * does not, so `search`, `date`, `url` and `tel` are covered from now on
+ * without anybody remembering. */
+/* A field is the panel's own white, held by a hairline. It used to be a faint
+   fill and no edge, which worked while the page was white and the fill was the
+   only thing there: on a tinted ground the fill and the ground are within a
+   hundredth of a step of each other and the field disappears, which is how the
+   Settings page came to show two invisible password boxes. The list of types
+   is the handful that are *not* text boxes rather than the ones that are — a
+   list of what to style has to be added to every time HTML gains a type, and
+   naming the exceptions does not. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not([type="range"]):not([type="color"]),
+select,
+textarea {
+  font: inherit;
+  font-size: var(--text-meta);
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 var(--space-3);
+  min-height: var(--control-height);
+  min-width: 0;
+  max-width: 100%;
+}
+
+textarea { padding: var(--space-3); line-height: 1.5; }
+input::placeholder, textarea::placeholder { color: var(--ink-muted); }
+
+/* A search box is a text box. WebKit draws `searchfield` differently — its own
+   box, its own metrics — so it is told to be a plain field, and only it: a
+   blanket `appearance: none` here would take the calendar off the review
+   screen's month picker and the arrow off every select. The clear button stays
+   as the browser draws it, because that part is worth having. */
+input[type="search"] {
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}
+
+input:disabled, select:disabled, textarea:disabled { opacity: 0.55; }
+
+label { font-size: var(--text-meta); }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* A label is a sentence, not a shout. Uppercase and letter-spacing were the
+   last of the old system left anywhere outside a table header, and they put a
+   row of block capitals above every control on every page. */
+.field > span {
+  font-size: var(--text-meta);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink-muted);
+}
+
+.field .help { font-size: var(--text-meta); color: var(--ink-muted); font-weight: 400; }
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
+/* --- filter bars ---------------------------------------------------------------
+ * The strip above a list where somebody narrows it: a search box, a picker or
+ * two, sometimes a button. Every control in one is the same height with the
+ * same border, and every label above them is one line tall, so the row reads as
+ * one row rather than as three controls that happen to be near each other.
+ *
+ * `align-items: end` puts the controls on a common bottom edge; the equal
+ * heights are what actually line the labels up, because a `.field` is a label
+ * stacked on a control and two fields of the same height start at the same
+ * place. */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-3);
+}
+
+.filter-bar .field > span {
+  line-height: 1.2;
+  min-height: 1.2em;
+}
+
+.filter-bar input,
+.filter-bar select,
+.filter-bar .btn {
+  height: var(--control-height);
+}
+
+/* A checkbox in the strip is a control too. It has no label above it, so
+   without a height of its own it sits two pixels low against the selects
+   beside it — which is the whole fault this strip exists to prevent. The
+   box itself keeps its own size; what is set is the line it sits on. */
+.filter-bar .inline {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-height);
+}
+
+/* A control that takes what is left of the row — the search box — rather than
+   its default width, which is narrower than most of what gets typed into it. */
+.filter-bar .grow { flex: 1; min-width: 240px; }
+
+/* The chips under a filter bar are part of the same strip, so they take the
+   same height rather than sitting as a shorter row of pills below it. */
+.chip-row /* A filter that is on or off. The tick and the weight say which — never the
+   fill alone — and it is the same faint ground as every other quiet control
+   rather than a bordered pill. */
+button.filter-chip { min-height: var(--control-height); }
+
+/* The controls in a page head are a filter bar by another name: a Refresh, a
+   Download, a Check. Same height, so the header's right-hand end is one line. */
+.page-head .btn { min-height: var(--control-height); }
+
+/* --- surfaces ------------------------------------------------------------- */
+
+/* A card is no longer a box. It keeps its name because half the markup in
+   the application says `class="card"`, and it is now simply a section with
+   air around it: no border, no fill, no shadow, nothing nested inside
+   anything. */
+/* A card: the panel's own ground on the page's tinted one, held by a hairline.
+   Cards do not nest — inside one, sections are held apart by space and a table
+   is borderless — and a card is for a summary tile, a table or a grouped
+   panel, never for every paragraph on a page. */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow);
+}
+
+.card + .card { margin-top: var(--space-section); }
+.card > header { display: flex; align-items: baseline; gap: var(--space-3); margin-bottom: var(--space-4); }
+.card > header h2, .card > header h3 { margin: 0; }
+.card > header .sub { font-size: var(--text-meta); color: var(--ink-muted); }
+
+/* The header every page that has not been rebuilt around `.page-top` still
+   uses. It stacks now: a title, then its facts under it. Side by side, a long
+   subtitle wrapped itself into a paragraph beside the title and the two read
+   as one muddled block. */
+.page-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin-bottom: var(--space-6);
+}
+/* Prose is capped at a readable measure. Across a 1440px window a paragraph
+   runs to 180 characters a line, which is a wall rather than a sentence. */
+.page-head .sub { font-size: var(--text-meta); color: var(--ink-muted); max-width: 78ch; }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+/* An empty state is a sentence in the space the content would have taken,
+   not a dashed box drawn around nothing. */
+/* Nothing here, and what to do about it.
+ *
+ * One shape, wherever it appears — in a section, in a rail, inside a table cell
+ * — so "no rows" reads the same way on every page. A sentence saying what is
+ * missing, and, where there is one, the next thing somebody would do: a link
+ * to the page that fills it, or the command that does. Where there is no next
+ * action the sentence stands alone rather than inventing one. */
+.empty {
+  padding: var(--space-6) 0;
+  color: var(--ink-muted);
+  background: transparent;
+  border: 0;
+  font-size: var(--text-meta);
+}
+.empty strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: var(--space-1); }
+/* `.empty` is muted because it is a note about there being nothing here. A
+   tile inside one is not that note: its figure is the answer to a question
+   somebody asked, and it takes the page's ink like every other figure. */
+.empty .figure .n { color: var(--ink); }
+.empty .figure .k { color: var(--ink); font-weight: 600; }
+.empty .next { display: block; margin-top: var(--space-2); }
+.empty code {
+  font-family: var(--mono);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+}
+/* Inside a table the cell supplies its own room, so the block does not. */
+td > .empty { padding: var(--space-3) 0; }
+
+/* --- tables: they scroll, they never truncate ----------------------------- */
+
+.scroller {
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* No `scrollbar-gutter: stable` here. This box scrolls sideways and never
+     downwards, and the gutter it reserves is the one on the inline-end edge
+     for a vertical bar that can never appear: a 10px strip of the track's
+     colour down the right of every table, which on a card reads as the table
+     being cut off. */
+  border-radius: var(--radius);
+
+  /* Two cues that there is more to the right, because on a projector nobody
+     hovers and an overlay scrollbar is invisible until they do.
+
+     Four layers, and the pairing is the whole trick: the shadows are fixed to
+     the box (`scroll`) and the covers move with the content (`local`), so a
+     cover sits over its shadow while that edge is at the end of the content
+     and slides off it as the reader scrolls away. Nothing overflowing means
+     both covers are home and neither shadow is drawn.
+
+     That only works while the cover is the colour of what the scroller is
+     sitting on. It was `--ground`, the page's own tint, and a table inside a
+     card sits on `--panel` — so on every card both shadows were painted over
+     a cover of the wrong colour and showed at both edges whether or not there
+     was anything past them. The colour is a variable now, and the card sets
+     it. */
+  --scroll-cover: var(--ground);
+  background:
+    /* Solid for the first 16px of each cover, which is wider than the 12px
+       shadow under it. At 30% the solid part was 9.6px and the last two
+       pixels of the shadow showed through the fade — a hairline at both
+       edges of every table, overflowing or not. */
+    linear-gradient(to right, var(--scroll-cover) 16px, transparent) left center / 32px 100% no-repeat local,
+    linear-gradient(to left, var(--scroll-cover) 16px, transparent) right center / 32px 100% no-repeat local,
+    linear-gradient(to right, var(--edge-shadow), transparent) left center / 12px 100% no-repeat scroll,
+    linear-gradient(to left, var(--edge-shadow), transparent) right center / 12px 100% no-repeat scroll;
+}
+
+.card .scroller, .side-panel .scroller, .slide-out .scroller { --scroll-cover: var(--panel); }
+
+/* And a scrollbar that is simply always there while the box scrolls. */
+.scroller::-webkit-scrollbar { height: 10px; }
+.scroller::-webkit-scrollbar-track { background: var(--surface); border-radius: 999px; }
+.scroller::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 999px;
+  border: 2px solid var(--surface);
+}
+.scroller::-webkit-scrollbar-thumb:hover { background: var(--neutral); }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--text-meta);
+}
+
+/* A table inside a scroller sizes to its content and lets the box scroll.
+   Without `max-content` it obeys `width: 100%`, squeezes its columns to fit,
+   and the scroller never scrolls because nothing overflows — which looked
+   like a considerate layout and was in fact printing `SKG-WS-ACCOU` on one
+   line and `NTING-04` on the next. A name broken mid-word on a projector is
+   worse than a scrollbar and worse than a truncation: the reader cannot even
+   tell it is one name. `min-width` keeps a narrow table filling its box. */
+.scroller > table { width: max-content; min-width: 100%; }
+
+th, td {
+  text-align: left;
+  padding: var(--space-3) var(--space-4) var(--space-3) 0;
+  border-bottom: 0;
+  vertical-align: top;
+  /* No ellipsis anywhere: a cell wraps, or its container scrolls. It wraps at
+     spaces, and only breaks inside a word when that word alone cannot fit —
+     `anywhere` would break every long identifier at the column edge. */
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* The one hairline a table gets, and the only place the uppercase label
+   survives — a column heading is a label rather than a sentence. */
+th {
+  font-size: var(--text-meta);
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink-muted);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: var(--space-2);
+  white-space: nowrap;
+}
+
+tbody tr:hover { background: var(--surface); }
+
+td.nowrap, th.nowrap { white-space: nowrap; }
+td.num, th.num { font-variant-numeric: tabular-nums; text-align: right; }
+/* A table row the page is pointing at — the threshold a rule chose. The
+   caret in the cell is what says so; the tint is the second signal. */
+tbody tr.marked td { background: var(--accent-soft); font-weight: 600; }
+tbody tr.marked td:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+tbody tr.marked td:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
+
+/* --- statuses -------------------------------------------------------------- */
+
+/* There is one of these and it lives with the other primitives, further down:
+   `.state` is a dot and a word (`stateWord` in states.js writes every one).
+   `.chip` was a second name for the same drawing, which is how a new page comes
+   to pick the wrong one, and it is gone. */
+
+/* --- messages -------------------------------------------------------------- */
+
+/* Something the page wants to say before its content. Not a box: a sentence
+   with a rule beside it, in the status colour, which is as loud as anything
+   gets here. */
+.notice {
+  padding: 0 0 0 var(--space-4);
+  border: 0;
+  border-left: 2px solid var(--accent);
+  border-radius: 0;
+  background: none;
+  color: var(--ink);
+  font-size: var(--text-body);
+}
+.notice.bad { border-left-color: var(--bad); }
+.notice.good { border-left-color: var(--good); }
+.notice ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
+/* A failure: what did not work, then what to do about it. The server's own
+   words are not the message — they are written for whoever reads the log — so
+   they sit behind "Details", and only for the people who can act on them. */
+.notice strong { font-weight: 600; }
+.notice .advice { color: var(--ink-muted); }
+.notice .detail-box { margin-top: var(--space-2); }
+.notice .detail-box p { font-family: var(--mono); font-size: var(--text-meta); margin: var(--space-2) 0 0; overflow-wrap: anywhere; }
+
+/* --- the sign-in page ------------------------------------------------------ */
+
+/* The one page drawn without a shell. White, like every other page: a dark
+   full-bleed ground with a white card floating on it was the loudest surface
+   in the application, and it was the first thing anybody saw. */
+body.signin {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  background: var(--ground);
+  padding: var(--space-5);
+}
+
+.signin-card {
+  width: 100%;
+  max-width: 360px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+.signin-card .wordmark {
+  font-size: var(--text-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-1);
+}
+
+.signin-card .sub { color: var(--ink-muted); font-size: var(--text-meta); margin-bottom: var(--space-6); }
+.signin-card .field { margin-bottom: var(--space-4); }
+/* The page has one action and it is the accent one: a sign-in button that
+   looks like every quiet button on every other page is a page with no obvious
+   way in. It is `.btn.primary` like any other; this only makes it full width. */
+.signin-card .btn { width: 100%; margin-top: var(--space-2); }
+
+/* --- the strength meter on the invitation page ------------------------------
+ * A bar and a sentence. The sentence is the useful half: "Too short — 3 more
+ * characters to go" tells somebody what to do, and a coloured bar on its own
+ * tells them only that a computer disapproves. */
+
+/* It is a direct child of `.field`, which styles its labels as small uppercase
+   caps. That is right for "PASSWORD" and wrong for a sentence: it printed
+   "TOO EASY TO GUESS — IT CONTAINS YOUR EMAIL ADDRESS" and ran off the edge of
+   the card. So it resets the same properties `.help` resets — and is written
+   `.field .strength` for the same reason `.help` is: a bare `.strength` is one
+   class against `.field > span`'s class-and-element, and loses. */
+.field .strength {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+.strength .bar {
+  flex: 0 0 72px;
+  margin-top: 5px; /* sits on the first line of the label beside it */
+  height: 6px;
+  background: var(--surface-sunk);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.strength .fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  background: var(--good);
+  transition: width 120ms linear;
+}
+.strength .fill.weak { background: var(--bad); }
+.strength .fill.fair { background: var(--warn); }
+.strength .fill.strong { background: var(--good); }
+/* The sentence wraps. It is the useful half — "3 more characters to go"
+   tells somebody what to do, where a coloured bar alone tells them only that
+   a computer disapproves — so it is never the part that gets cut. */
+.strength .label { flex: 1; font-size: var(--text-meta); color: var(--ink-muted); }
+.strength .label.weak { color: var(--bad); }
+
+@media (prefers-reduced-motion: reduce) {
+  .strength .fill { transition: none; }
+}
+
+.help.mismatch { color: var(--bad); }
+
+/* --- Ask: the conversation ------------------------------------------------- */
+
+/* Both columns scroll inside the frame; the page itself never does.
+ *
+ * `grid-template-rows: minmax(0, 1fr)` is the load-bearing line. An implicit
+ * grid row is `auto`, which means "as tall as the content", so with a long
+ * conversation the row grew past the frame, took both columns with it and
+ * pushed the composer off the bottom of the screen with no scrollbar anywhere.
+ * `minmax(0, 1fr)` says the row may not outgrow its container, and then the two
+ * columns are boxes with a height, which is the thing `overflow-y: auto` needs
+ * before it can do anything.
+ *
+ * Every flex and grid child that scrolls needs `min-height: 0` beside it, for
+ * the same reason: the default `min-height: auto` refuses to shrink below the
+ * content, so the box never becomes smaller than what is in it and never
+ * overflows, and an `overflow-y` on it is dead code. */
+.ask {
+  display: grid;
+  grid-template-columns: var(--rail-width) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 0;
+  flex: 1;
+}
+
+/* The threads, held apart by space like every other list. No rule down the
+   middle of the page: the two columns are told apart by the air between
+   them and by the composer sitting under one of them. */
+.thread-list {
+  background: var(--ground);
+  padding: var(--space-6);
+  overflow-y: auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-6);
+}
+/* The rail's own action takes its own width; stretched across the column it
+   reads as a grey band rather than as a button. */
+.thread-list > .btn { align-self: flex-start; }
+
+/* A thread and the control that archives it. They are two buttons, not one
+   with another inside it, so the row is what holds them side by side; the
+   archive appears when the row is pointed at or focused, because a column of
+   crosses down the side of a list is a column of mistakes waiting. */
+.list-row.thread-row { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.thread-row .archive { opacity: 0; color: var(--ink-muted); }
+.thread-row:hover .archive,
+.thread-row .archive:focus-visible { opacity: 1; }
+
+.thread {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  min-width: 0;
+}
+/* The one place in this product that shortens anything, and it shortens it in
+   the drawing only: the title is the engineer's whole question, the button
+   carries it in its tooltip, and opening the thread shows it in full at the top
+   of the feed. It used to be cut to eighty characters in the database, where
+   nothing could get the rest of it back. */
+.thread .what {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.thread .meta { display: block; }
+.thread[aria-current="true"] .what { color: var(--accent); }
+
+.ask-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--ground);
+}
+
+/* The one thing on this page that scrolls. `flex: 1` gives it what is left
+   after the composer, `min-height: 0` lets it be smaller than the conversation
+   in it, and `overflow-y` then has something to do. The composer is `flex: none`
+   by default and so stays on the bottom edge. */
+.feed {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-6) var(--space-6) var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-section);
+}
+
+/* One turn is a question, an answer and one line saying who answered and
+   when. Nothing is boxed: a question is heavier text and an answer is lighter,
+   which is the whole of the difference, and the space between turns is what
+   says where one ends. */
+.turn { max-width: var(--measure); width: 100%; }
+
+.question {
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 var(--space-4);
+  overflow-wrap: anywhere;
+}
+
+.answer {
+  font-size: var(--text-body);
+  line-height: 1.6;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+.answer > *:first-child { margin-top: 0; }
+.answer > *:last-child { margin-bottom: 0; }
+.answer p { margin: 0 0 var(--space-4); }
+.answer ul, .answer ol { margin: 0 0 var(--space-4); padding-left: var(--space-5); }
+.answer li { margin-bottom: var(--space-1); }
+.answer strong { font-weight: 600; }
+.answer code { background: var(--surface); padding: 1px 4px; border-radius: var(--radius-sm); }
+.answer pre { background: var(--surface); padding: var(--space-3); border-radius: var(--radius); overflow-x: auto; }
+.answer table { font-size: var(--text-meta); }
+.answer h1, .answer h2, .answer h3 { margin: var(--space-5) 0 var(--space-3); font-size: var(--text-body); font-weight: 600; }
+
+.answer .cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.05em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink { to { visibility: hidden; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .answer .cursor { animation: none; }
+}
+
+/* --- the tool calls --------------------------------------------------------- */
+
+/* One disclosure a turn, closed. What the engine read to answer is the first
+   thing somebody asks about an answer they doubt and the last thing they want
+   on the page the rest of the time — including while it runs, because a panel
+   that unfolds itself mid-answer moves the words somebody is reading. The line
+   above it says what is happening meanwhile. */
+.tools { margin-top: var(--space-4); border: 0; background: none; }
+
+.tools > summary {
+  cursor: pointer;
+  padding: 0;
+  font-size: var(--text-meta);
+  font-weight: 400;
+  color: var(--accent);
+  background: none;
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.tools > summary::-webkit-details-marker { display: none; }
+.tools > summary::before { content: "▸"; }
+.tools[open] > summary::before { content: "▾"; }
+.tools > summary:hover { background: none; text-decoration: underline; }
+
+.tool-call { padding: var(--space-3) 0; font-size: var(--text-meta); }
+.tool-call:first-of-type { margin-top: var(--space-3); }
+.tool-call + .tool-call { border-top: 1px solid var(--line); }
+
+.tool-call .head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-1);
+}
+
+.tool-call .name { font-family: var(--mono); font-size: var(--text-meta); font-weight: 600; }
+.tool-call .connector { font-size: var(--text-meta); color: var(--ink-muted); }
+.tool-call .took { font-size: var(--text-meta); color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+/* Arguments and results are shown whole. They wrap; they do not get cut. */
+.tool-call .args,
+.tool-call .result {
+  font-family: var(--mono);
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  margin-top: var(--space-1);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.tool-call .result { color: var(--ink); }
+.tool-call.failed .result { color: var(--bad); background: var(--bad-soft); }
+
+/* Who answered, when, and what it cost: one line, the facts joined by a middle
+   dot the way every other subtitle on the product joins them. */
+.meta {
+  margin-top: var(--space-3);
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 0 var(--space-2);
+  flex-wrap: wrap;
+  font-variant-numeric: tabular-nums;
+}
+.meta > *:not(:last-child)::after { content: "·"; margin-left: var(--space-2); color: var(--ink-muted); }
+
+.rating { display: inline-flex; align-items: center; gap: var(--space-2); }
+
+/* --- the composer ------------------------------------------------------------ */
+
+/* Pinned under the feed: it takes its own height and never a share of what is
+   left, so a long answer scrolls behind it rather than pushing it off screen.
+   One hairline above it, which is the only rule on the page. */
+.composer {
+  flex: none;
+  border-top: 1px solid var(--line);
+  background: var(--ground);
+  padding: var(--space-5) var(--space-6);
+}
+
+.composer form { display: flex; gap: var(--space-3); align-items: flex-end; max-width: var(--measure); }
+
+.composer textarea {
+  flex: 1;
+  font-size: var(--text-body);
+  line-height: 1.5;
+  padding: var(--space-3);
+  min-height: 42px;
+  resize: none;
+  max-height: 200px;
+}
+
+.composer .hint { margin-top: var(--space-3); font-size: var(--text-meta); color: var(--ink-muted); max-width: var(--measure); }
+
+/* --- Ask with nothing in it yet ------------------------------------------------
+ *
+ * The composer is a strip along the bottom while there is a conversation above
+ * it to read, and that is right: the answer is the page and the box is where
+ * you reply. With no conversation there is nothing above it, and a question
+ * box pinned to the bottom of an empty column is a page that looks broken. So
+ * while the column is empty the box is the thing on it: centred, larger, with
+ * the figures this client already has beside it and four questions somebody
+ * can press instead of typing. */
+.ask-main[data-empty] .feed {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 0;
+}
+
+.ask-main[data-empty] .composer {
+  border-top: 0;
+  background: none;
+  padding-top: 0;
+}
+
+.ask-main[data-empty] .composer form { max-width: 720px; }
+
+.ask-main[data-empty] .composer textarea {
+  font-size: 17px;
+  min-height: 56px;
+  padding: var(--space-4);
+}
+
+.ask-main[data-empty] .empty { max-width: 720px; }
+
+/* Two by two rather than three and a stray: four tiles in a column this
+   narrow wrap to 3 + 1, and a row of one reads as a leftover. */
+.ask-main[data-empty] .figure-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Four questions as things to press. A suggestion is an example of the shape
+   a question takes, not a guess at what this customer needs: a suggestion
+   drawn from their own data would be a finding, and a finding belongs on the
+   page that computed it. */
+.suggestions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.suggestion {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-size: var(--text-body);
+  cursor: pointer;
+}
+.suggestion:hover { border-color: var(--accent); color: var(--accent); }
+
+/* One link under a row of tiles, holding every definition behind them and
+   whatever the run left out. A caption on a tile is one line; the method is
+   here, where somebody who wants it reads all of them together. */
+.how-counted { margin-top: calc(var(--space-4) * -1); }
+.how-counted > summary {
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.how-counted > summary:hover { color: var(--accent); }
+.how-counted .facts { margin-top: var(--space-3); }
+
+/* A tile that links somewhere is still a tile. */
+a.figure { text-decoration: none; color: inherit; }
+a.figure:hover { border-color: var(--accent); }
+
+/* --- Reports: the review screen ------------------------------------------------ */
+
+.slide {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--ground);
+  margin-bottom: var(--space-3);
+  overflow: hidden;
+}
+
+.slide > header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  margin: 0;
+}
+
+.slide > header .number {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--ink-faint);
+  min-width: 2.2em;
+}
+
+.slide > header .title { font-weight: 600; flex: 1; }
+.slide .body { padding: var(--space-4); }
+
+.item {
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--surface-sunk);
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+.item:last-child { border-bottom: none; }
+.item .text { flex: 1; overflow-wrap: anywhere; }
+.item .lead { font-weight: 600; }
+.item .cites { display: block; font-size: var(--text-meta); color: var(--ink-faint); font-family: var(--mono); margin-top: var(--space-1); }
+
+/* What was a bordered box around a disclosure: one summary line, and the
+   content held by space under it. */
+.detail-box { border: 0; border-radius: 0; background: none; }
+.detail-box > summary { cursor: pointer; color: var(--accent); font-size: var(--text-meta); }
+.detail-box > summary::marker { color: var(--ink-muted); }
+.detail-box > div, .detail-box > p, .detail-box > ul { margin-top: var(--space-4); }
+.detail-box > summary { cursor: pointer; padding: var(--space-3) var(--space-4); font-weight: 600; font-size: var(--text-meta); }
+.detail-box > div { padding: 0 var(--space-4) var(--space-4); }
+
+/* --- the primitives every page is built from --------------------------------
+ *
+ * Nine of them, and a page that needs a tenth is worth a conversation. They
+ * are here rather than in a page's own block because the second copy of a
+ * button is where two pages start disagreeing about what a button is.
+ */
+
+/* A page opens with a title, one line of facts under it, and the actions on
+   the right. Nothing else goes above the tabs. */
+.page-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+.page-title {
+  font-size: var(--text-title);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+/* The facts about the thing, joined by a middle dot and never wrapped in
+   label/value rows: "Client A · Low priority · Follow Up · L. Marchionda".
+   The separator is drawn here so the markup is a list of plain spans and a
+   missing fact leaves no stray dot behind. */
+.subtitle {
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+  line-height: 1.5;
+  margin: var(--space-1) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+}
+/* The dot goes *after* the fact it follows rather than before the next one, so
+   a subtitle long enough to wrap ends a line with the separator instead of
+   starting the next one with it. Coverage's eleven facts are the line that
+   showed it. */
+.subtitle > *:not(:last-child)::after { content: "·"; margin-left: var(--space-2); color: var(--ink-muted); }
+/* The title block takes the room that is left and the subtitle wraps inside
+   it, rather than growing until it pushes the actions onto a line of their
+   own: Coverage's subtitle is eleven facts long and did exactly that. If it
+   wraps anyway, on a narrow window, the actions still sit to the right. */
+.page-titles { flex: 1 1 420px; min-width: 0; }
+.page-actions { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; margin-left: auto; }
+
+/* Sections are held apart by air. A section heading is body size and 600; the
+   label above a short block ("Suggested next step", "Plan") is metadata. */
+/* A hidden section is not there: a section gets air above it only when a
+   visible section comes before it (the run page's progress section is hidden
+   before the run starts; the workflow page hides the step sections for a note
+   workflow and shows others after them). */
+.section:not([hidden]) ~ .section:not([hidden]) { margin-top: var(--space-section); }
+.section-title { font-size: var(--text-body); font-weight: 600; margin: 0 0 var(--space-4); }
+.section-label {
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+  font-weight: 400;
+  margin: 0 0 var(--space-2);
+}
+/* The same label, for the second thing inside one section: Open invites under
+   the people it invited. A section's own distance, so it reads as a part of
+   this section rather than as a section of its own. */
+.section-label.apart { margin-top: var(--space-section); }
+
+/* A value shown once and never again — the authenticator secret — which has to
+   be read off the screen character by character and so is set in the mono face
+   on the quiet ground every other control has. */
+.secret {
+  padding: var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius);
+  overflow-wrap: anywhere;
+}
+/* A heading that carries a quiet aside on the same line: "What Desk found
+   — 4 tools checked 2 min ago · Refresh". */
+.section-title .aside {
+  font-size: var(--text-meta);
+  font-weight: 400;
+  color: var(--ink-muted);
+  margin-left: var(--space-3);
+}
+
+/* Text tabs. The hairline runs the width of the content and the tab somebody
+   is on is 600 with an accent underline sitting on top of it. */
+.tabs {
+  display: flex;
+  gap: var(--space-6);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--space-6);
+}
+.tabs button,
+.tabs a {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 0 0 var(--space-3);
+  font: inherit;
+  font-size: var(--text-body);
+  color: var(--ink-muted);
+  text-decoration: none;
+  cursor: pointer;
+}
+.tabs button:hover, .tabs a:hover { color: var(--ink); }
+.tabs [aria-selected="true"],
+.tabs .is-on {
+  color: var(--ink);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+/* The count beside a tab name is part of the tab, a shade quieter. */
+.tabs .count { color: var(--ink-muted); font-weight: 400; margin-left: var(--space-2); }
+.tabs [aria-selected="true"] .count, .tabs .is-on .count { color: var(--ink-muted); }
+
+/* Status: a dot and a word. The word is the signal and the dot repeats it,
+   which is what keeps the page readable for somebody who cannot tell the
+   colours apart — and is why there is no variant without a word. */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+  background: var(--neutral);
+  display: inline-block;
+}
+.dot.good { background: var(--good); }
+.dot.warn { background: var(--warn); }
+.dot.bad { background: var(--bad); }
+.dot.neutral { background: var(--neutral); }
+.dot.accent { background: var(--accent); }
+.state { display: inline-flex; align-items: center; gap: var(--space-2); }
+.state .word { color: var(--ink); }
+.state.muted .word { color: var(--ink-muted); }
+
+/* An action written as a link, which is what most secondary actions are:
+   "Refresh", "Change", "Useful · Not useful", "All 13 readings →". */
+.action {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-size: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+.action:hover { text-decoration: underline; text-underline-offset: 2px; }
+/* Two or three of them in a row, separated by the same middle dot the
+   subtitle uses. */
+.actions { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--text-meta); }
+.actions > * + *::before { content: "·"; margin-right: var(--space-2); color: var(--ink-muted); }
+
+/* A value somebody can change, written inside a sentence rather than lifted
+   out into a field: a dashed underline is the whole affordance. */
+.editable {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-bottom: 1px dashed var(--neutral);
+}
+.editable:hover { border-bottom-color: var(--ink); background: var(--surface); }
+.editable .was { color: var(--ink-muted); text-decoration: line-through; margin-right: var(--space-1); }
+.said-what { font-size: var(--text-body); line-height: 1.7; }
+.said-what .note { color: var(--ink-muted); font-size: var(--text-meta); }
+
+/* A main column with a narrow rail beside it. Two columns is the most a page
+   gets; under 1100px the rail goes under the column it was beside. */
+.with-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--rail-width);
+  gap: var(--rail-gap);
+  align-items: start;
+}
+.rail > * + * { margin-top: var(--space-section); }
+@media (max-width: 1100px) {
+  .with-rail { grid-template-columns: minmax(0, 1fr); gap: var(--space-section); }
+}
+
+/* A list of things, held apart by space and nothing else. A row the reader is
+   on takes the faint fill, which is the only fill on the page. (`.list-row`
+   rather than `.row`, which this stylesheet has meant "a row of form fields"
+   since the first page and still does.) */
+.list > * + * { margin-top: var(--space-item); }
+.list-row {
+  display: grid;
+  gap: var(--space-4);
+  align-items: start;
+  padding: var(--space-3) var(--space-4);
+  margin: 0 calc(var(--space-4) * -1);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: inherit;
+}
+.list-row:hover, .list-row.is-on { background: var(--surface); }
+.list-row .what { font-size: var(--text-body); font-weight: 600; color: var(--ink); }
+.list-row .meta { font-size: var(--text-meta); color: var(--ink-muted); margin-top: 2px; }
+
+/* A panel that slides in over the page for the detail a tab would be too much
+   for ("All 13 readings →"). It is a real dialog: focus goes into it, Esc and
+   the scrim close it, and the keyboard is handed back to whatever opened it. */
+.slide-out {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(480px, 92vw);
+  background: var(--ground);
+  border-left: 1px solid var(--line);
+  padding: var(--space-6);
+  overflow-y: auto;
+  z-index: 40;
+}
+.slide-out header { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-5); }
+.slide-out h2 { font-size: var(--text-body); font-weight: 600; }
+.scrim { position: fixed; inset: 0; background: var(--scrim-soft); z-index: 39; }
+
+/* --- the dialog -----------------------------------------------------------
+ *
+ * One question, asked in the product's own voice. It replaced the browser's
+ * `prompt()`, `confirm()` and `alert()`, which ignored every rule in this file,
+ * opened at the top of the window rather than near the thing they were about,
+ * and had no way of saying which of the two answers was the destructive one —
+ * the whole point of asking.
+ *
+ * It is the same scrim and the same panel as `.slide-out`, centred rather than
+ * at the edge, because a decision is not a drawer of detail. A hairline rather
+ * than a drop shadow tells it from the page, for the same reason nothing else
+ * here has one.
+ */
+.dialog {
+  position: fixed;
+  z-index: 40;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(460px, calc(100vw - var(--space-6) * 2));
+  max-height: calc(100vh - var(--space-6) * 2);
+  overflow-y: auto;
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+}
+.dialog h2 { font-size: var(--text-body); font-weight: 600; margin: 0 0 var(--space-3); }
+.dialog p { font-size: var(--text-meta); color: var(--ink-muted); margin: 0 0 var(--space-5); }
+.dialog .field { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-5); }
+.dialog textarea { min-height: 72px; }
+/* What is wrong with the answer, directly under the answer. */
+.dialog .says { color: var(--bad); margin: calc(var(--space-4) * -1) 0 var(--space-4); }
+/* Two buttons, not two links, so the middle dot `.actions` draws between a row
+   of text actions has no business here. */
+.dialog .actions { display: flex; justify-content: flex-end; gap: var(--space-2); font-size: inherit; }
+.dialog .actions > *::before { content: none; }
+
+/* --- utilities ------------------------------------------------------------------ */
+
+/* An input whose content is the point of the row it sits in — the add-an-item
+   box, the speaker notes — takes what is left of the row rather than its
+   default width, so a sentence is read rather than scrolled through a slot. */
+.row .grow { flex: 1; min-width: 280px; }
+
+.stack { display: flex; flex-direction: column; gap: var(--space-4); }
+.stack-tight { display: flex; flex-direction: column; gap: var(--space-2); }
+.inline { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.spacer { flex: 1; }
+.muted { color: var(--ink-muted); }
+.bad-text { color: var(--bad); }
+.small { font-size: var(--text-meta); }
+.right { margin-left: auto; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* --- the Devices page ------------------------------------------------------------
+ * One machine across every vendor. The vendor panels sit side by side on a wide
+ * screen and stack when there is no room; each holds a definition list of what
+ * that vendor said, whole, never shortened. */
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  background: var(--ground);
+}
+.panel > h3 { margin: 0 0 var(--space-3); display: flex; align-items: baseline; gap: var(--space-2); }
+.panel dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: var(--text-meta);
+}
+.panel dt { color: var(--ink-muted); }
+/* `break-word`, not `anywhere`: a value wraps at its spaces and punctuation and
+   breaks inside a word only when that word alone cannot fit. `anywhere` split
+   `remoteEnginesScanning` across two lines mid-word, which on a projector reads
+   as two different settings. Same reason as the rule on `td`. */
+.panel dd { margin: 0; overflow-wrap: break-word; }
+.panel table { font-size: var(--text-meta); margin-top: var(--space-3); }
+
+/* The same two-column list outside a panel — inside a collapsed Technical
+   details, say — so a label and its value line up wherever they are drawn. */
+dl.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-3);
+  margin: 0;
+  font-size: var(--text-meta);
+}
+dl.facts dt { color: var(--ink-muted); }
+dl.facts dd { margin: 0; overflow-wrap: break-word; }
+
+/* --- the summary strip -------------------------------------------------------------
+ * Four numbers across the top of a list: how many machines, and how many of
+ * them are in each state. Each is a button, because the number and the filter
+ * that shows you those rows are the same thought. */
+
+.summary-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-4);
+}
+
+/* A figure and what it counts, on a card like every other summary tile. The
+   number is 26px and the name under it 13px, which is the whole of the
+   hierarchy it needs; the card is what holds four of them apart on a tinted
+   page, where a row of bare figures reads as one paragraph of digits. */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: flex-start;
+  text-align: left;
+  padding: var(--space-4);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+.stat .figure {
+  font-size: var(--text-title);
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.stat .name { font-size: var(--text-meta); font-weight: 600; }
+.stat .note { font-size: var(--text-meta); color: var(--ink-muted); font-weight: 400; }
+
+/* A card that is also the filter it describes. Pressed is not a colour alone:
+   it gains a tick and the accent border, and its `aria-pressed` says so to
+   anything that is not looking. */
+button.stat {
+  font: inherit;
+  font-weight: 400;
+  cursor: pointer;
+  text-align: left;
+  min-height: 0;
+}
+button.stat:hover:not(:disabled) { background: var(--hover); color: var(--accent); }
+button.stat[aria-pressed="true"] { border-color: var(--accent); }
+button.stat[aria-pressed="true"] .figure { color: var(--accent); }
+button.stat[aria-pressed="true"] .name::after {
+  content: " ✓";
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat.good .figure { color: var(--good); }
+.stat.warn .figure { color: var(--warn); }
+.stat.bad .figure { color: var(--bad); }
+
+/* --- filter chips ------------------------------------------------------------------
+ * A row of toggles, each naming a question somebody actually asks. Pressed is
+ * not a colour alone: the chip gains a tick and a heavier border. */
+
+.chip-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+
+/* Chips under a row's own text — what the agent suggested about this ticket.
+   Spaced away from the line above so they read as a note on the ticket rather
+   than part of its title. */
+.chip-line { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+
+/* A filter that is on or off. The tick and the weight say which — never the
+   fill alone — and it is the same faint ground as every other quiet control
+   rather than a bordered pill. */
+button.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: inherit;
+  font-size: var(--text-meta);
+  font-weight: 400;
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+}
+button.filter-chip:hover:not(:disabled) { background: var(--hover); }
+button.filter-chip[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+button.filter-chip[aria-pressed="true"]::before { content: "✓"; }
+button.filter-chip .count { font-variant-numeric: tabular-nums; color: var(--ink-muted); font-weight: 400; }
+
+/* --- per-tool marks ------------------------------------------------------------------
+ * Three small squares on a device row, one per tool: the tool's initial and a
+ * glyph saying whether it holds the machine. The whole sentence is the tooltip
+ * and is repeated for a screen reader, so nothing here depends on hovering. */
+
+.tool-marks { display: inline-flex; gap: var(--space-1); }
+
+.tool-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  min-width: 34px;
+  justify-content: center;
+  padding: 1px var(--space-1);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-meta);
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: help;
+}
+/* A line above a list that has nothing to say is not drawn. */
+#list-sub:empty, .list-sub:empty { display: none; }
+
+/* One tool's column header: the name, and under it what that tool is for.
+   The initial each mark used to carry is this, said once per table. */
+/* The name stays on one line; the role under it wraps. Held on one line the
+   role is what sets the column's width — "monitoring and patching" is wider
+   than anything in the column under it — and four tool columns sized by their
+   own subtitles pushed the last of them past the card's edge. */
+.tool-col .tool-name { display: block; white-space: nowrap; }
+.tool-col .tool-role {
+  display: block;
+  max-width: 11ch;
+  /* `th` is `white-space: nowrap`, which is right for a one-word heading and
+     wrong for this: held on one line the role overflowed its own column and
+     printed across the heading next to it. */
+  white-space: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--ink-muted);
+}
+td.tool-cell { white-space: nowrap; }
+
+/* The chevron at the end of a row that opens something. Drawn, not written:
+   it is `aria-hidden`, because the row already says `aria-haspopup`. */
+td.chevron {
+  width: 1.5rem;
+  text-align: right;
+  color: var(--neutral);
+  font-size: var(--text-body);
+}
+tr.clickable:hover td.chevron { color: var(--accent); }
+
+/* Whether a tool holds a record of this machine: the mark and the sentence
+   behind it. No box — a row of four outlined squares per row is
+   a grid of boxes down the page — and the glyph stays, because here it is the
+   second signal rather than decoration. */
+.tool-mark.good { background: none; color: var(--good); border-color: transparent; }
+.tool-mark.warn { background: none; color: var(--warn); border-color: transparent; }
+.tool-mark.bad { background: none; color: var(--bad); border-color: transparent; }
+/* A tick is a mark and reads as one at 700. "Missing" and "not assessed" are
+   words, and a word set in bold beside a row of ticks is the loudest thing in
+   the table — which put the most emphasis on the tool a customer does not
+   have. The word carries the meaning; the weight does not need to. */
+.tool-mark.neutral { background: none; color: var(--ink-muted); border-color: transparent; }
+.tool-mark.neutral, .tool-mark.bad { font-weight: 400; }
+
+/* --- grouped tables ------------------------------------------------------------------
+ * A device list reads by customer, so the rows are grouped under a site and the
+ * group header carries that site's own counts. It is a row inside the table, so
+ * it scrolls with the columns it labels. */
+
+tbody.group + tbody.group tr.group-head th { border-top: 0; }
+
+/* A customer's name above its machines: a heading, not a filled band. */
+tr.group-head th {
+  background: none;
+  color: var(--ink);
+  font-size: var(--text-body);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+  padding: var(--space-section) 0 var(--space-2);
+  border-bottom: 0;
+}
+tbody.group:first-child tr.group-head th { padding-top: var(--space-4); }
+tr.group-head .counts { font-size: var(--text-meta); font-weight: 400; color: var(--ink-muted); margin-left: var(--space-3); }
+
+tr.clickable { cursor: pointer; }
+
+/* A sentence inside a table cell needs a measure. A table in a `.scroller` is
+   `width: max-content`, which sizes every column to its content laid out on
+   one line — right for a device name, and for a sentence it pushes the columns
+   after it off the screen. So a cell that holds prose says how wide it reads;
+   it still wraps rather than truncating, which is the rule everywhere. */
+/* 30ch and not 54: `max-content` takes a column's width from its longest
+   cell, so one three-clause sentence about one laptop set the health column
+   wider than the four tool columns put together and pushed the last of them
+   off the screen. It wraps to more lines; nothing is cut. */
+td .reason { max-width: 26ch; }
+td .measure { max-width: 42ch; }
+
+/* --- the verdict card -----------------------------------------------------------------
+ * One machine's answer, at the top of its page, before any vendor's detail:
+ * the mark, then the reasons in sentences. */
+
+.verdict {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: flex-start;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.verdict.good { border-left-color: var(--good); }
+.verdict.warn { border-left-color: var(--warn); }
+.verdict.bad { border-left-color: var(--bad); }
+.verdict .mark-large {
+  font-size: var(--text-title);
+  font-weight: 700;
+  line-height: 1;
+  width: 1.4em;
+  text-align: center;
+}
+.verdict.good .mark-large { color: var(--good); }
+.verdict.warn .mark-large { color: var(--warn); }
+.verdict.bad .mark-large { color: var(--bad); }
+.verdict .body { flex: 1; min-width: 260px; }
+.verdict .headline { font-size: var(--text-body); font-weight: 600; }
+.verdict ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
+.verdict li { margin-bottom: var(--space-1); }
+
+/* --- charts -------------------------------------------------------------------------
+ * Inline SVG, no library. The figures are printed on or under every chart, so
+ * neither the length of a bar nor its colour is ever the only way to read it. */
+
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+  /* Each chart is as tall as its own bars. Stretched to match its neighbour, a
+     four-bar chart beside a seven-bar one is half empty box. */
+  align-items: start;
+}
+
+/* The fortnight runs across the page: fourteen days squeezed into a third of
+   it is fourteen slivers. */
+.chart.wide { grid-column: 1 / -1; }
+
+.chart { border: 0; padding: 0; background: none; min-width: 0; }
+.chart > h3 { font-size: var(--text-body); font-weight: 600; margin-bottom: var(--space-1); }
+.chart > .definition { font-size: var(--text-meta); color: var(--ink-muted); margin-bottom: var(--space-3); }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+}
+.chart-legend .key { display: inline-flex; align-items: center; gap: var(--space-2); }
+.chart-legend .swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--line-strong);
+}
+/* The same two marks the bars carry: a fill, and a fill with a hatch through
+   it, so the pair is told apart without relying on the colours at all. */
+.chart-legend .swatch.created { background: var(--accent); }
+.chart-legend .swatch.resolved {
+  background: var(--good);
+  background-image: repeating-linear-gradient(45deg, var(--panel) 0 2px, transparent 2px 5px);
+}
+
+.chart .chart-figures { margin-top: var(--space-3); }
+.chart .chart-figures > summary { padding: var(--space-2) var(--space-3); font-size: var(--text-meta); }
+.chart .chart-figures > div { padding: 0 var(--space-3) var(--space-3); }
+
+/* --- a breadcrumb, and stepping through a list -------------------------------------- */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: var(--text-meta);
+}
+.breadcrumb .here { color: var(--ink-muted); }
+.breadcrumb .step { margin-left: auto; display: flex; align-items: center; gap: var(--space-2); }
+
+/* --- a side panel over a list ------------------------------------------------------
+ * One row's detail, opened beside the list rather than under it, so the list
+ * keeps its filters, its scroll position and its place in the reader's head.
+ * It is a modal dialog and behaves like one: it traps focus, it closes on Esc,
+ * on its button and on the scrim, and it puts focus back on the row it came
+ * from. The scrim is what makes "click outside" a target rather than a guess.
+ */
+
+.panel-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: var(--scrim);
+}
+
+.side-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 55%;
+  z-index: 75;
+  display: flex;
+  flex-direction: column;
+  background: var(--ground);
+  border-left: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-lifted);
+}
+
+.side-panel > header {
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.side-panel > header .who { flex: 1; min-width: 0; }
+.side-panel > header h2 { margin: 0; }
+.side-panel > header .sub { display: block; font-size: var(--text-meta); color: var(--ink-muted); }
+
+/* The panel's own scrollbar. The page behind it does not move while it is
+   open, which is the point: the list is still where it was on close. */
+.side-panel .panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5);
+}
+
+.side-panel .panel-move {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+/* Under 900px it is the whole screen: half of a phone is not a panel. */
+@media (max-width: 900px) {
+  .side-panel { width: 100%; border-left: none; }
+}
+
+/* --- sections inside a detail page ------------------------------------------------- */
+
+/* `.section` is the primitive above: space, not a rule. What a section has
+   here is the header some pages put at the top of one. */
+.section > header { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-3); }
+.section > header h3 { margin: 0; }
+.section > header .sub { font-size: var(--text-meta); color: var(--ink-muted); }
+
+/* --- the ticket workspace: two panes -------------------------------------------------
+ * Ticket and plan on the left, machine and context on the right. The left is
+ * what somebody works from and takes the room; the right is what they check
+ * against. Below 1100px they stack, left first. */
+
+.two-pane {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+
+/* --- the plan as a checklist ---------------------------------------------------------- */
+
+.checklist { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+
+.checklist > li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 2.1em 1fr;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--surface-sunk);
+}
+.checklist > li:last-child { border-bottom: none; }
+.checklist > li::before {
+  content: counter(step);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--ink-faint);
+  text-align: right;
+  line-height: 1.55;
+}
+.checklist .step-text { font-size: var(--text-body); }
+.checklist li.rejected .step-text { color: var(--ink-faint); }
+.checklist li.rejected .step-text s { text-decoration-thickness: 2px; }
+.checklist .step-meta { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-top: var(--space-2); }
+.checklist pre {
+  margin: var(--space-2) 0 0;
+  background: var(--surface-sunk);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--text-meta);
+}
+
+/* A citation is a chip you can open: closed it names its source, open it says
+   what the source is and links out where there is a link. */
+details.cite { display: inline-block; }
+details.cite > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  list-style: none;
+  padding: 1px var(--space-2);
+  border-radius: 999px;
+  font-size: var(--text-meta);
+  font-weight: 600;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent-line);
+}
+details.cite > summary::-webkit-details-marker { display: none; }
+details.cite > summary::after { content: "▸"; font-size: 0.85em; }
+details.cite[open] > summary::after { content: "▾"; }
+details.cite > .body {
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: var(--text-meta);
+  overflow-wrap: anywhere;
+}
+
+/* --- the stages of a generation ---------------------------------------------------------
+ * A plan takes the better part of a minute. The page says which part it is in,
+ * rather than disabling a button and going quiet. */
+
+.stages { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.stages li { display: flex; align-items: baseline; gap: var(--space-3); font-size: var(--text-meta); color: var(--ink-faint); }
+.stages li .mark { font-weight: 700; width: 1.2em; text-align: center; }
+.stages li.done { color: var(--ink-muted); }
+.stages li.now { color: var(--ink); font-weight: 600; }
+.stages li.now .mark { color: var(--accent); }
+
+/* --- a question the page needs answering -------------------------------------------------
+ * When the machine on a ticket is not a confident match, that is not a panel
+ * halfway down the page: it is the first thing, phrased as a question. */
+
+.question-box {
+  border: 1px solid var(--warn);
+  border-left: 6px solid var(--warn);
+  background: var(--warn-soft);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+.question-box h3 { font-size: var(--text-body); margin-bottom: var(--space-2); }
+.question-box table { background: var(--ground); border-radius: var(--radius-sm); margin-top: var(--space-3); }
+
+
+/* --- the results page -----------------------------------------------------------------
+ *
+ * The page answers one question — may the agent act yet — and that answer is
+ * the first thing on it: a sentence, the four criteria as rows, and the one
+ * comparison the measurement rests on. Everything that is working rather than
+ * answer is behind a tab, so the answer fits a laptop screen without scrolling.
+ */
+
+.headline-sentence {
+  font-size: var(--text-title);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+#headline .small { color: var(--ink-muted); margin-top: var(--space-2); }
+#headline { margin-bottom: var(--space-section); }
+
+/* A criterion: the dot, what it is and where it stands, and the one word. */
+.gate-row {
+  grid-template-columns: 8px minmax(0, 1fr) 10rem;
+  align-items: start;
+}
+.gate-row .dot { margin-top: 7px; }
+.gate-row .verdict-word { font-size: var(--text-meta); justify-self: start; }
+
+/* The line under the gate: two figures that answer different questions, with
+   the distance between them left visible rather than averaged away. */
+.gap-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  font-size: var(--text-meta);
+  color: var(--ink);
+  margin: var(--space-5) 0 0;
+}
+
+#labelling-line { margin: var(--space-4) 0 0; }
+#results-tabs { margin-top: var(--space-section); }
+
+/* The figures a tab prints: a number and what it counts, no box. */
+/* The tiles across the top of a page: a number, what it counts, and one line
+   saying what that means. Each is a card, because a row of four figures on an
+   open page reads as one paragraph of digits; held apart, each is a thing a
+   reader can look at. A tile with no figure behind it does not exist. */
+.figure-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-4) 0;
+}
+.figure-grid .figure {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.figure-grid .figure .n {
+  font-size: var(--text-title);
+  font-weight: 600;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.figure-grid .figure .k { font-size: var(--text-meta); color: var(--ink-muted); }
+/* The line of context under the figure: what the number means, in the server's
+   own words where the server has them. */
+.figure-grid .figure .why {
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+  margin-top: var(--space-1);
+}
+/* A tile that is itself a filter reads as one: the whole card is the control. */
+.figure-grid button.figure { text-align: left; cursor: pointer; font: inherit; }
+.figure-grid button.figure:hover { background: var(--hover); }
+.figure-grid button.figure[aria-pressed="true"] { border-color: var(--accent); }
+
+/* A table inside a card has no card of its own: no border, no second ground,
+   only the hairline under its head. It sits inside the card's own padding
+   rather than running to the edges, because a full-bleed table and a padded
+   card disagree about where the left margin is and the head ends up a few
+   pixels off every row under it. */
+.card > .scroller > table { border: 0; }
+
+/* The run and compare pickers, in the menu. */
+.menu-list.wide { min-width: 320px; gap: var(--space-4); padding: var(--space-4); }
+.menu-list .field { display: flex; flex-direction: column; gap: var(--space-1); }
+.menu-list .field > span { font-size: var(--text-meta); color: var(--ink-muted); }
+.menu-list select { min-height: var(--control-height); width: 100%; }
+
+/* --- the queue -------------------------------------------------------------------------
+ *
+ * Two lines a row: what the ticket is, and the facts about it joined by the
+ * middle dot. Then what Desk found, then the one state the row is in. No
+ * columns, no rules between rows, and the row somebody is on takes the faint
+ * fill — which is the only fill on the page.
+ */
+
+/* The search box beside the filters. A `search` input draws itself as its own
+   kind of box in WebKit, which is the one place an appearance reset is right. */
+.search { display: inline-flex; }
+.search input {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: var(--control-height);
+  min-width: 260px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--surface);
+  font: inherit;
+  font-size: var(--text-meta);
+  color: var(--ink);
+}
+.search input::placeholder { color: var(--ink-muted); }
+
+#list-sub { margin: 0 0 var(--space-4); }
+#list-sub[hidden] { display: none; }
+
+.ticket-row {
+  /* The two wide columns share what the three narrow ones leave, rather than
+     taking a fixed width each: at 1280 a fixed 19rem for what Desk found left
+     the title 312px and broke its meta line over two. */
+  grid-template-columns: minmax(0, 1.6fr) 10rem minmax(0, 1fr) 9rem 2.75rem;
+  align-items: center;
+}
+.ticket-row .who { font-size: var(--text-meta); min-width: 0; }
+.ticket-row .what { display: block; }
+.ticket-row .meta { display: block; }
+.ticket-row .found { font-size: var(--text-meta); }
+.ticket-row .state-cell { font-size: var(--text-meta); justify-self: start; }
+
+/* The findings on a row: two at most, then "+N more". Each is a dot and a
+   word, like every other state on every other page. */
+.desk-found { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-4); }
+.desk-found .state { font-size: var(--text-meta); }
+
+/* A filter in the menu: whether it is on, its name, and how many it would
+   leave. The tick is a column of its own so the names line up. */
+.menu-list button[data-chip] { display: grid; grid-template-columns: 1rem 1fr auto; gap: var(--space-2); }
+.menu-list button[data-chip][aria-pressed="true"] { font-weight: 600; }
+.menu-list .tick { color: var(--accent); }
+.menu-list .count { color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
+/* The figures behind "Where the work is", inside their panel. */
+#stats-panel .summary-strip { display: grid; gap: var(--space-4); margin-bottom: var(--space-section); }
+#stats-panel .chart-grid { display: grid; gap: var(--space-section); }
+#stats-panel details { margin-top: var(--space-section); }
+
+/* "How this page works": one summary, and the whole of it behind it. */
+#how { margin-top: var(--space-section); }
+#how > summary { cursor: pointer; color: var(--accent); font-size: var(--text-meta); }
+#how ul { margin: var(--space-4) 0 0; padding-left: var(--space-5); }
+#how li + li { margin-top: var(--space-3); }
+
+/* --- the ticket page ------------------------------------------------------------------
+ *
+ * The page an engineer works from. It leads with the estate — which machine,
+ * what the tools found, what to do about it — because Autotask's own
+ * intelligence already suggests a type and a queue from inside Autotask, and
+ * what it cannot see is the thing worth a page. The classification is one
+ * sentence at the bottom; the readings, the plan and the record are tabs.
+ *
+ * Almost all of this is the shared primitives. What is here is the handful of
+ * arrangements only this page has.
+ */
+
+/* The breadcrumb and the step links share a line above the title. */
+.crumb-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  font-size: var(--text-meta);
+  margin-bottom: var(--space-5);
+}
+.crumb-row .breadcrumb { display: flex; align-items: baseline; gap: var(--space-2); }
+.crumb-row .sep, .crumb-row .here { color: var(--ink-muted); }
+.crumb-row .step { display: flex; align-items: baseline; gap: var(--space-2); }
+.crumb-row .step > * + *::before { content: "·"; margin-right: var(--space-2); color: var(--ink-muted); }
+
+/* --- the Automations pages -----------------------------------------------------
+ *
+ * Two pages, Inputiv staff only: the runs for a client with the switches, and
+ * one run. Rows are the shared list rows; a workflow row has its switch at the
+ * end, a run row and a step row have their state. Nothing here is a box.
+ */
+.workflow-row { grid-template-columns: minmax(0, 1fr) 9rem auto; align-items: center; }
+.workflow-row .what, .workflow-row .meta { display: block; }
+/* A name inside a row may open a page while the row itself is not a link,
+   because something else in it is a control (a switch) or there is nothing
+   else to open (a log row with no run). */
+.list-row a.what { color: var(--ink); text-decoration: none; }
+.list-row a.what:hover { text-decoration: underline; }
+/* A trigger's row sits under its workflow, set in from it, the sentence at
+   body weight 400: the workflow is the thing, the trigger one way it starts. */
+.trigger-row {
+  grid-template-columns: minmax(0, 1fr) 9rem auto;
+  align-items: center;
+  margin-left: var(--space-4);
+  padding-block: var(--space-2);
+}
+.trigger-row .what { font-weight: 400; display: block; }
+.trigger-row .meta { display: block; }
+.trigger-row .state-cell { font-size: var(--text-meta); justify-self: start; }
+.trigger-row:hover { background: transparent; }
+.workflow-row .state-cell, .step-row .state-cell, .plan-row .state-cell, .run-row .state-cell {
+  font-size: var(--text-meta);
+  justify-self: start;
+}
+.run-row { grid-template-columns: minmax(0, 1fr) 11rem; align-items: center; }
+.run-row .what, .run-row .meta { display: block; }
+.plan-row, .step-row { grid-template-columns: minmax(0, 1fr) 11rem; align-items: start; }
+.plan-row .what, .plan-row .meta, .step-row .what, .step-row .meta { display: block; }
+/* A plan row and a step row open nothing, so they do not light up under the
+   pointer as a run row does. */
+.plan-row:hover, .step-row:hover { background: transparent; }
+/* The approval form: three facts and a button, in one row that wraps. */
+#approve-form { align-items: end; }
+#approve-form .field { display: flex; flex-direction: column; gap: var(--space-1); }
+#approve-form select, #approve-form input { min-height: var(--control-height); }
+
+/* A group inside a menu: a heading in metadata weight, then its items set in
+   from it; a note where the items would be says why there are none. */
+.menu-list .menu-heading {
+  display: block;
+  padding: var(--space-2) var(--space-4) var(--space-1);
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+}
+.menu-list .menu-note {
+  display: block;
+  padding: var(--space-1) var(--space-4) var(--space-2);
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+}
+#start-workflow-items button { padding-left: calc(var(--space-4) + var(--space-3)); }
+
+/* The Desk note on a ticket: the note's own words in a plain block, body
+   size, no box; the facts behind a disclosure. The body keeps its line
+   breaks because each line is one fact the engineer reads down. */
+#desk-notes { margin-bottom: var(--space-section); }
+.desk-note + .desk-note { margin-top: var(--space-6); }
+.desk-note .note-body {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+.desk-note .note-actions { margin-top: var(--space-3); }
+.desk-note .note-actions + .small { margin-top: var(--space-2); }
+.desk-note .facts { display: grid; gap: var(--space-1); margin-top: var(--space-2); }
+.desk-note .bad-text { color: var(--bad); }
+
+/* The note template on a workflow page: the fixed wording, quoted, with its
+   placeholders in angle brackets. */
+.template {
+  margin: 0;
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--line);
+  color: var(--ink);
+  white-space: pre-wrap;
+}
+/* The Details disclosure on a workflow page: its blocks held apart. */
+#details-body .section-label { margin-top: var(--space-5); }
+#details-body .section-label:first-child { margin-top: var(--space-3); }
+/* A state word that opens the list behind it ("Needs settings"). */
+.state-link { color: inherit; text-decoration: none; border-bottom: 1px dashed var(--neutral); }
+.state-link:hover { border-bottom-color: var(--ink); }
+/* A line that is one sentence of a plan or a check reads at body weight:
+   the step is the thing, not a heading. */
+.plan-row.light .what { font-weight: 400; }
+.plan-row.light { padding-block: var(--space-2); }
+.desk-note .note-body + .small { margin-top: var(--space-2); }
+/* A plan row's values behind its own disclosure, under the line. */
+.plan-row details { margin-top: var(--space-1); }
+.plan-row details summary { color: var(--ink-muted); cursor: pointer; }
+
+/* The menu behind More. A list of actions over the page, closed on Escape, on
+   a click outside and on choosing one. */
+.menu { position: relative; }
+.menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-2));
+  min-width: 220px;
+  background: var(--ground);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.menu-list button,
+.menu-list a {
+  appearance: none;
+  background: none;
+  border: 0;
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: var(--text-meta);
+  font-weight: 400;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  min-height: var(--control-height);
+  display: flex;
+  align-items: center;
+}
+.menu-list button:hover, .menu-list a:hover { background: var(--surface); }
+
+/* "About WS-LT-07 · named in the ticket · confident · Right · Change" */
+.machine-line { font-size: var(--text-body); margin: 0 0 var(--space-5); }
+.machine-line .actions { margin-left: var(--space-1); }
+
+/* A finding: a dot, a sentence, the tool and date beneath it, and the two
+   words somebody answers it with on the right. */
+.finding-list > * + * { margin-top: var(--space-item); }
+.finding {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  gap: var(--space-3) var(--space-3);
+  align-items: start;
+}
+.finding .dot { margin-top: 7px; }
+.finding .what { font-size: var(--text-body); }
+.finding .meta { font-size: var(--text-meta); color: var(--ink-muted); margin-top: 2px; }
+.finding .answered, .finding .actions { font-size: var(--text-meta); white-space: nowrap; }
+.answered { color: var(--ink-muted); }
+.answered.yes { color: var(--good); }
+.answered.no { color: var(--ink-muted); }
+.answered.changed { color: var(--warn); }
+
+#findings-more { font-size: var(--text-meta); margin-top: var(--space-4); }
+#not-assessed { margin-top: var(--space-3); }
+
+/* The suggested next step: the sentence, and what somebody made of it. */
+.next-step {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+.next-step .what { font-size: var(--text-body); }
+.next-step .actions, .next-step .answered { font-size: var(--text-meta); white-space: nowrap; }
+
+/* "Desk read it as": one sentence, the changeable parts underlined. */
+.said-what-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+.change-box {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: var(--space-2);
+}
+.change-box select { min-height: var(--control-height); }
+
+/* The chooser the machine line opens, in place. */
+.chooser { margin: 0 0 var(--space-5); }
+
+/* The line at the foot of the overview: the thumbs, and who last touched it. */
+.card-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-section);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+.card-foot .spacer { flex: 1; }
+.card-foot .icon {
+  min-height: var(--control-height);
+  padding: 0 var(--space-3);
+  background: var(--surface);
+  border: 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.card-foot .icon[aria-pressed="true"] { background: var(--accent-soft); }
+
+/* The rail: the ticket's own words, the machine, the plan. */
+.rail .section-label { margin-bottom: var(--space-2); }
+.rail .ticket-words { white-space: pre-wrap; font-size: var(--text-body); margin: 0 0 var(--space-2); }
+.rail .glance-name { margin: 0 0 var(--space-3); }
+.rail .state { margin: 0 0 var(--space-2); }
+#readings-open { margin-top: var(--space-2); display: inline-block; }
+#rail-plan { font-size: var(--text-body); }
+
+/* The blind check, which replaces the sentence and nothing else. */
+.blind-question { margin-bottom: var(--space-5); }
+.blind-question .answer-row { display: flex; gap: var(--space-2); margin-top: var(--space-3); flex-wrap: wrap; }
+
+/* --- the Autopilot pages -----------------------------------------------------------
+ * Two internal pages: a person labelling a sample, and what the runs say against
+ * the gate. The labelling task is deliberately plain — one ticket, four buttons —
+ * because anything else on the screen is something to read instead of the ticket. */
+
+/* The tab strip this page had of its own is gone: the product has one set
+   of tabs (`.tabs`) and a second answer to the same question is how two
+   pages come to disagree about what a tab looks like. */
+
+/* The ticket being judged. A plain block: the title in the page's body size
+   at 600, one line of facts under it, and nothing drawn around either. The
+   border and the fill it used to carry were there to say "this is the thing" —
+   which the weight and the space around it say without them. */
+.subject-card { border: 0; background: none; padding: 0; max-width: var(--measure); }
+.subject-card .title { font-size: var(--text-body); font-weight: 600; line-height: 1.5; }
+.subject-card .facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+  align-items: baseline;
+  margin-top: var(--space-2);
+  font-size: var(--text-meta);
+  color: var(--ink-muted);
+}
+.subject-card .facts > *:not(:last-child)::after { content: "·"; margin-left: var(--space-2); }
+
+/* A group's tickets, in arrival order, held apart by space. */
+.group-ticket {
+  display: flex;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+}
+.group-ticket .ord { color: var(--ink-muted); font-variant-numeric: tabular-nums; min-width: 2rem; }
+.group-ticket .what { flex: 1; min-width: 0; }
+.group-ticket .when { color: var(--ink-muted); font-size: var(--text-meta); white-space: nowrap; }
+.group-ticket label { display: flex; gap: var(--space-2); align-items: center; font-size: var(--text-meta); color: var(--ink-muted); }
+
+/* The questions, a section's distance under the ticket they are about. */
+#questions { margin-top: var(--space-section); }
+
+/* The answers stay big. This page is a job somebody does two hundred times,
+   and the three buttons are the job: everything else on the screen is quiet so
+   that these are what the hand goes to. They are held to the page's measure —
+   stretched across a 1440px window they stop reading as buttons. */
+.answer-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  max-width: var(--measure);
+}
+
+.answer-row button {
+  flex: 1 1 10rem;
+  min-height: 3.2rem;
+  font-size: var(--text-body);
+  font-weight: 600;
+}
+.answer-row button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+
+/* The second question's labels: as many as the franchisee has, so they wrap. */
+.type-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
+
+#aside-actions { margin-top: var(--space-section); gap: var(--space-5); }
+
+kbd {
+  font-family: var(--mono);
+  font-size: var(--text-meta);
+  border: 1px solid var(--line);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  background: var(--surface);
+  color: var(--ink);
+  margin-left: var(--space-2);
+}
+
+/* The gate: one row per criterion, and the verdict is a word and a mark as
+   well as a colour, like every other state in this product. */
+.gate-table td.target, .gate-table td.value { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gate-table .why { color: var(--ink-muted); font-size: var(--text-meta); }
+
+.gate-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* A figure with its definition behind it. The dotted underline is the only
+   hint that there is something to hover; the definition is also in the
+   `title`, so it is reachable without a pointer. */
+.defined {
+  border-bottom: 1px dotted var(--ink-muted);
+  cursor: help;
+}
+
+/* A figure is a number and what it counts. No box, no uppercase: the size
+   difference between the two lines is the whole of the hierarchy. The grid
+   itself is declared with the results page's own styles. */
+.figure { border: 0; padding: 0; background: none; }
+.figure .n { font-size: var(--text-title); font-weight: 600; font-variant-numeric: tabular-nums; }
+.figure .k { font-size: var(--text-meta); text-transform: none; letter-spacing: 0; color: var(--ink-muted); }
+
+/* --- narrow screens --------------------------------------------------------------
+ * Not a phone layout: this is an internal tool shown on laptops and projectors.
+ * It is enough that a half-width window stays usable rather than clipping. */
+
+@media (max-width: 1200px) {
+  .two-pane { grid-template-columns: 1fr; }
+}
+
+/* The drawer under 900px is `aurora.css`'s now, with the rest of the shell.
+   What stays here is the two page layouts that have not moved yet. */
+@media (max-width: 900px) {
+  .ask { grid-template-columns: 1fr; }
+  .thread-list { border-bottom: 1px solid var(--line); max-height: 200px; padding: var(--space-4) var(--space-5); }
+}
+
+/* --- printing ----------------------------------------------------------------- */
+
+@media print {
+  .sidebar, .topbar, .composer, .tools { display: none; }
+  .shell { margin-left: 0; }
+  .card, .slide, .panel { box-shadow: none; break-inside: avoid; }
+}

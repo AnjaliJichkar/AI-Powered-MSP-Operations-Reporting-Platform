@@ -1,0 +1,54 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "address1": "",
+      "address2": "",
+      "alternatePhone1": "",
+      "alternatePhone2": "",
+      "city": "Austin",
+      "companyID": 77,
+      "countryID": 0,
+      "description": "",
+      "fax": "",
+      "isActive": true,
+      "isPrimary": true,
+      "isTaxExempt": null,
+      "overrideCompanyTaxSettings": false,
+      "name": "Head Office",
+      "phone": "",
+      "postalCode": "",
+      "roundtripDistance": null,
+      "state": "TX",
+      "taxRegionID": null
+    },
+    {
+      "id": 2,
+      "address1": "",
+      "address2": "",
+      "alternatePhone1": "",
+      "alternatePhone2": "",
+      "city": "Round Rock",
+      "companyID": 77,
+      "countryID": 0,
+      "description": "",
+      "fax": "",
+      "isActive": true,
+      "isPrimary": false,
+      "isTaxExempt": null,
+      "overrideCompanyTaxSettings": false,
+      "name": "Warehouse",
+      "phone": "",
+      "postalCode": "",
+      "roundtripDistance": null,
+      "state": "TX",
+      "taxRegionID": null
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

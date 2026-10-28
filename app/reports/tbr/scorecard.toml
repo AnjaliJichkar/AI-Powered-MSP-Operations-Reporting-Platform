@@ -1,0 +1,230 @@
+# The scorecard on the Key Takeaways slide: every rule and every threshold.
+#
+# This file is the only place a scorecard status can come from. Nothing in the
+# code holds a threshold, and the model never sees or writes a status: it is
+# computed by `scorecard.py` from facts the collectors counted.
+#
+# HOW AN AREA IS SCORED
+#
+#   An area has one or more metrics. Each metric reads one fact and gives one of
+#   three statuses. The area takes the WORST status among its metrics that have
+#   a value (action is worse than attention, attention is worse than good).
+#
+#   A metric whose fact was not collected (the vendor refused, the figure does
+#   not apply) is left out. An area where no metric has a value is shown as
+#   "no data": it is never scored from nothing.
+#
+# HOW A METRIC IS SCORED
+#
+#   better = "higher"   (a success rate)     value >= good   -> good
+#                                            value <  action -> action
+#                                            otherwise       -> attention
+#
+#   better = "lower"    (a count of faults)  value <= good   -> good
+#                                            value >  action -> action
+#                                            otherwise       -> attention
+#
+#   per = "<fact id>"   optional. The value scored is 100 * fact / per, a
+#                       percentage, so a threshold means the same at a site of
+#                       ten devices as at one of five hundred. With `per`, a
+#                       missing or zero denominator leaves the metric out.
+#
+# THE TREND ARROW
+#
+#   Shown only when an earlier review of this site is stored, and only for
+#   metrics that have a value in both. A metric has improved or declined when
+#   it moved by at least its `tolerance` in the better or worse direction;
+#   smaller movements are noise and count as steady. The area's arrow is up
+#   when more of its metrics improved than declined, down for the reverse, and
+#   level otherwise. Up always means better, whichever way the number moved.
+#   Device and patch-backlog facts are the state when each review was
+#   generated (NinjaOne keeps no history), so their trend compares two
+#   generation dates, not two calendar periods.
+#
+# AREAS THAT ARE NOT ASSESSED
+#
+#   `assessed = false` prints "Not yet assessed" and scores nothing. Backup
+#   stays that way until the Cove connector exists. Security was assessed from
+#   2026-09-22, once Bitdefender gave a second tool's view beside NinjaOne's;
+#   a site Bitdefender did not answer for shows "No data" instead.
+#
+# CHANGING THIS FILE
+#
+#   Thresholds are a franchise-wide judgement, so they live here, reviewed like
+#   code, rather than in a franchisee's settings. `tests/reports/test_tbr_scorecard.py`
+#   checks that the file loads, that every threshold is ordered the right way
+#   round, and that every fact it names is one the collectors can produce.
+
+[[area]]
+key = "service"
+label = "Service"
+
+  [[area.metric]]
+  fact = "autotask.sla.resolution_met_percent"
+  label = "Resolution SLA met"
+  unit = "%"
+  better = "higher"
+  good = 90.0
+  action = 75.0
+  tolerance = 2.0
+
+  [[area.metric]]
+  fact = "autotask.sla.first_response_met_percent"
+  label = "First-response SLA met"
+  unit = "%"
+  better = "higher"
+  good = 90.0
+  action = 75.0
+  tolerance = 2.0
+
+[[area]]
+key = "devices"
+label = "Devices"
+
+  [[area.metric]]
+  fact = "ninjaone.windows11.ineligible"
+  per = "ninjaone.devices.workstations"
+  label = "Workstations that cannot run Windows 11"
+  unit = "% of workstations"
+  better = "lower"
+  good = 2.0
+  action = 10.0
+  tolerance = 1.0
+
+  [[area.metric]]
+  fact = "ninjaone.disks.low"
+  per = "ninjaone.devices.total"
+  label = "Disks low on free space"
+  unit = "per 100 devices"
+  better = "lower"
+  good = 2.0
+  action = 10.0
+  tolerance = 1.0
+
+  [[area.metric]]
+  fact = "ninjaone.hardware.low_memory"
+  per = "ninjaone.devices.workstations"
+  label = "Workstations short of memory"
+  unit = "% of workstations"
+  better = "lower"
+  good = 5.0
+  action = 20.0
+  tolerance = 1.0
+
+[[area]]
+key = "patching"
+label = "Patching"
+
+  [[area.metric]]
+  fact = "ninjaone.patches.success_percent"
+  label = "Patch installations that succeeded"
+  unit = "%"
+  better = "higher"
+  good = 95.0
+  action = 85.0
+  tolerance = 1.0
+
+  [[area.metric]]
+  fact = "ninjaone.patches.critical_pending_devices"
+  per = "ninjaone.devices.total"
+  label = "Devices waiting on a critical patch"
+  unit = "% of devices"
+  better = "lower"
+  good = 5.0
+  action = 20.0
+  tolerance = 2.0
+
+[[area]]
+key = "security"
+label = "Security"
+
+  # Bitdefender GravityZone, joined to NinjaOne's inventory by hostname. Every
+  # metric is left out when Bitdefender did not answer, so a site with no
+  # GravityZone company shows "No data" rather than a guess.
+
+  [[area.metric]]
+  fact = "bitdefender.endpoints.protected_percent"
+  label = "Endpoints fully protected"
+  unit = "%"
+  better = "higher"
+  good = 97.0
+  action = 90.0
+  tolerance = 1.0
+
+  [[area.metric]]
+  fact = "coverage.ninjaone_only"
+  per = "ninjaone.devices.total"
+  label = "Managed computers with no protection agent"
+  unit = "% of devices"
+  better = "lower"
+  good = 2.0
+  action = 10.0
+  tolerance = 1.0
+
+  [[area.metric]]
+  fact = "bitdefender.incidents.reported"
+  label = "Detections not blocked automatically"
+  unit = "in the period"
+  better = "lower"
+  good = 0.0
+  action = 3.0
+  tolerance = 1.0
+
+  [[area.metric]]
+  fact = "bitdefender.company.risk_score"
+  label = "GravityZone company risk score"
+  unit = "%"
+  better = "lower"
+  good = 30.0
+  action = 60.0
+  tolerance = 5.0
+
+  # ConnectSecure vulnerability scanning, joined to NinjaOne's inventory by
+  # hostname. Vulnerabilities are state as of the last scan; the stored facts
+  # are the monthly snapshot, so the trend compares two scan dates. Every
+  # metric is left out when ConnectSecure did not answer.
+
+  [[area.metric]]
+  fact = "connectsecure.vulnerabilities.known_exploited"
+  label = "Findings on CISA's known-exploited list"
+  unit = "findings"
+  better = "lower"
+  # None is good; one is already action (a count above 0.5 is at least 1).
+  good = 0.0
+  action = 0.5
+  tolerance = 1.0
+
+  [[area.metric]]
+  fact = "connectsecure.vulnerabilities.critical_assets"
+  per = "connectsecure.assets.total"
+  label = "Scanned assets with a critical vulnerability"
+  unit = "% of assets"
+  better = "lower"
+  good = 5.0
+  action = 25.0
+  tolerance = 2.0
+
+  [[area.metric]]
+  fact = "coverage.scan.uncovered"
+  per = "ninjaone.devices.total"
+  label = "Managed computers not scanned in 30 days"
+  unit = "% of devices"
+  better = "lower"
+  good = 5.0
+  action = 20.0
+  tolerance = 2.0
+
+  [[area.metric]]
+  fact = "connectsecure.company.risk_score"
+  label = "ConnectSecure company risk score"
+  unit = "of 100"
+  better = "lower"
+  good = 40.0
+  action = 60.0
+  tolerance = 5.0
+
+[[area]]
+key = "backup"
+label = "Backup"
+assessed = false
+waiting_for = "the N-able Cove connector"

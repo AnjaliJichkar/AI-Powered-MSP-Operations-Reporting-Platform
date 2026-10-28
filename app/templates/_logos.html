@@ -1,0 +1,29 @@
+{# A vendor's mark, used to say which tool a tile, a column or a status dot is
+   about.
+
+   **The map is `VENDOR_MARKS` in `app/interfaces/web.py`**, handed here as
+   `vendor_marks` and to the page scripts as `DESK.vendorMarks`, so a mark
+   drawn by Jinja and a mark drawn by a script cannot come from two lists that
+   disagree. This file is only the drawing of one.
+
+   Two kinds. A vendor's own artwork, whose source is in
+   `app/static/logos/CREDITS.md`; or, where we hold none we can redistribute,
+   a coloured tile carrying the vendor's initial. A monogram is plainly ours
+   and claims nothing, which is the honest answer for somebody else's brand.
+
+   These are third-party trademarks either way. They identify an integration
+   and nothing more: not an endorsement, not an affiliation. Settings says so
+   in words, where a reader can see it. #}
+
+{% macro mark(key) -%}
+{%- set m = vendor_marks.get(key) -%}
+{%- if m and m.src -%}
+<img class="brand-mark" src="{{ m.src }}" alt="" width="22" height="22">
+{%- elif m -%}
+<span class="brand-mark mono" style="--tint: {{ m.tint }}" aria-hidden="true">{{ m.letter }}</span>
+{%- endif -%}
+{%- endmacro %}
+
+{% macro named(key) -%}
+<span class="tool-column">{{ mark(key) }}{{ vendor_marks.get(key, {}).get("name", key) }}</span>
+{%- endmacro %}

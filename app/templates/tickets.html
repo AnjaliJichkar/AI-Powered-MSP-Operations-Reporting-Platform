@@ -1,0 +1,114 @@
+{% extends "_base.html" %}
+{% block title %}Tickets · Desk{% endblock %}
+
+{% block content %}
+{# The queue, most urgent first, and nothing above it but what it is and how to
+   narrow it. Nothing here is written to Autotask: the figures behind "Where the
+   work is" are two read-only listings kept for a few minutes, and a row opens
+   the ticket's own page. The states are named in plain language by
+   `js/states.js`, the same vocabulary Coverage and Devices print. #}
+<div class="page-head">
+  <div>
+    <h1>Tickets</h1>
+    {# How many are open and when Autotask was last asked. Not the client: the
+       header above says whose queue this is, every page. #}
+    <p class="meta" id="summary"></p>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+<div class="notice" id="pending" hidden></div>
+
+{# The figures above the queue. Each is a card and each is the filter it
+   describes, so pressing one narrows the rows under it: that is what keeps a
+   figure and the list it opens the same population. The charts and the full
+   definitions stay behind "Where the work is" — a reader came here for the
+   queue — and the hover on each card is the server's own definition. #}
+<div class="kpis" id="queue-cards"></div>
+
+<div class="section card">
+  {# All, and the two the agent's work adds. Staff only, because a franchisee
+     has no suggestions to review and no warnings to filter by. #}
+  <div class="tabs" role="tablist" id="queue-tabs"></div>
+
+  {# Searching, narrowing and the one action, above the queue they act on and
+     at one height. #}
+  <div class="toolbar">
+    <label class="search">
+      <span class="visually-hidden">Search tickets</span>
+      <input class="input search-input" type="search" id="search" placeholder="Search tickets…"
+             autocomplete="off" spellcheck="false">
+    </label>
+    <div class="menu">
+      <button type="button" class="btn" id="filters-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="filters-list">Filters ▾</button>
+      <div class="menu-list" id="filters-list" role="group" aria-label="Narrow the queue" hidden></div>
+    </div>
+    <span class="grow"></span>
+    <div class="menu">
+      <button type="button" class="btn" id="more-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="more-list">More ▾</button>
+      <div class="menu-list" id="more-list" role="menu" hidden>
+        <button type="button" role="menuitem" id="poll"
+                title="Ask Autotask whether any ticket with a plan has closed">Check for closed tickets</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="small muted" id="list-sub"></p>
+  {# The columns the rows are in, named once. A queue of rows with no header is
+     three unlabelled columns: what Desk found and what the row is waiting on
+     read as decoration until somebody is told which is which. #}
+  <div class="list-head ticket-row" aria-hidden="true">
+    <span>Ticket</span><span>Assignee</span><span>Desk found</span><span>Status</span><span></span>
+  </div>
+  <div class="list" id="tickets">
+    <p class="muted">Loading…</p>
+  </div>
+</div>
+
+{# What was a strip of cards and charts above the queue. It is the same figures,
+   the same definitions and the same filters — pressing one still narrows the
+   queue — behind one link, because a reader came here for the queue. #}
+<p class="section" style="margin-top: var(--space-section)">
+  <button type="button" class="action" id="stats-open">Where the work is →</button>
+</p>
+
+<div class="scrim" id="stats-scrim" hidden></div>
+<div class="slide-out" id="stats-panel" role="dialog" aria-modal="true"
+     aria-labelledby="stats-panel-title" hidden>
+  <header>
+    <h2 id="stats-panel-title">Where the work is</h2>
+    <button type="button" class="action" id="stats-close">Close</button>
+  </header>
+  <p class="small muted" id="stats-when"></p>
+  <div class="notice bad" id="stats-error" hidden></div>
+  <div class="summary-strip" id="stat-cards"></div>
+  <div class="chart-grid" id="charts"></div>
+  <details id="definitions">
+    <summary>What each of these numbers counts</summary>
+    <div id="definitions-body"></div>
+  </details>
+</div>
+
+{# One link, and the whole of how this page works behind it. The ticket page's
+   More menu points at this anchor. #}
+<details class="section" id="how">
+  <summary>How this page works</summary>
+  <ul class="small">
+    <li><strong>Nothing is written to Autotask</strong> or any other tool. The workspace, the machine choice, the plans and the outcome are stored here. Copying a plan as a note puts it on your clipboard; pasting it into Autotask is your decision and your keystroke.</li>
+    <li><strong>The statistics are two read-only listings</strong> — every open ticket, and every ticket completed inside the window — worked out on the server and kept for a few minutes, so a page left open on a second monitor is not a vendor read a second. The time they were worked out is beside them, and every figure's definition is with it.</li>
+    <li><strong>The queue is ordered by how soon a clock runs out</strong>, not by age: breached first and worst-overdue first among those, then due within four hours, then due today, then the rest, then tickets Autotask set no clock on.</li>
+    <li><strong>The machine</strong> is found from machine names in the ticket's text matched against that customer's machines (an exact name is confident, a short or a tool's own name less so), then from the contact against who NinjaOne last saw signed in (one machine is fairly sure, several is a guess). When it is not a confident match the ticket's page asks you at the top, and your answer is recorded and stands.</li>
+    <li><strong>Every step of a plan cites its evidence</strong>: a ticket we resolved for the same words, a fact from the panel beside it, or a vendor documentation page found by web search on the allowed list, never with anything from the ticket in the query. A step that cites nothing we hold is dropped before you see it.</li>
+    <li><strong>A command appears only when it is in a cited ticket's text</strong> word for word. Otherwise the step is words, marked <em>manual, not executed</em>. Nothing on these pages executes anything.</li>
+    <li><strong>Passwords and keys</strong> pasted into a ticket are removed before the text is stored or shown to the model; the ticket's page says how many were.</li>
+    <li><strong>Colour is never the only signal.</strong> Every state is a dot and a word, and every bar prints its number.</li>
+  </ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/charts.js') }}"></script>
+<script src="{{ asset('js/tickets.js') }}"></script>
+{% endblock %}

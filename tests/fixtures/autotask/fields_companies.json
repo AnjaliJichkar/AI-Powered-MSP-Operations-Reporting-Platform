@@ -1,0 +1,53 @@
+{
+  "fields": [
+    {
+      "name": "companyType",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "1",
+          "label": "Customer",
+          "isActive": true
+        },
+        {
+          "value": "2",
+          "label": "Lead",
+          "isActive": true
+        },
+        {
+          "value": "3",
+          "label": "Prospect",
+          "isActive": true
+        },
+        {
+          "value": "4",
+          "label": "Dead",
+          "isActive": true
+        },
+        {
+          "value": "6",
+          "label": "Vendor",
+          "isActive": true
+        },
+        {
+          "value": "7",
+          "label": "Partner",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "isActive",
+      "dataType": "boolean",
+      "isPickList": false,
+      "picklistValues": null
+    },
+    {
+      "name": "classification",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": null
+    }
+  ]
+}

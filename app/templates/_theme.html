@@ -1,0 +1,23 @@
+{# The theme this browser remembers, applied before the first byte of CSS
+   paints. Inline and in the head on purpose: common.js loads at the end of the
+   body, and by then the page has been drawn light and the switch to dark is a
+   flash of white in a dark room.
+
+   Included by every page, shell or no shell. The sign-in page is somebody's
+   first and last sight of the product in a session, and a theme that holds
+   everywhere but there is a theme that looks broken when you sign out.
+
+   `desk-nav` is only read where there is a nav to collapse; it does nothing on
+   a page without one, and a missing element is not an error.
+
+   Both reads are wrapped: a browser with site data blocked throws on the first
+   touch of localStorage, and the page still has to render. #}
+<script>
+  (function () {
+    try {
+      var theme = localStorage.getItem('desk-theme');
+      if (theme === 'dark' || theme === 'light') document.documentElement.dataset.theme = theme;
+      if (localStorage.getItem('desk-nav') === 'collapsed') document.documentElement.dataset.nav = 'collapsed';
+    } catch (e) { /* no stored preference is readable; the defaults stand */ }
+  })();
+</script>

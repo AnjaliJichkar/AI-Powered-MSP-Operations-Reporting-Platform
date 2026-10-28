@@ -1,0 +1,50 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0003",
+    "offset": 0,
+    "count": null,
+    "expires": 1789656609.354843
+  },
+  "results": [
+    {
+      "id": "55555555-5555-4555-8555-000000000001",
+      "productIdentifier": "66666666-6666-4666-8666-000000000001",
+      "title": "Google Chrome 129.0",
+      "impact": "recommended",
+      "status": "APPROVED",
+      "type": "PATCH",
+      "deviceId": 1003,
+      "timestamp": 1788780600.0
+    },
+    {
+      "id": "55555555-5555-4555-8555-000000000002",
+      "productIdentifier": "66666666-6666-4666-8666-000000000001",
+      "title": "Google Chrome 129.0",
+      "impact": "recommended",
+      "status": "APPROVED",
+      "type": "PATCH",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "id": "55555555-5555-4555-8555-000000000003",
+      "productIdentifier": "66666666-6666-4666-8666-000000000002",
+      "title": "7-Zip 24.08",
+      "impact": "unknown",
+      "status": "REJECTED",
+      "type": "INSTALLER",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "id": "55555555-5555-4555-8555-000000000004",
+      "productIdentifier": "66666666-6666-4666-8666-000000000003",
+      "title": "Zoom Workplace 6.2",
+      "impact": "critical",
+      "status": "APPROVED",
+      "type": "PATCH",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    }
+  ]
+}

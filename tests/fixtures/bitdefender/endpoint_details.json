@@ -1,0 +1,74 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": {
+    "id": "64e000000000000000000001",
+    "name": "TL-AUS-WS14",
+    "companyId": "64a0000000000000000000b1",
+    "operatingSystem": "Windows 11 Pro",
+    "policy": {
+      "id": "64d000000000000000000003",
+      "name": "Standard workstation",
+      "applied": true
+    },
+    "ip": "192.0.2.10",
+    "machineType": 1,
+    "malwareStatus": {
+      "detection": false,
+      "infected": false
+    },
+    "isIsolated": false,
+    "agent": {
+      "type": 3,
+      "productVersion": "8.26.9.668",
+      "engineVersion": "7.101551",
+      "lastUpdate": "2026-09-22T01:40:36",
+      "signatureOutdated": false,
+      "signatureUpdateDisabled": false,
+      "productUpdateDisabled": false,
+      "productOutdated": false,
+      "primaryEngine": 3,
+      "fallbackEngine": null,
+      "licensed": 1
+    },
+    "lastSeen": "2026-09-22T01:36:05",
+    "state": 1,
+    "group": {
+      "id": "64c000000000000000000002",
+      "name": "Custom Groups"
+    },
+    "modules": {
+      "antimalware": true,
+      "firewall": true,
+      "contentControl": true,
+      "powerUser": true,
+      "deviceControl": true,
+      "advancedThreatControl": true,
+      "applicationControl": false,
+      "encryption": false,
+      "networkAttackDefense": true,
+      "antiTampering": true,
+      "advancedAntiExploit": true,
+      "userControl": true,
+      "antiphishing": true,
+      "trafficScan": false,
+      "remoteEnginesScanning": false,
+      "riskManagement": true
+    },
+    "label": "",
+    "moveState": 2,
+    "firstSeen": "2025-03-05T05:45:16",
+    "managedWithBest": true,
+    "riskScore": {
+      "value": "13%",
+      "impact": "Low",
+      "misconfigurations": "100%",
+      "appVulnerabilities": "0%",
+      "humanRisks": "0%"
+    },
+    "lastSuccessfulScan": {
+      "name": "Weekly full scan",
+      "date": "2026-09-21T14:00:01"
+    }
+  }
+}

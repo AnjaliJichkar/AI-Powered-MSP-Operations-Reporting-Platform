@@ -1,0 +1,134 @@
+{% extends "_base.html" %}
+{% block title %}Devices · Desk{% endblock %}
+
+{% block content %}
+{# Every machine the daily resolution knows, read as a person would ask about
+   it: how many are fine, which need something doing, and what is wrong with
+   each one. The states are named in plain language by `js/states.js`, which is
+   the same vocabulary the Coverage board and the Tickets queue print. Nothing
+   on this page decides what anybody may see: `/devices/list` resolves the
+   session itself and the cards a franchisee may not use are not drawn. #}
+<div class="page-head">
+  <div>
+    <h1>Devices</h1>
+    <p class="meta" id="summary"></p>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+
+<div class="kpis" id="strip"></div>
+
+{# The controls sit above the list they narrow, not across the page head:
+   searching and filtering are things you do to this table, and the one row
+   holds them at one height. #}
+<div class="section card">
+  <div class="toolbar">
+    <label class="search">
+      <span class="visually-hidden">Search machines</span>
+      <input class="input search-input" type="search" id="search" placeholder="Search machines…" autocomplete="off">
+    </label>
+    <div class="menu">
+      <button type="button" class="btn" id="filters-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="filters-list">Filters ▾</button>
+      <div class="menu-list" id="filters-list" role="group" aria-label="Narrow the list" hidden>
+        <label class="field">
+          <span>Customer</span>
+          <select id="filter-site"><option value="">Every customer</option></select>
+        </label>
+        <div class="chip-row" id="chips" role="group" aria-label="Narrow the list"></div>
+      </div>
+    </div>
+    <span class="grow"></span>
+    <a class="btn" id="export" href="/devices/export.csv" download>Export CSV</a>
+  </div>
+  <p class="small muted" id="list-sub"></p>
+  <div class="scroller">
+    <table id="devices">
+      <tbody><tr><td class="muted">Loading…</td></tr></tbody>
+    </table>
+  </div>
+  <p class="small muted" id="legend"></p>
+  {# The Coverage board counts the same things over a different population, as
+     of a different moment. Two pages showing different numbers for the same
+     words is worse than either number, so each chip says what it counted. #}
+  <details class="detail-box" id="chip-definitions">
+    <summary>What each chip counts, and how it relates to the Coverage board</summary>
+    <div id="chip-definitions-body"></div>
+  </details>
+</div>
+
+{# One machine, beside the list rather than under it, so the list keeps its
+   filters and its scroll position: the verdict and why, then protection,
+   vulnerabilities, patching and tickets in that order. Vendor ids and how each
+   record was paired sit in Technical details, closed: they are how an engineer
+   proves the answer, not the answer.
+
+   It is a modal dialog — focus is trapped in it and put back on the row it came
+   from — and the machine it holds is in the address bar (`?device=<id>`), so a
+   link to it opens it and the browser's back button closes it. #}
+<div class="panel-scrim" id="panel-scrim" hidden></div>
+
+<aside class="side-panel" id="detail-panel" role="dialog" aria-modal="true"
+       aria-labelledby="detail-title" tabindex="-1" hidden>
+  <header>
+    <div class="who">
+      <h2 id="detail-title"></h2>
+      <span class="sub" id="detail-sub"></span>
+    </div>
+    <div class="panel-move">
+      <button class="btn secondary small" id="detail-prev" type="button" title="The machine above this one in the list (↑)">↑ Previous</button>
+      <button class="btn secondary small" id="detail-next" type="button" title="The machine below this one in the list (↓)">↓ Next</button>
+      <button class="btn secondary" id="detail-close" type="button">Close</button>
+    </div>
+  </header>
+  <div class="panel-body">
+    <div id="detail-verdict"></div>
+    <div id="detail-sections"></div>
+    <details class="detail-box" id="technical" style="margin-top: var(--space-4)">
+      <summary>Technical details — vendor ids, how each record was paired, and the machine's own keys</summary>
+      <div id="technical-body"></div>
+    </details>
+    <p class="small muted" style="margin-top: var(--space-4)">
+      Esc closes this. ↑ and ↓ move to the machine above or below it in the list behind.
+    </p>
+  </div>
+</aside>
+
+{% if is_staff %}
+<div class="section" id="queue-card">
+  {# Records no pass could place without guessing. Linking one is a decision
+     with a reason, and it changes the coverage numbers, so it is recorded. #}
+  <h2 class="section-title">Records nobody can place</h2>
+  <p class="small muted" id="queue-sub">Vendor records a pass found more than one machine for. Each link or unlink needs a reason and is recorded with your name.</p>
+  <div class="scroller">
+    <table id="queue">
+      <thead><tr><th>Customer</th><th>Tool</th><th>The record</th><th>Found by</th><th>Which machine?</th><th>Waiting since</th></tr></thead>
+      <tbody id="queue-rows"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<details class="section" id="how">
+  <summary>How this page decides</summary>
+  {% if is_staff %}
+  {# Inputiv staff only, and down here rather than across the top: the day's
+     comparison is a measurement of our own join, not news about this
+     customer's fleet, and a main view does not explain how the system works. #}
+  <div class="notice" id="agreement" hidden></div>
+  {% endif %}
+  <ul class="small">
+    <li><strong>The mark on each machine is worked out here, on the page</strong>, from two things the daily resolution recorded: whether NinjaOne is still hearing from the machine, and which tools hold a record of it. Nothing stores a verdict, so nothing else could disagree with this one. <em>Action needed</em> means nothing is protecting the machine, or the RMM agent is down on a machine another tool says is running. <em>Needs attention</em> means something is missing or out of date but the machine is protected. <em>Healthy</em> means reporting, with every tool present.</li>
+    <li><strong>Only computers the RMM is reporting on are judged on protection and scanning.</strong> Network switches, routers, printers and hypervisor hosts have no endpoint agent, and a machine NinjaOne has lost cannot be said to be missing one — it may be in a cupboard. Both are left out here and on the Coverage board, for the same reasons and by the same rule; a machine the RMM has lost gets its own chip instead.</li>
+    <li><strong>A tool mark says whether that tool holds a record of the machine</strong> — not whether the machine is safe. Hover it, or read the sentence in Technical details on the machine's own page.</li>
+    <li><strong>Missing from a tool</strong> means no active record there, whatever the reason: not installed, not scanned, or a name nothing could pair. The unplaceable ones are listed at the bottom of this page for Inputiv staff.</li>
+    <li><strong>The list is as of the last daily resolution</strong>, shown at the top. The Coverage board computes live from the vendors; the two are compared every day, and Inputiv staff see the result at the top of this page.</li>
+    <li><strong>Colour is never the only signal.</strong> Every mark carries a glyph and a word as well.</li>
+  </ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/devices.js') }}"></script>
+{% endblock %}

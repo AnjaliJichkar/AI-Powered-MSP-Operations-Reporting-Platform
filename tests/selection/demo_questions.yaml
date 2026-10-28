@@ -1,0 +1,57 @@
+# The questions a presenter asks at the booth, for the demo tenant.
+#
+#   python scripts/selection_check.py --client tailwind-it-demo \
+#       --questions tests/selection/demo_questions.yaml --execute
+#
+# These name the demo tenant's own fictional customers on purpose: unlike
+# `questions.yaml`, which is about tool selection and must never carry a real
+# name, this file is the booth script and the answers are checked against the
+# generated dataset (`app/demo/scenarios.py`). Run it with `--execute` before a
+# demo: it warms the inventory caches and proves every answer is non-empty.
+#
+# `expect` is the tool the model should reach for first. Where two first moves
+# are genuinely right the alternatives are listed, and `note` says what the
+# answer should contain.
+
+- question: "anything wrong at Northwind today?"
+  expect: [list_open_alerts, list_devices_not_checked_in]
+  note: >
+    Four alerts open today at Northwind, plus three machines with no protection
+    agent, one of them unseen for nine days. Never an empty answer.
+
+- question: "which devices have no working protection and haven't checked in for a week?"
+  expect: [list_coverage_gaps, count_coverage, list_unprotected_endpoints, list_devices_not_checked_in]
+  note: >
+    One machine at Northwind is both: no GravityZone row and no check-in for
+    9.5 days. Two more are unprotected but checking in; two more are dark but
+    protected.
+
+- question: "what servers does Adventure Works have?"
+  expect: [list_devices, count_devices, get_hardware]
+  note: >
+    Three servers, and a fourth device NinjaOne classes WINDOWS_SERVER that is
+    really a Windows 10 IoT till: the answer should show it as what it is.
+
+- question: "any known-exploited vulnerabilities across all customers?"
+  expect: [list_critical_vulnerabilities, count_vulnerabilities, get_asset_vulnerabilities]
+  note: CISA KEV findings, confirmed, on several customers.
+
+- question: "which tickets are breaching SLA?"
+  expect: [list_sla_breaches, list_open_tickets, count_tickets]
+  note: Sixteen tickets are open and already past their due time, two per customer.
+
+- question: "have we seen the printer issue at Contoso before?"
+  expect: [search_tickets, list_recent_tickets]
+  note: >
+    A weekly repeat: seventeen resolved printer tickets, each with a root cause
+    (spooler stopped, DHCP lease moved) and the fix.
+
+- question: "which patches failed this week?"
+  expect: [list_patch_installs, list_patch_status]
+  note: Failed OS and third-party installs in the last seven days, on a handful of devices.
+
+- question: "what is KB5063878 and are there known issues?"
+  expect: [web_search]
+  note: >
+    A real Windows 11 24H2 cumulative update, and one of the most-installed KBs
+    in the dataset. The world outside the tenant: the web, not a connector.

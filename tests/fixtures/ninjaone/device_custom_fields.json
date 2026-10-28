@@ -1,0 +1,137 @@
+[
+  {
+    "entityType": "NODE",
+    "scope": "NODE_ROLE",
+    "definitionScope": [
+      "NODE"
+    ],
+    "type": "TEXT",
+    "label": "Asset Tag",
+    "description": "The sticker on the machine",
+    "name": "assetTag",
+    "technicianPermission": "EDITABLE",
+    "scriptPermission": "READ_WRITE",
+    "apiPermission": "READ_WRITE",
+    "content": {
+      "customizeForEndUser": false,
+      "endUserCustomization": null,
+      "values": [],
+      "required": false,
+      "footerText": "",
+      "tooltipText": "",
+      "advancedSettings": null
+    },
+    "system": false,
+    "active": true,
+    "createTime": 1750000000.0,
+    "updateTime": 1760000000.0
+  },
+  {
+    "entityType": "NODE",
+    "scope": "NODE_ROLE",
+    "definitionScope": [
+      "NODE"
+    ],
+    "type": "TEXT",
+    "label": "Primary User",
+    "description": "",
+    "name": "primaryUser",
+    "technicianPermission": "EDITABLE",
+    "scriptPermission": "READ_WRITE",
+    "apiPermission": "READ_WRITE",
+    "content": {
+      "customizeForEndUser": false,
+      "endUserCustomization": null,
+      "values": [],
+      "required": false,
+      "footerText": "",
+      "tooltipText": "",
+      "advancedSettings": null
+    },
+    "system": false,
+    "active": true,
+    "createTime": 1750000000.0,
+    "updateTime": 1760000000.0
+  },
+  {
+    "entityType": "NODE",
+    "scope": "NODE_ROLE",
+    "definitionScope": [
+      "NODE"
+    ],
+    "type": "TEXT_ENCRYPTED",
+    "label": "Local Admin Password",
+    "description": "Rotated by script",
+    "name": "localAdminPassword",
+    "technicianPermission": "EDITABLE",
+    "scriptPermission": "READ_WRITE",
+    "apiPermission": "READ_WRITE",
+    "content": {
+      "customizeForEndUser": false,
+      "endUserCustomization": null,
+      "values": [],
+      "required": false,
+      "footerText": "",
+      "tooltipText": "",
+      "advancedSettings": null
+    },
+    "system": false,
+    "active": true,
+    "createTime": 1750000000.0,
+    "updateTime": 1760000000.0
+  },
+  {
+    "entityType": "NODE",
+    "scope": "NODE_ROLE",
+    "definitionScope": [
+      "NODE"
+    ],
+    "type": "TEXT",
+    "label": "BitLocker Recovery Key",
+    "description": "Escrowed by script",
+    "name": "bitlockerRecoveryKey",
+    "technicianPermission": "EDITABLE",
+    "scriptPermission": "READ_WRITE",
+    "apiPermission": "READ_WRITE",
+    "content": {
+      "customizeForEndUser": false,
+      "endUserCustomization": null,
+      "values": [],
+      "required": false,
+      "footerText": "",
+      "tooltipText": "",
+      "advancedSettings": null
+    },
+    "system": false,
+    "active": true,
+    "createTime": 1750000000.0,
+    "updateTime": 1760000000.0
+  },
+  {
+    "entityType": "NODE",
+    "scope": "NODE_ROLE",
+    "definitionScope": [
+      "NODE"
+    ],
+    "type": "CHECKBOX",
+    "label": "Decommissioned",
+    "description": "",
+    "name": "decommissioned",
+    "technicianPermission": "EDITABLE",
+    "scriptPermission": "READ_WRITE",
+    "apiPermission": "READ_WRITE",
+    "content": {
+      "customizeForEndUser": false,
+      "endUserCustomization": null,
+      "values": [],
+      "required": false,
+      "footerText": "",
+      "tooltipText": "",
+      "advancedSettings": null
+    },
+    "system": false,
+    "active": true,
+    "createTime": 1750000000.0,
+    "updateTime": 1760000000.0
+  }
+]

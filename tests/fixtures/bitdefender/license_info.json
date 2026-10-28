@@ -1,0 +1,51 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": {
+    "isAddon": false,
+    "expiryDate": "2030-02-17T16:00:00",
+    "usedSlots": 98,
+    "totalSlots": null,
+    "manageExchange": false,
+    "manageEncryption": false,
+    "manageRemoteEnginesScanning": false,
+    "manageHyperDetect": false,
+    "manageSandboxAnalyzer": false,
+    "managePatchManagement": false,
+    "manageEventCorrelator": false,
+    "manageEmailSecurity": false,
+    "manageExtendedEmailSecurity": false,
+    "manageMobileSecurity": false,
+    "manageContainerProtection": false,
+    "managePHASR": false,
+    "manageAiSpm": false,
+    "manageEASM": false,
+    "manageIntegrityMonitoring": false,
+    "manageComplianceManager": false,
+    "assignedProtectionModel": "aLaCarte",
+    "assignedProductType": 0,
+    "additionalProductTypes": [],
+    "ownUse": {
+      "manageXDRIdentityProviders": false,
+      "manageXDRProductivityApps": false,
+      "manageXDRNetwork": false,
+      "manageXDRCloudWorkloads": false,
+      "manageSensitiveDataSensors": false,
+      "manageRemoteEnginesScanning": false,
+      "manageContainerProtection": false,
+      "managePatchManagement": false,
+      "manageHyperDetect": false,
+      "manageSandboxAnalyzer": false,
+      "manageEventCorrelator": false,
+      "managePHASR": false,
+      "manageAiSpm": false,
+      "manageEASM": false,
+      "manageComplianceManager": false,
+      "manageExtendedEmailSecurity": false
+    },
+    "licensedServices": {
+      "mdrServiceResell": false
+    },
+    "subscriptionType": 3
+  }
+}

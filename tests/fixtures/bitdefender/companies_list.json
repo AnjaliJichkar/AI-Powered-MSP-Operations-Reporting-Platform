@@ -1,0 +1,18 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": [
+    {
+      "id": "64a0000000000000000000b1",
+      "name": "Acme Dental"
+    },
+    {
+      "id": "64a0000000000000000000b2",
+      "name": "Beacon Legal LLP"
+    },
+    {
+      "id": "64a0000000000000000000b3",
+      "name": "Former Customer Co"
+    }
+  ]
+}

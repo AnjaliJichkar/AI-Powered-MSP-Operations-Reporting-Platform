@@ -1,0 +1,46 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0001",
+    "offset": 0,
+    "count": 3,
+    "expires": 1789656609.354843
+  },
+  "results": [
+    {
+      "installDate": "2026-08-14",
+      "location": "C:\\Program Files\\Google\\Chrome\\Application",
+      "name": "Google Chrome",
+      "publisher": "Google LLC",
+      "size": 320000000,
+      "version": "129.0.6668.59",
+      "productCode": "{77777777-7777-4777-8777-000000000001}",
+      "isSystemComponent": false,
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "installDate": "2026-07-02",
+      "location": "C:\\Program Files\\Google\\Chrome\\Application",
+      "name": "Google Chrome",
+      "publisher": "Google LLC",
+      "size": 320000000,
+      "version": "127.0.6533.100",
+      "productCode": "{77777777-7777-4777-8777-000000000001}",
+      "isSystemComponent": false,
+      "deviceId": 1005,
+      "timestamp": 1788780600.0
+    },
+    {
+      "installDate": "2026-01-10",
+      "location": "C:\\Program Files\\7-Zip",
+      "name": "7-Zip 24.08 (x64 edition)",
+      "publisher": "Igor Pavlov",
+      "size": 5600000,
+      "version": "24.08",
+      "productCode": "{77777777-7777-4777-8777-000000000002}",
+      "isSystemComponent": false,
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    }
+  ]
+}

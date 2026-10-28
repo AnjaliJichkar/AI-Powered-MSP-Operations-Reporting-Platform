@@ -1,0 +1,180 @@
+{% extends "_base.html" %}
+{% block title %}Coverage · Desk{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Coverage</h1>
+    {# One line: the counts and how fresh the board is. Who ran it and how
+       long it took are its tooltip. #}
+    <p class="meta" id="snapshot-when"></p>
+  </div>
+  <div class="row gap8">
+    <span class="badge" id="refresh-status" hidden><span id="refresh-word"></span></span>
+    {# Refresh computes a new snapshot in the background, one at a time per
+       client, and the page polls until it lands. It is the one thing this
+       page does, so it is the one filled button. #}
+    <button class="btn primary" id="refresh" type="button" hidden>Refresh</button>
+    <div class="menu">
+      <button type="button" class="btn ghost" id="more-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="more-list">More</button>
+      <div class="menu-list" id="more-list" role="menu" hidden>
+        <a id="export" href="/coverage/export.csv" role="menuitem" download>Download the board</a>
+        <a href="/coverage/duplication.csv" role="menuitem" download>Download vendor duplication</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+
+{# What is new since the last snapshot: the count, and the names behind it.
+   Twenty device names and "and 470 more" stood between the reader and the
+   board on every load. #}
+<p class="section" id="new-gaps" hidden>
+  <button type="button" class="action" id="new-gaps-open"></button>
+  <span class="small muted" id="new-gaps-since"></span>
+</p>
+
+<div class="scrim" id="gaps-scrim" hidden></div>
+<div class="slide-out" id="gaps-panel" role="dialog" aria-modal="true"
+     aria-labelledby="gaps-panel-title" hidden>
+  <header>
+    <h2 id="gaps-panel-title">New gaps</h2>
+    <button type="button" class="action" id="gaps-close">Close</button>
+  </header>
+  <div id="gaps-body"></div>
+</div>
+
+{# One card per tool: its mark, its share, and the bar that splits that share
+   into covered, needs attention and missing. Every figure is the board's. #}
+<div class="coverage-summary" id="tiles"></div>
+<details class="small how-counted" id="tiles-how" hidden></details>
+
+<section class="coverage-section" id="matrix-card">
+  <div class="coverage-section-head">
+    <div>
+      <h2>Site coverage</h2>
+      <p class="meta">Worst first, so the room looks at the problem rather than the list.</p>
+    </div>
+    <div class="coverage-legend" id="legend"></div>
+  </div>
+  <div class="toolbar">
+    <input class="input search-input" id="site-search" type="search"
+           placeholder="Search customers…" aria-label="Search customers">
+    <select id="site-filter" aria-label="Narrow the board" style="width:190px">
+      <option value="all">All customers</option>
+      <option value="gaps">With gaps</option>
+      <option value="complete">Fully covered</option>
+    </select>
+    <span class="grow"></span>
+    <a class="btn ghost" id="export-csv" href="/coverage/export.csv" download>Export CSV</a>
+  </div>
+  <div class="table-wrap coverage-matrix">
+    <table id="matrix">
+      <thead id="matrix-head"></thead>
+      <tbody id="matrix-rows">
+        <tr><td class="muted">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-footer"><span id="matrix-count"></span><span id="matrix-hint"></span></div>
+</section>
+
+<p class="coverage-note" id="board-note" hidden></p>
+
+<div class="panel" id="site-card" hidden style="margin-top:22px">
+  <div class="page-top">
+    <div class="page-titles">
+      <h2 class="section-title" id="site-title"></h2>
+      <p class="subtitle" id="site-sub"></p>
+    </div>
+    <div class="page-actions">
+      <a class="btn" id="site-export" href="#" download>Download this site</a>
+      <button class="btn" id="site-close" type="button">Back to the board</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="devices">
+      <thead id="devices-head"></thead>
+      <tbody id="devices-rows"></tbody>
+    </table>
+  </div>
+  <h3 id="unmanaged-title" class="meta" hidden></h3>
+  <div class="table-wrap" id="unmanaged-box" hidden>
+    <table id="unmanaged">
+      <thead><tr><th>Tool</th><th>Endpoint</th><th>Detail</th><th>Last seen</th><th>Note</th></tr></thead>
+      <tbody id="unmanaged-rows"></tbody>
+    </table>
+  </div>
+  <h3 id="external-title" class="meta" hidden></h3>
+  <div class="table-wrap" id="external-box" hidden>
+    <table id="external">
+      <thead><tr><th>Tool</th><th>Target</th><th>Detail</th><th>Last seen</th><th>Why external</th></tr></thead>
+      <tbody id="external-rows"></tbody>
+    </table>
+  </div>
+  <h3 id="discovered-title" class="meta" hidden></h3>
+  <div class="table-wrap" id="discovered-box" hidden>
+    <table id="discovered">
+      <thead><tr><th>Tool</th><th>Row</th><th>Why discovered</th><th>Last seen</th></tr></thead>
+      <tbody id="discovered-rows"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel" id="duplication-card" style="margin-top:22px">
+  {# One customer, two vendor organisations on one tool: read as one site here,
+     but the franchisee's to consolidate at the vendor. The CSV is in the page's
+     own menu, with the board's. #}
+  <h2>Vendor duplication</h2>
+  <p class="meta" style="margin:6px 0 16px">Sites with more than one organisation on one tool. The board reads them as one site; consolidating them is done at the vendor.</p>
+  <div class="table-wrap">
+    <table id="duplication">
+      <thead>
+        <tr><th>Site</th><th>Tool</th><th>Organisation</th><th>Vendor id</th><th>Endpoints</th><th>With agent</th></tr>
+      </thead>
+      <tbody id="duplication-rows">
+        <tr><td colspan="6" class="muted">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel" id="exclusions-card" style="margin-top:22px">
+  <h2>Exclusions</h2>
+  <p class="meta" style="margin:6px 0 16px">Devices somebody decided are not expected to have a tool. Each one says who, when and why; withdrawing one keeps the record.</p>
+  <div class="table-wrap">
+    <table id="exclusions">
+      <thead>
+        <tr><th>Device</th><th>Tool</th><th>Reason</th><th>By</th><th>When</th><th></th></tr>
+      </thead>
+      <tbody id="exclusion-rows">
+        <tr><td colspan="6" class="muted">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="panel" id="trend-card" hidden style="margin-top:22px">
+  <h2>Trend</h2>
+  <p class="meta" style="margin:6px 0 16px">Covered share per tool from the daily snapshots, oldest first.</p>
+  <div class="table-wrap">
+    <table id="trend">
+      <thead id="trend-head"></thead>
+      <tbody id="trend-rows"></tbody>
+    </table>
+  </div>
+</div>
+
+{# One link, and the whole vocabulary behind it: forty definitions is a
+   reference, not something anybody reads on the way past. #}
+<details class="section" id="how">
+  <summary>What the states mean, and how the join works</summary>
+  <ul id="rules" class="small"></ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/coverage.js') }}"></script>
+{% endblock %}

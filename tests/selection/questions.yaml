@@ -1,0 +1,271 @@
+# Tool-selection questions for scripts/selection_check.py.
+#
+# Each entry is a question an engineer would type and the tool the model should
+# reach for FIRST. The harness runs the question through the real agent (same
+# system prompt, same tool list, same client context), stops before any tool
+# is executed, and scores the first tool the model asked for.
+#
+#   question   what the engineer types. Do not name a real customer, device,
+#              user or ticket here: this file is committed. Questions that need
+#              a site can use the placeholder {site}, which the harness fills
+#              with --site (such questions are skipped when --site is absent).
+#   expect     the tool name, or a list of tool names when more than one first
+#              move is genuinely right. Keep lists short: every alternative
+#              accepted here is a confusion the check can no longer see.
+#   note       optional; why this question is here.
+#
+# Where these ten came from. There was no list of engineer questions in the
+# repo or the validation log, so these are the example questions already in
+# scripts/chat_cli.py and in the tool descriptions, chosen to sit on the
+# boundaries between tools that sound alike. That makes them EASY MODE: the
+# model sees nearly the same wording in the descriptions it is choosing from.
+# A good score here is necessary, not sufficient.
+#
+# TODO(Pratik): replace or extend these with real wording from engineers — the
+# "20 most common cross-console questions" the development plan calls for
+# (docs/inputiv-development-plan-v2.md). Paste them as typed, typos and all,
+# and add at least two per pair of tools that overlap. Aim for 30+, so one
+# miss is not ten points.
+
+- question: "what hasn't checked in for 2 weeks?"
+  expect: list_devices_not_checked_in
+  note: from chat_cli.py. Boundary with list_devices (offline flag) and list_open_alerts.
+
+- question: "what is alerting?"
+  expect: list_open_alerts
+  note: from chat_cli.py.
+
+- question: "how many servers does each customer have?"
+  expect: count_devices
+  note: >-
+    count before list. This question found a real gap on 2026-09-18:
+    count_devices had no class filter, so the model fell back to list_devices.
+    A miss here again means count_devices cannot express the question.
+
+- question: "what failed on patch night?"
+  expect: list_patch_installs
+  note: >-
+    The boundary that was wrong in production: list_patch_status is the waiting
+    list and holds no failures.
+
+- question: "which patches actually went on this week?"
+  expect: list_patch_installs
+  note: >-
+    Added 2026-09-18 with status="installed". The name no longer says
+    "failures", so this checks the model still finds history here and not in
+    list_patch_status or list_device_activities.
+
+- question: "what is still waiting to be approved, patch-wise?"
+  expect: list_patch_status
+  note: the other side of the same boundary.
+
+- question: "any critical patches outstanding?"
+  expect: list_patch_status
+  note: >-
+    Added 2026-09-18 with the severity filter. "Outstanding" is the waiting
+    list, not history; a list_patch_installs answer here is the confusion.
+
+- question: "is KB5060000 still missing anywhere?"
+  expect: list_patch_status
+  note: >-
+    "Missing" is the waiting list (kb filter). "Did KB5060000 install" would
+    be list_patch_installs: the two phrasings sit either side of the boundary.
+
+- question: "what still needs a reboot?"
+  expect: list_pending_reboot
+
+- question: "what came in this week?"
+  expect: list_recent_tickets
+  note: >-
+    Kept as its own tool (api-notes/autotask.md). A search_tickets or
+    list_open_tickets answer here is the confusion to watch for.
+
+- question: "have we seen error 0x80070005 before?"
+  expect: search_tickets
+  note: the seed of resolution search; must win outright.
+
+- question: "how many open tickets are in each queue?"
+  expect: count_tickets
+  note: grouped counts replaced a separate list_tickets_by_queue tool.
+
+- question: "what is in the escalation queue?"
+  expect: list_open_tickets
+  note: the list half of the same replacement; queue names resolve from the picklist.
+
+- question: "anything about to miss its SLA?"
+  expect: list_sla_breaches
+  note: >-
+    Added 2026-09-30 with the computed clocks. list_open_tickets by age and
+    count_tickets are the near misses: neither knows the franchisee's targets
+    or their business hours.
+
+# TODO(Pratik): add more below this line.
+
+- question: "what projects do we have on the go, and is anything running late?"
+  expect: list_projects
+  note: >-
+    Added 2026-09-21 with the tool, the thirtieth. Projects are not tickets: a
+    list_open_tickets or search_tickets answer here is the confusion to watch for.
+
+- question: "which machines can't go to Windows 11?"
+  expect: get_hardware
+  note: >-
+    Added 2026-09-21 with the windows11 filter. count_devices by os and
+    list_devices are the near misses: neither knows the hardware.
+
+# Bitdefender GravityZone, added 2026-09-22 with the connector (five tools, 35 in all).
+# Each sits on a boundary with a NinjaOne tool that sounds alike.
+
+- question: "how many endpoints does Bitdefender have for each customer?"
+  expect: count_endpoints
+  note: >-
+    "Bitdefender" and "endpoints" must pull this away from count_devices,
+    which is NinjaOne's inventory.
+
+- question: "which machines don't have a Bitdefender agent, or have antimalware switched off?"
+  expect: list_unprotected_endpoints
+  note: >-
+    The boundary with list_antivirus_status, which is NinjaOne's agent
+    reporting on antivirus products. Bitdefender's own view lives here.
+
+- question: "did Bitdefender catch anything this week?"
+  expect: list_recent_detections
+  note: >-
+    Detections are EDR incidents. list_open_alerts (NinjaOne conditions) is
+    the confusion to watch for.
+
+- question: "is TL-AUS-WS14 protected? what modules are on it and when did its signatures last update?"
+  expect: get_endpoint_protection
+  note: >-
+    One named machine's protection. get_device and list_antivirus_status are
+    NinjaOne's view of the same box.
+
+- question: "which Bitdefender agents are out of date?"
+  expect: list_outdated_agents
+  note: >-
+    Agent product updates, not Windows patches: list_patch_status and
+    list_patch_installs are the near misses.
+
+- question: "how many machines have the firewall module turned off?"
+  expect: count_endpoints
+  note: >-
+    A module count, by group_by="module". list_unprotected_endpoints only
+    knows the core modules, so a list here is the wrong first move.
+
+# ConnectSecure, added 2026-09-22 with the connector (five tools, 40 in all).
+# Each sits on a boundary with a NinjaOne or Bitdefender tool that sounds alike.
+
+- question: "how many critical vulnerabilities does each customer have?"
+  expect: count_vulnerabilities
+  note: >-
+    A count by site. list_patch_status (NinjaOne's patch backlog) and
+    count_endpoints (Bitdefender) are the near misses.
+
+- question: "is anything on the CISA known-exploited list in our environment?"
+  expect: list_critical_vulnerabilities
+  note: >-
+    Known exploited is a flag on vulnerability findings. list_recent_detections
+    (Bitdefender incidents) is the confusion to watch for.
+
+- question: "what should we patch first to close the most vulnerabilities?"
+  expect: list_top_remediations
+  note: >-
+    Fixes ranked by what they resolve, not the patch queue: list_patch_status
+    is what NinjaOne has approved, not what would close findings.
+
+- question: "why is TL-AUS-WS14 graded F in ConnectSecure? what vulnerabilities does it have?"
+  expect: get_asset_vulnerabilities
+  note: >-
+    One named machine's findings and risk grade. get_endpoint_protection
+    (Bitdefender) and get_device (NinjaOne) are the same box in other tools.
+
+- question: "which machines has ConnectSecure not scanned in the last month?"
+  expect: list_scan_coverage
+  note: >-
+    Scan coverage and agent status. list_devices_not_checked_in (NinjaOne) and
+    list_unprotected_endpoints (Bitdefender agents) sound alike.
+
+- question: "which software carries the most vulnerabilities across our customers?"
+  expect: count_vulnerabilities
+  note: >-
+    A product count, by group_by="product". list_software (NinjaOne, who has
+    what installed) is the near miss.
+
+# Microsoft 365 is scoped by site — each end customer has their own tenant — so
+# these questions name the customer with {site} and are skipped without --site.
+# Naming a customer the client does not have is a different test: the model is
+# right to say so from the site list, which is why these questions must not do
+# it by accident (validation log, 2026-10-14).
+
+- question: "who at {site} has no MFA set up in Microsoft 365?"
+  expect: list_users_without_mfa
+  note: >-
+    MFA registration across a tenant. list_unprotected_endpoints (Bitdefender
+    agents) and list_coverage_gaps (agents per device) are about machines, not
+    accounts.
+
+- question: "is sam.okafor@{site}.example still enabled, and when did he last sign in?"
+  expect: get_microsoft365_account
+  note: >-
+    One person's account state. get_device and search_tickets are the same
+    person's machine and tickets; neither answers whether the account is on.
+    The address is at the named customer, so the question is about a person
+    rather than about which customer is meant.
+
+- question: "how many spare Microsoft 365 licences does {site} have?"
+  expect: microsoft365_licence_summary
+  note: >-
+    Subscriptions with assigned and free seats. count_devices and
+    count_endpoints count machines, not seats.
+
+- question: "who is on the all-staff distribution list at {site}?"
+  expect: list_microsoft365_group_members
+  note: >-
+    The members of one group. list_contacts (Autotask) is the ticketing
+    contact list, which is a different list of people.
+
+- question: "what Teams and groups is sam.okafor@{site}.example in?"
+  expect: list_microsoft365_user_groups
+  note: >-
+    One person's memberships, the reverse of list_microsoft365_group_members.
+
+- question: "does riley.mensah@parkview-dental.example have an account at {site}?"
+  expect: get_microsoft365_account
+  note: >-
+    A person nobody recognises, at a domain that is not that customer's. The
+    customer is named, so the only open question is the person — and the model
+    holds no list of people, so the only honest move is to look. Answering
+    "that is not one of their users" without a tool call is an invented
+    answer, which is what prompt v15's "a name you do not recognise is a
+    reason to look" rule exists to stop. Scored on the tool call, not the
+    answer: the tool reports found=false, which is the right answer.
+
+- question: "which clients have failed backups?"
+  expect: list_backup_failures
+  note: >-
+    The names, across every end customer. count_backups would answer "how
+    many" and this asks which; list_machines_without_backup is the other
+    question — machines Cove has no device for at all, which is a coverage
+    gap and not a failure.
+
+- question: "is fab-srv-01 backed up?"
+  expect: get_device_backup
+  note: >-
+    One named machine. The hostname is the whole question, so a list or a
+    count is the wrong first move. get_device (NinjaOne) is the same machine's
+    RMM record, which is not what was asked.
+
+- question: "which servers have no backup?"
+  expect: list_machines_without_backup
+  note: >-
+    A coverage gap and not a failing backup: these are machines Cove holds no
+    device for. It is also the one of the four that applies each end
+    customer's own backup scope, so a customer who backs up servers only does
+    not have its laptops counted against it. list_backup_failures is about
+    machines Cove *does* hold.
+
+- question: "how many machines are we backing up?"
+  expect: count_backups
+  note: >-
+    A count before a list, as always — and the answer has to separate machines
+    from the Microsoft 365 tenants Cove also counts as devices.

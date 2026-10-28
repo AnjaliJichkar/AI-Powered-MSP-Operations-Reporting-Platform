@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": 4001,
+      "companyID": 77,
+      "referenceTitle": "TL-AUS-WS14",
+      "referenceNumber": "AST-0014",
+      "serialNumber": "5CD123ABC",
+      "rmmDeviceAuditHostname": "TL-AUS-WS14",
+      "isActive": true
+    }
+  ],
+  "pageDetails": {
+    "count": 1,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

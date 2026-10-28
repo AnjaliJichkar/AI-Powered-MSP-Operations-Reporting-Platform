@@ -1,0 +1,44 @@
+{
+ "status": true,
+ "total": 2,
+ "data": [
+  {
+   "company_tags": "",
+   "created_date": "2026-06-23T14:01:31.969729Z",
+   "email": "api-user@example.com",
+   "email_enabled": "true",
+   "excluded": "",
+   "first_name": "",
+   "id": "u-1001",
+   "included": "*",
+   "last_login": "2026-06-23 19:46:19",
+   "last_name": "",
+   "locked": false,
+   "phone": null,
+   "roles": [
+    "admin"
+   ],
+   "state": "USER_STATE_ACTIVE",
+   "user_name": ""
+  },
+  {
+   "company_tags": "",
+   "created_date": "2026-02-10T15:59:43.514209Z",
+   "email": "viewer@example.com",
+   "email_enabled": "true",
+   "excluded": "",
+   "first_name": "",
+   "id": "u-1002",
+   "included": "*",
+   "last_login": "2026-07-06 20:41:17",
+   "last_name": "",
+   "locked": false,
+   "phone": "",
+   "roles": [
+    "vulnerabilityviewer"
+   ],
+   "state": "USER_STATE_ACTIVE",
+   "user_name": ""
+  }
+ ]
+}

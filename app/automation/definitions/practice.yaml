@@ -1,0 +1,75 @@
+# The practice workflow: every control, proven on a run that touches nothing
+# real. Four practice actions over the engine's own table, on the demo tenant
+# only. A step's id is what `fail_at` names.
+name: practice
+title: Practice
+version: 1
+kind: run
+description: Four steps over a table of fake records, so the switch, the dry run, the approval, the audit, a failure and a resume, and an undo can all be seen without touching anything real. Demo tenant only.
+allowed_on: demo
+
+inputs:
+  label:
+    type: string
+    description: A word for the record this run creates; the record is named <label>-<first eight characters of the run id>.
+    default: practice
+    min_length: 1
+    max_length: 60
+    source: ticket.number
+  fail_at:
+    type: string
+    description: "A step key whose action should fail: close_out, usually. Null, and nothing fails."
+  fail_times:
+    type: integer
+    description: How many attempts of that step should fail before it succeeds. One, and a resume gets through; more, and it fails again.
+    default: 1
+    min: 1
+    max: 10
+
+triggers:
+  - key: by_hand
+    kind: manual
+    title: a person on the Automations page
+  - key: offboarding_ticket
+    kind: ticket
+    title: an offboarding ticket
+    rule:
+      issue_type: User Access and Management
+      sub_issue_type: Offboarding
+  - key: daily
+    kind: schedule
+    title: a daily practice run
+    every: 1 day
+
+steps:
+  - id: create_record
+    action: practice.create_record
+    inputs:
+      label: "{inputs.label}"
+      fail_at: "{inputs.fail_at}"
+      fail_times: "{inputs.fail_times}"
+  - id: set_status
+    action: practice.set_status
+    depends_on: create_record
+    inputs:
+      label: "{inputs.label}"
+      fail_at: "{inputs.fail_at}"
+      fail_times: "{inputs.fail_times}"
+  - id: close_out
+    action: practice.close_out
+    depends_on: set_status
+    inputs:
+      label: "{inputs.label}"
+      fail_at: "{inputs.fail_at}"
+      fail_times: "{inputs.fail_times}"
+  - id: write_note
+    action: practice.write_note
+    depends_on: close_out
+    inputs:
+      label: "{inputs.label}"
+      fail_at: "{inputs.fail_at}"
+      fail_times: "{inputs.fail_times}"
+
+approval:
+  window: 24 hours
+undo_window: 24 hours

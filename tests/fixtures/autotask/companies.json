@@ -1,0 +1,45 @@
+{
+  "items": [
+    {
+      "id": 0,
+      "companyName": "TeamLogic IT of Austin",
+      "companyNumber": "0",
+      "companyType": 1,
+      "isActive": true
+    },
+    {
+      "id": 42,
+      "companyName": "Acme Dental",
+      "companyNumber": "ACME01",
+      "companyType": 1,
+      "isActive": true
+    },
+    {
+      "id": 43,
+      "companyName": "TeamLogic IT of Dallas",
+      "companyNumber": "TL-DAL",
+      "companyType": 1,
+      "isActive": true
+    },
+    {
+      "id": 44,
+      "companyName": "Former Customer Ltd",
+      "companyNumber": "FORMER",
+      "companyType": 1,
+      "isActive": false
+    },
+    {
+      "id": 45,
+      "companyName": "Hopeful Prospect",
+      "companyNumber": "HOPE",
+      "companyType": 3,
+      "isActive": true
+    }
+  ],
+  "pageDetails": {
+    "count": 5,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

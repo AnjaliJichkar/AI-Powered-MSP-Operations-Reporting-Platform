@@ -1,0 +1,45 @@
+# Repeat alert on the same device: when any alert ticket arrives, look for the
+# same alert on the same machine in the last seven days. The device's tickets
+# are the core fact; no note unless the machine is matched confidently and
+# there is at least one other ticket of the kind.
+name: repeat_alert
+title: Repeat alert on the same device
+version: 1
+kind: note
+description: When any alert ticket arrives, look for the same alert on the same machine in the last seven days and say which tickets those were and whether one is still open, so a duplicate is seen before it is worked twice.
+note_mode: preview
+
+triggers:
+  - key: any_alert
+    kind: alert
+    title: any alert ticket
+    rule:
+      source: Monitoring Alert
+
+steps:
+  - id: device
+    action: devices.resolve
+    inputs:
+      ticket: "{ticket.self}"
+  - id: tickets
+    action: autotask.find_related_tickets
+    title: "Autotask: the device's tickets, last 7 days"
+    inputs:
+      device: "{steps.device.device}"
+      days: 7
+    when:
+      value: "{steps.device.confident}"
+      equals: true
+  - id: compose
+    action: notes.repeat_alert
+    inputs:
+      ticket: "{ticket.self}"
+      device: "{steps.device.device}"
+      tickets: "{steps.tickets.read}"
+  - id: post
+    action: autotask.add_note
+    inputs:
+      ticket_id: "{ticket.id}"
+      note: "{steps.compose.note}"
+
+writes: "Same alert on <device> <n> times in 7 days: <ticket numbers with status>, and this ticket. Possible duplicate of <open ticket> (open)."

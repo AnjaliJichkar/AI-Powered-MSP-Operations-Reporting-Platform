@@ -1,0 +1,14 @@
+{
+  "id": "jsonrpc",
+  "jsonrpc": "2.0",
+  "visa": "visa-second",
+  "result": {
+    "result": [
+      {"Id": 300100, "Name": "Fabrikam Logistics", "ParentId": 300000, "Level": "EndCustomer", "State": "Registered"},
+      {"Id": 300200, "Name": "Contoso Dental", "ParentId": 300000, "Level": "EndCustomer", "State": "InTrial"},
+      {"Id": 300300, "Name": "Northwind Resellers", "ParentId": 300000, "Level": "SubDistributor", "State": "Registered"},
+      {"Id": 300400, "Name": "Adventure Works", "ParentId": 300300, "Level": "EndCustomer", "State": "Registered"},
+      {"Id": 300500, "Name": "Level Unknown Ltd", "ParentId": 300000, "State": "Registered"}
+    ]
+  }
+}

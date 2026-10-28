@@ -1,0 +1,25 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0001",
+    "offset": 0,
+    "count": 3,
+    "expires": 1789656609.354843
+  },
+  "results": [
+    {
+      "userName": "ACME\\sarah.chen",
+      "logonTime": 1788770000.0,
+      "deviceId": 1002
+    },
+    {
+      "userName": "ACME\\svc-backup",
+      "logonTime": 1788000000.0,
+      "deviceId": 1001
+    },
+    {
+      "userName": "ACME\\d.okafor",
+      "logonTime": 1788775000.0,
+      "deviceId": 1005
+    }
+  ]
+}

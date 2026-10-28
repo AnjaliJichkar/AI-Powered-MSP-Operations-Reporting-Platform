@@ -1,0 +1,34 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": {
+    "type": 0,
+    "name": "Example IT Partners",
+    "id": "64a0000000000000000000aa",
+    "address": "1 Example Way, Austin",
+    "phone": "+1 555 0100",
+    "industry": 30,
+    "canBeManagedByAbove": true,
+    "enforce2FA": true,
+    "skip2FAPeriod": 0,
+    "isSuspended": false,
+    "createdAt": "2021-01-25T12:30:36",
+    "country": "US",
+    "state": "US-TX",
+    "duplicateClosedIncidentsOnUpdate": false,
+    "contactPerson": {
+      "fullName": "Sample Contact",
+      "email": "contact@example.invalid",
+      "phoneNumber": "+1 555 0101",
+      "companyRole": "Owner"
+    },
+    "riskScore": {
+      "value": "0%",
+      "impact": "Low",
+      "misconfigurations": "0%",
+      "appVulnerabilities": "0%",
+      "humanRisks": "0%",
+      "industryModifier": "0%"
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{% extends "_base.html" %}
+{% block title %}Past tickets · Autopilot · Desk{% endblock %}
+
+{% block content %}
+{# One job, one ticket at a time: the two questions the quick check asks an
+   engineer on a live ticket, asked here about a ticket nobody is working.
+
+   Deliberately bare. No run picker — somebody working through a sample is not
+   choosing between runs — no queue of what is left, no double-check banner (a
+   person told their ticket is being double-checked answers it differently),
+   and no wall of explanation: one "How this works" for the reader who wants it.
+
+   Reachable from the results page, not from the nav. It is a job you go to when
+   a gate row says it is waiting on one. #}
+<div class="page-head">
+  <div>
+    <h1 id="task-title">Past tickets</h1>
+    {# How far the set has got, and nothing else: the keyboard letters are on
+       the buttons that use them, so a line repeating them is a line to read
+       instead of the ticket. #}
+    <p class="meta" id="summary"></p>
+  </div>
+  <div class="row gap8">
+    <a class="action" href="/autopilot/results">← Results</a>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+
+{# The sample and the one thing being judged sit on a card, as every other
+   page's working area does. #}
+<div class="section card">
+<div class="tabs" role="tablist" aria-label="Which sample">
+  <button type="button" id="tab-origin" role="tab" aria-selected="true"
+          aria-controls="task-card" data-kind="origin">Tickets</button>
+  <button type="button" id="tab-groups" role="tab" aria-selected="false"
+          aria-controls="task-card" data-kind="groups">Groups</button>
+</div>
+
+<div id="task-card" role="tabpanel" aria-labelledby="tab-origin">
+  <div id="empty" hidden>
+    <p class="muted" id="empty-note"></p>
+    <button type="button" class="btn primary" id="build" hidden>Draw the sample</button>
+  </div>
+
+  <div id="task" hidden>
+    <div id="subject"></div>
+    <div id="questions"></div>
+
+    {# Skip and Undo are not answers and do not look like them. The answers
+       above are what this page is for and keep the only weight on it. #}
+    <div class="actions" id="aside-actions">
+      <button type="button" class="action" id="skip">Skip <kbd>S</kbd></button>
+      <button type="button" class="action" id="undo">Undo <kbd>Z</kbd></button>
+    </div>
+  </div>
+
+  <div id="finished" hidden>
+    <p><strong>That is the whole sample.</strong> <span class="muted" id="finished-note"></span></p>
+    <p class="small"><a href="/autopilot/results">Back to the results</a></p>
+  </div>
+</div>
+</div>
+
+<details class="section" id="how">
+  <summary>How this works</summary>
+  <div>
+    <ul class="small">
+      <li><strong>The keyboard does all of it.</strong> A, H and U answer the first question, 1 to 9 pick a type and 0 is "not sure"; S skips and Z undoes.</li>
+      <li>You are judging blind: the ticket's scrubbed subject, the customer, when it arrived and the queue it landed in. The agent's answer is not on this page and is not in what the page was sent.</li>
+      <li><strong>Can't tell</strong> and <strong>Not sure</strong> are real answers, and the right ones when the subject does not say. A guess looks like ground truth afterwards and cannot be told from one.</li>
+      <li>Answers are appended, never replaced. Undo writes a withdrawal; answering again writes a new answer and the latest one counts.</li>
+      <li>These answers and the quick checks engineers give on live tickets are the same measurement, and they are what the gate's accuracy is read against. An engineer approving a suggestion they have already read is not.</li>
+      <li>Your name and the time go on the record with every answer.</li>
+    </ul>
+  </div>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/autopilot_labelling.js') }}"></script>
+{% endblock %}

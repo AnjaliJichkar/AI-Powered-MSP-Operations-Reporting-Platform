@@ -1,0 +1,58 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "createDate": "2026-08-01T00:00:00Z",
+      "creatorResourceID": 0,
+      "description": "",
+      "dueDate": "2026-07-31T00:00:00Z",
+      "estimatedHours": 0.0,
+      "externalID": "",
+      "isScheduled": false,
+      "lastActivityDateTime": "2026-08-01T00:00:00Z",
+      "parentPhaseID": null,
+      "phaseNumber": "1",
+      "projectID": 9001,
+      "startDate": "2026-07-01T00:00:00Z",
+      "title": "Discovery"
+    },
+    {
+      "id": 2,
+      "createDate": "2026-08-01T00:00:00Z",
+      "creatorResourceID": 0,
+      "description": "",
+      "dueDate": "2026-10-15T00:00:00Z",
+      "estimatedHours": 0.0,
+      "externalID": "",
+      "isScheduled": false,
+      "lastActivityDateTime": "2026-08-01T00:00:00Z",
+      "parentPhaseID": null,
+      "phaseNumber": "2",
+      "projectID": 9001,
+      "startDate": "2026-08-01T00:00:00Z",
+      "title": "Migration"
+    },
+    {
+      "id": 3,
+      "createDate": "2026-08-01T00:00:00Z",
+      "creatorResourceID": 0,
+      "description": "",
+      "dueDate": "2026-08-01T00:00:00Z",
+      "estimatedHours": 0.0,
+      "externalID": "",
+      "isScheduled": false,
+      "lastActivityDateTime": "2026-08-01T00:00:00Z",
+      "parentPhaseID": null,
+      "phaseNumber": "1",
+      "projectID": 5550001,
+      "startDate": "2026-08-01T00:00:00Z",
+      "title": "Someone else's phase"
+    }
+  ],
+  "pageDetails": {
+    "count": 3,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

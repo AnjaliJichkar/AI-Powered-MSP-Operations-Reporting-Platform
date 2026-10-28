@@ -1,0 +1,57 @@
+[
+  {
+    "uid": "11111111-1111-4111-8111-000000000011",
+    "deviceId": 1002,
+    "message": "Device has not checked in for 10 days",
+    "createTime": 1787918400.0,
+    "updateTime": 1787918400.0,
+    "sourceType": "CONDITION_AGENT_OFFLINE",
+    "sourceConfigUid": "22222222-2222-4222-8222-000000000001",
+    "sourceName": "Agent Offline",
+    "subject": "Agent offline",
+    "data": {
+      "message": {
+        "code": "agent_offline",
+        "params": {
+          "threshold": "10",
+          "unit": "days"
+        }
+      }
+    },
+    "priority": "HIGH",
+    "severity": "MAJOR",
+    "conditionName": "Agent Offline",
+    "conditionHealthStatus": "UNHEALTHY",
+    "useGlobalHealthStatus": false
+  },
+  {
+    "uid": "11111111-1111-4111-8111-000000000012",
+    "deviceId": 1003,
+    "message": "Volume C: is at 96% capacity",
+    "createTime": 1788768000.0,
+    "updateTime": 1788768000.0,
+    "sourceType": "CONDITION_DISK_FREE_SPACE",
+    "sourceConfigUid": "22222222-2222-4222-8222-000000000002",
+    "sourceName": "Disk Free Space",
+    "subject": "Disk almost full",
+    "psaTicketId": 90001,
+    "ticketTemplateId": 3,
+    "data": {
+      "message": {
+        "code": "disk_free_space",
+        "params": {
+          "volume": "C:",
+          "unit": "%",
+          "threshold": "95",
+          "start_date": "2026-09-05",
+          "end_date": "2026-09-06"
+        }
+      }
+    },
+    "priority": "MEDIUM",
+    "severity": "MINOR",
+    "conditionName": "Disk Free Space",
+    "conditionHealthStatus": "UNHEALTHY",
+    "useGlobalHealthStatus": false
+  }
+]

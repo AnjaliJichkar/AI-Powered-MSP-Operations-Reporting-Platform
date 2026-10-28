@@ -1,0 +1,303 @@
+# Render Blueprint for the Inputiv Engine. The runbook is docs/deploy.md; read it
+# once end to end before creating the Blueprint. No secret value lives here or
+# anywhere in the repository: every secret is `sync: false`, which makes Render
+# ask for it when the Blueprint is created and keep it in the service's
+# environment.
+#
+# Why Render's native Python runtime and not Docker: there is no Dockerfile to
+# maintain, every dependency ships a wheel (asyncpg, cryptography, argon2-cffi,
+# python-pptx), Python is pinned by `.python-version` (3.12) and PYTHON_VERSION
+# below, and nothing in the service needs a system package. One web service and
+# one database do not justify a second build system to keep patched. If a
+# system dependency ever appears (LibreOffice for deck previews, say), switch
+# `runtime: docker` and add a Dockerfile then.
+#
+# Region: `ohio` for both the service and the database, so the database is
+# reached over Render's private network with no public exposure and no
+# cross-region latency. The pilot franchisee is in Texas; Ohio is the nearest
+# Render region on the same side of the country as the vendors' US instances.
+
+services:
+  # --- the web service --------------------------------------------------------
+  - type: web
+    name: inputiv-engine
+    runtime: python
+    region: ohio
+    plan: standard
+    # `pip install -e .` runs the source tree in place, so templates, static
+    # files and alembic/ are where the code expects them.
+    buildCommand: pip install --upgrade pip && pip install -e .
+    # Runs after the build and before the new instance takes traffic, with the
+    # service's environment: the schema is at head before the code that needs
+    # it starts. A failing migration fails the deploy and the old instance
+    # keeps serving.
+    preDeployCommand: alembic upgrade head
+    # One worker on purpose: the sign-in rate limiter is in memory and per
+    # process (CLAUDE.md, "Two throttles"). Render terminates TLS and proxies,
+    # so the client address arrives in X-Forwarded-For; --proxy-headers makes
+    # uvicorn read it, and the allow-list is open because Render's proxy
+    # addresses are not fixed. Bind to $PORT (Render sets it; default 10000).
+    startCommand: >-
+      uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
+      --proxy-headers --forwarded-allow-ips='*' --timeout-keep-alive 75
+    # Liveness only: the process is up. /health/ready also asks the database
+    # and is for people and monitors, not for Render, which would otherwise
+    # restart the service on a database blip.
+    healthCheckPath: /health
+    # Deploy on purpose during the summit week: a push to main does not deploy.
+    # Flip to `commit` after the summit if automatic deploys are wanted.
+    autoDeployTrigger: "off"
+    # Rendered business-review decks are written under REPORTS_DIR. Render's
+    # filesystem is otherwise ephemeral: without a disk every deck vanishes on
+    # the next deploy. A disk means a deploy restarts the service with a few
+    # seconds' downtime instead of a zero-downtime swap, which is acceptable
+    # for an internal tool; decks can always be re-rendered from the stored
+    # review if the disk is ever lost.
+    disk:
+      name: inputiv-reports
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - fromGroup: inputiv-engine-config
+      # The database, over Render's private network.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: inputiv-postgres
+          property: connectionString
+      # --- secrets: Render asks for each of these when the Blueprint is created.
+      # What each is for, and what breaks without it, is in docs/deploy.md.
+      - key: CREDENTIAL_ENCRYPTION_KEYS
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false
+      # Optional: Slack. Leave empty until the Slack app exists.
+      - key: SLACK_BOT_TOKEN
+        sync: false
+      - key: SLACK_SIGNING_SECRET
+        sync: false
+
+  # **Parked by decision, 20 October 2026.** The block below is complete and
+  # has been run by hand; it is commented out so that nothing is scheduled on
+  # Render until somebody chooses to schedule it. Enabling it is uncommenting
+  # this block, `git commit`, and a Blueprint sync — nothing else changes, and
+  # docs/deploy.md §5 says what Render creates and which secrets it asks for.
+  #
+  # Until then **nothing recomputes a client's day**: a coverage board is
+  # written when somebody presses Refresh or when the collector is run by hand,
+  # and at no other time. One sat nineteen days old reporting no endpoint
+  # protection anywhere while the Devices page had the same machines covered.
+  # The board says how old it is for that reason.
+  #
+  # --- the daily collector -----------------------------------------------------
+  # The only thing that recomputes a client's day. Before this ran on a
+  # schedule, a coverage board was written when somebody pressed Refresh and at
+  # no other time: one sat nineteen days old reporting 0% endpoint protection
+  # at every site while the Devices page, reading links a later resolution had
+  # written, had the same machines covered.
+  #
+  # It runs the same code as `scripts/collect_events.py` does from a laptop,
+  # and in one order that matters: the day's vendor events, then the outcome
+  # ledger, then the device resolution, then the coverage snapshot, then the
+  # agreement between the join and the links — so the snapshot, the links and
+  # the comparison are all as of the same inventories. Recomputing one of them
+  # on its own is how the two pages came to disagree.
+  #
+  # `--all-clients` is every active client, oldest first, one after another: a
+  # client whose vendor is down for an hour is reported and the run carries on,
+  # because that franchisee's bad morning must not cost every other franchisee
+  # their snapshot, their ledger and their day in the trend. The exit code says
+  # whether any failed, so Render's own alerting is the thing that tells us.
+  #
+  # 09:00 UTC is 04:00 Austin in summer and 03:00 in winter: after the vendors'
+  # overnight scans, before anyone at a franchisee is working.
+  #
+  # It needs the database and the credential key, not the model, and shares the
+  # config group with the web service.
+  # - type: cron
+  #   name: inputiv-daily-collector
+  #   runtime: python
+  #   region: ohio
+  #   plan: starter
+  #   schedule: "0 9 * * *"
+  #   buildCommand: pip install --upgrade pip && pip install -e .
+  #   startCommand: python scripts/collect_events.py --all-clients --days 1 --user render-cron
+  #   envVars:
+  #     - fromGroup: inputiv-engine-config
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: inputiv-postgres
+  #         property: connectionString
+  #     - key: CREDENTIAL_ENCRYPTION_KEYS
+  #       sync: false
+  #     - key: PUBLIC_BASE_URL
+  #       sync: false
+
+  # --- the forward shadow (Level 0, Part B) ------------------------------------
+  # Complete and deliberately commented out, like the collector above. It runs
+  # one polling pass of `scripts/autopilot.py shadow forward --once`: new
+  # Autotask tickets since the last pass, classified and enriched, written to
+  # our own tables and **to no vendor** (CLAUDE.md, "Autopilot"). `--once` is
+  # the only mode there is; nothing polls on its own, so this schedule is the
+  # whole of when it runs.
+  #
+  # `AUTOPILOT_SHADOW_LIVE=true` is set **on this service alone**, which is the
+  # point of the split: the cron may read Autotask while the web service's own
+  # switch stays false, so suggestions accumulate and no engineer is shown one
+  # until that second decision is made (docs/deploy.md, 5a.6).
+  #
+  # Unlike the collector it needs ANTHROPIC_API_KEY: a pass calls the model
+  # once per new ticket. Every quarter hour, which is four passes inside the
+  # hourly request budget we count ourselves
+  # (AUTOPILOT_POLL_REQUESTS_PER_HOUR, 60); a pass that finds nothing costs one
+  # Autotask read.
+  #
+  # - type: cron
+  #   name: inputiv-autopilot-forward
+  #   runtime: python
+  #   region: ohio
+  #   plan: starter
+  #   schedule: "*/15 * * * *"
+  #   buildCommand: pip install --upgrade pip && pip install -e .
+  #   startCommand: python scripts/autopilot.py shadow forward --client teamlogic-it-austin --once --user render-cron
+  #   envVars:
+  #     - fromGroup: inputiv-engine-config
+  #     - key: AUTOPILOT_SHADOW_LIVE
+  #       value: "true"
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: inputiv-postgres
+  #         property: connectionString
+  #     - key: CREDENTIAL_ENCRYPTION_KEYS
+  #       sync: false
+  #     - key: ANTHROPIC_API_KEY
+  #       sync: false
+  #     - key: PUBLIC_BASE_URL
+  #       sync: false
+
+  # --- the automation triggers' poll ---------------------------------------
+  # Complete and deliberately commented out, like the two above. It runs one
+  # pass of `scripts/automation.py poll --once`: new Autotask tickets since
+  # the last poll, read through the same reader and hourly request budget
+  # as the forward shadow, evaluated against the workflows' ticket and alert
+  # rules, and a run **drafted** for a match — never dry-run, submitted or
+  # approved; those are still two people on the Automations page. No model
+  # is called, and a test fails the suite if this command could reach one
+  # (CLAUDE.md, "Automation"; docs/deploy.md, 5b).
+  #
+  # `AUTOMATION_TRIGGERS_LIVE=true` is set **on this service alone**, as the
+  # shadow's switch is on its cron: separate switches, one owner each. Even
+  # on, a rule drafts only where the workflow's switch and the trigger's own
+  # switch are both on for that client. Every quarter hour, like the shadow;
+  # a pass costs two Autotask reads (the listing and the contacts) plus three
+  # picklists the connector caches.
+  #
+  # - type: cron
+  #   name: inputiv-automation-poll
+  #   runtime: python
+  #   region: ohio
+  #   plan: starter
+  #   schedule: "*/15 * * * *"
+  #   buildCommand: pip install --upgrade pip && pip install -e .
+  #   startCommand: python scripts/automation.py poll --client teamlogic-it-austin --once
+  #   envVars:
+  #     - fromGroup: inputiv-engine-config
+  #     - key: AUTOMATION_TRIGGERS_LIVE
+  #       value: "true"
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: inputiv-postgres
+  #         property: connectionString
+  #     - key: CREDENTIAL_ENCRYPTION_KEYS
+  #       sync: false
+  #     - key: PUBLIC_BASE_URL
+  #       sync: false
+
+# --- the database --------------------------------------------------------------
+databases:
+  - name: inputiv-postgres
+    region: ohio
+    plan: basic-1gb
+    postgresMajorVersion: "16"
+    databaseName: inputiv
+    user: inputiv
+    # No public access. The web service reaches it over the private network.
+    # For the one-off migration from a laptop (docs/deploy.md, step 6) add the
+    # laptop's address here or in the dashboard, and remove it afterwards.
+    ipAllowList: []
+
+# --- configuration every service shares --------------------------------------
+# Nothing in this group is a secret. Values here are the ones settings.py
+# refuses to start without outside ENVIRONMENT=local (docs/deploy.md, step 3).
+envVarGroups:
+  - name: inputiv-engine-config
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: ENVIRONMENT
+        value: prod
+      - key: DEBUG
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+      - key: DATABASE_ECHO
+        value: "false"
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+      - key: TOTP_REQUIRED_FOR_INPUTIV
+        value: "true"
+      - key: CREDENTIAL_ENCRYPTION_ACTIVE_KEY_ID
+        value: v1
+      - key: REPORTS_DIR
+        value: /var/data/reports
+      # GravityZone's inventory pages can take a minute or more; the shared
+      # CONNECTOR_TIMEOUT_SECONDS (30) stays for the other vendors.
+      - key: BITDEFENDER_TIMEOUT_SECONDS
+        value: "120"
+      # The last-seen read: kept on the device links for this many hours, and
+      # at most this many detail calls in flight (docs/api-notes/bitdefender.md).
+      - key: BITDEFENDER_LAST_SEEN_REFRESH_HOURS
+        value: "12"
+      - key: BITDEFENDER_DETAIL_CONCURRENCY
+        value: "4"
+      # Left at the code's default on purpose, as on the laptop: the identity
+      # layer is written daily and read only when this is true.
+      - key: DEVICE_IDENTITY_ENABLED
+        value: "false"
+      # --- Autopilot (docs/deploy.md, 5a) ---------------------------------
+      # Eighteen settings ship with Level 0 and every one has a usable
+      # default; these four are set because the default is either the switch
+      # itself or wrong for this deployment in particular.
+      #
+      # The switch. False means the forward shadow does not poll Autotask, the
+      # backfill refuses, and a live client's ticket page says so by name. Set
+      # explicitly so "nobody set it" and "somebody decided" do not look the
+      # same. The replay reads stored rows and is unaffected.
+      - key: AUTOPILOT_SHADOW_LIVE
+        value: "false"
+      # Unset, this falls back to ANTHROPIC_MODEL, which this deployment
+      # deliberately leaves at the code default (claude-opus-5) — so every
+      # classification would run on the most expensive model and none of the
+      # measurements in the validation log would describe production.
+      - key: AUTOPILOT_MODEL
+        value: claude-sonnet-5
+      # The default cap is 5,000,000 and a full replay of this tenant measured
+      # 5,220,378 tokens (validation log, 2026-10-02), so a full replay would
+      # stop early at `token_cap`. The sample run is about 1.2M either way.
+      - key: AUTOPILOT_MAX_TOKENS_PER_RUN
+        value: "8000000"
+      # True sends a replay through the Message Batches API: half the price,
+      # answers within hours instead of minutes. A surprise worth choosing.
+      - key: AUTOPILOT_BATCH_REPLAY
+        value: "false"
+      # --- Automation (docs/deploy.md, 5b) ---------------------------------
+      # The switch for the automation triggers' poll. False means
+      # `scripts/automation.py poll` refuses to read a vendor; the cron that
+      # runs it carries true on that service alone. Separate from the shadow's
+      # switch on purpose: each feature has one owner. Nothing writes to a
+      # client's tool whatever this says.
+      - key: AUTOMATION_TRIGGERS_LIVE
+        value: "false"

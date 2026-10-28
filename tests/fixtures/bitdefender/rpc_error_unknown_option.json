@@ -1,0 +1,11 @@
+{
+  "id": "abc123",
+  "jsonrpc": "2.0",
+  "error": {
+    "code": -32602,
+    "message": "Invalid params",
+    "data": {
+      "details": "Unknown option 'computer' in filters parameters."
+    }
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "fields": [
+    {
+      "name": "companyID",
+      "dataType": "integer",
+      "length": 0,
+      "isRequired": true,
+      "isReadOnly": true,
+      "isQueryable": true,
+      "isReference": true,
+      "referenceEntityType": "Company",
+      "isPickList": false,
+      "picklistValues": null,
+      "picklistParentValueField": "",
+      "isSupportedWebhookField": false
+    },
+    {
+      "name": "projectName",
+      "dataType": "string",
+      "length": 100,
+      "isRequired": true,
+      "isReadOnly": false,
+      "isQueryable": true,
+      "isReference": false,
+      "referenceEntityType": "",
+      "isPickList": false,
+      "picklistValues": null,
+      "picklistParentValueField": "",
+      "isSupportedWebhookField": false
+    },
+    {
+      "name": "projectType",
+      "dataType": "integer",
+      "length": 0,
+      "isRequired": true,
+      "isReadOnly": false,
+      "isQueryable": true,
+      "isReference": false,
+      "referenceEntityType": "",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "2",
+          "label": "Proposal",
+          "isDefaultValue": false,
+          "sortOrder": 2,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        },
+        {
+          "value": "3",
+          "label": "Template",
+          "isDefaultValue": false,
+          "sortOrder": 3,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        },
+        {
+          "value": "4",
+          "label": "Internal",
+          "isDefaultValue": false,
+          "sortOrder": 4,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        },
+        {
+          "value": "5",
+          "label": "Client",
+          "isDefaultValue": false,
+          "sortOrder": 5,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        },
+        {
+          "value": "8",
+          "label": "Baseline",
+          "isDefaultValue": false,
+          "sortOrder": 8,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        }
+      ],
+      "picklistParentValueField": "",
+      "isSupportedWebhookField": false
+    },
+    {
+      "name": "status",
+      "dataType": "integer",
+      "length": 0,
+      "isRequired": true,
+      "isReadOnly": false,
+      "isQueryable": true,
+      "isReference": false,
+      "referenceEntityType": "",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "0",
+          "label": "Inactive",
+          "isDefaultValue": false,
+          "sortOrder": 1,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        },
+        {
+          "value": "1",
+          "label": "New",
+          "isDefaultValue": false,
+          "sortOrder": 2,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        },
+        {
+          "value": "2",
+          "label": "Help Desk",
+          "isDefaultValue": false,
+          "sortOrder": 3,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "3",
+          "label": "In Progress",
+          "isDefaultValue": false,
+          "sortOrder": 4,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "8",
+          "label": "Change Order Required",
+          "isDefaultValue": false,
+          "sortOrder": 5,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "9",
+          "label": "On Hold",
+          "isDefaultValue": false,
+          "sortOrder": 6,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "10",
+          "label": "Scheduled",
+          "isDefaultValue": false,
+          "sortOrder": 7,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "4",
+          "label": "Followup",
+          "isDefaultValue": false,
+          "sortOrder": 8,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "6",
+          "label": "Waiting Parts",
+          "isDefaultValue": false,
+          "sortOrder": 9,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "7",
+          "label": "Waiting Client",
+          "isDefaultValue": false,
+          "sortOrder": 10,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": false
+        },
+        {
+          "value": "5",
+          "label": "Complete",
+          "isDefaultValue": false,
+          "sortOrder": 11,
+          "parentValue": "",
+          "isActive": true,
+          "isSystem": true
+        }
+      ],
+      "picklistParentValueField": "",
+      "isSupportedWebhookField": false
+    }
+  ]
+}

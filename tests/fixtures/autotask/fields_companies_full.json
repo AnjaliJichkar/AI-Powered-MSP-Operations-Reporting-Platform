@@ -1,0 +1,60 @@
+{
+  "fields": [
+    {
+      "name": "companyType",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "1",
+          "label": "Customer",
+          "isActive": true
+        },
+        {
+          "value": "3",
+          "label": "Prospect",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "classification",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "4",
+          "label": "Managed Services",
+          "isActive": true
+        },
+        {
+          "value": "5",
+          "label": "Break/Fix",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "marketSegmentID",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "11",
+          "label": "Legal Services",
+          "isActive": true
+        },
+        {
+          "value": "12",
+          "label": "Healthcare",
+          "isActive": true
+        },
+        {
+          "value": "13",
+          "label": "Services",
+          "isActive": true
+        }
+      ]
+    }
+  ]
+}

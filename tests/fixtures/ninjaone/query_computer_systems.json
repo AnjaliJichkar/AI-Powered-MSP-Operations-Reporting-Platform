@@ -1,0 +1,70 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0002",
+    "offset": 0,
+    "count": 4,
+    "expires": 1789656609.35
+  },
+  "results": [
+    {
+      "name": "TL-AUS-DC01",
+      "manufacturer": "Dell Inc.",
+      "model": "PowerEdge T350",
+      "biosSerialNumber": "SRV1234",
+      "serialNumber": "SRV1234",
+      "domain": "acme.local",
+      "domainRole": "Member Workstation",
+      "numberOfProcessors": 1,
+      "totalPhysicalMemory": 68719476736,
+      "virtualMachine": false,
+      "chassisType": "Tower",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "TL-AUS-WS14",
+      "manufacturer": "Dell Inc.",
+      "model": "OptiPlex 7010",
+      "biosSerialNumber": "ABC1234",
+      "serialNumber": "ABC1234",
+      "domain": "acme.local",
+      "domainRole": "Member Workstation",
+      "numberOfProcessors": 1,
+      "totalPhysicalMemory": 17179869184,
+      "virtualMachine": false,
+      "chassisType": "Desktop",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "TL-AUS-WS22",
+      "manufacturer": "Dell Inc.",
+      "model": "OptiPlex 7010",
+      "biosSerialNumber": "ABC5678",
+      "serialNumber": "ABC5678",
+      "domain": "acme.local",
+      "domainRole": "Member Workstation",
+      "numberOfProcessors": 1,
+      "totalPhysicalMemory": 17179869184,
+      "virtualMachine": false,
+      "chassisType": "Desktop",
+      "deviceId": 1003,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "TL-AUS-WS07",
+      "manufacturer": "VMware, Inc.",
+      "model": "VMware Virtual Platform",
+      "biosSerialNumber": "VMware-56 4d",
+      "serialNumber": "VMware-56 4d",
+      "domain": "acme.local",
+      "domainRole": "Member Workstation",
+      "numberOfProcessors": 1,
+      "totalPhysicalMemory": 8589934592,
+      "virtualMachine": true,
+      "chassisType": "Other",
+      "deviceId": 1005,
+      "timestamp": 1788780600.0
+    }
+  ]
+}

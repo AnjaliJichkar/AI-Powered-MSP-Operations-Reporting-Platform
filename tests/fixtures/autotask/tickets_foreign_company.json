@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "id": 9001,
+      "ticketNumber": "T20260902.0011",
+      "title": "Outlook disconnects every morning",
+      "description": "Reported by the site contact. Outlook disconnects every morning.",
+      "status": 1,
+      "priority": 2,
+      "companyID": 77,
+      "configurationItemID": 4001,
+      "contactID": 6001,
+      "assignedResourceID": 501,
+      "queueID": 8,
+      "createDate": "2026-09-02T12:00:00Z",
+      "lastActivityDate": "2026-09-15T12:00:00Z",
+      "dueDateTime": "2026-09-05T12:00:00Z",
+      "completedDate": null,
+      "resolution": null
+    },
+    {
+      "id": 9999,
+      "ticketNumber": "T20260901.0099",
+      "title": "Other MSP client ticket",
+      "description": "Reported by the site contact. Other MSP client ticket.",
+      "status": 1,
+      "priority": 2,
+      "companyID": 999,
+      "configurationItemID": null,
+      "contactID": null,
+      "assignedResourceID": 501,
+      "queueID": 8,
+      "createDate": "2026-09-06T12:00:00Z",
+      "lastActivityDate": "2026-09-16T12:00:00Z",
+      "dueDateTime": "2026-09-09T12:00:00Z",
+      "completedDate": null,
+      "resolution": null
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

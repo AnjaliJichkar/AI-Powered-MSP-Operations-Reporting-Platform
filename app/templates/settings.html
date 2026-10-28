@@ -1,0 +1,134 @@
+{% extends "_base.html" %}
+{% block title %}Settings · Desk{% endblock %}
+
+{% block main_class %} settings{% endblock %}
+
+{% block content %}
+{# Three things somebody comes here to do — change a password, turn a second
+   factor on or off, and invite or suspend a person — stacked in that order
+   with a section's worth of air between them. No tabs: three sections are not
+   enough to hide from each other. #}
+<div class="page-top">
+  <div class="page-titles">
+    <h1 class="page-title">Settings</h1>
+    <p class="subtitle">
+      <span>{{ user.email }}</span><span>{{ role_label }}</span><span>{{ organisation.name }}</span>
+    </p>
+  </div>
+</div>
+
+<div class="notice" id="message" hidden></div>
+
+<div class="section">
+  <h2 class="section-title">Password</h2>
+  <p class="small muted">Changing it signs you out everywhere, this browser included.</p>
+  <form class="stack" id="password-form">
+    <label class="field">
+      <span>Current password</span>
+      <input type="password" id="current-password" autocomplete="current-password" required>
+    </label>
+    <label class="field">
+      <span>New password</span>
+      <input type="password" id="new-password" autocomplete="new-password" required>
+      <span class="help">At least 12 characters. Length is the only rule.</span>
+    </label>
+    <div><button type="submit" class="btn primary">Change password</button></div>
+  </form>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Two-factor authentication<span class="aside" id="totp-state"></span></h2>
+
+  {# Three states, one at a time: off, enrolling, on. The secret is shown
+     exactly once, here, because only its encrypted form is kept. #}
+  <div id="totp-off" hidden class="stack">
+    <p class="muted small">A code from an authenticator app, asked for after your password.
+      It is not required until you have proved a code, so starting this and stopping
+      changes nothing.</p>
+    <button type="button" class="btn primary" id="totp-start">Set up an authenticator</button>
+  </div>
+
+  <div id="totp-enrolling" hidden class="stack">
+    <p class="small">Add this secret to your authenticator app, then type the code it
+      shows. <strong>It is shown once.</strong></p>
+    <div class="scroller">
+      <div class="mono secret" id="totp-secret"></div>
+    </div>
+    <div class="field-row">
+      <label class="field">
+        <span>Code</span>
+        <input type="text" id="totp-code" inputmode="numeric" maxlength="16" placeholder="123456">
+      </label>
+      <button type="button" class="btn primary" id="totp-confirm">Confirm</button>
+    </div>
+  </div>
+
+  <div id="totp-on" hidden class="stack">
+    <p class="small">A code is required when you sign in.</p>
+    <form class="field-row" id="totp-disable-form">
+      <label class="field">
+        <span>Your password</span>
+        <input type="password" id="totp-password" autocomplete="current-password">
+      </label>
+      <button type="submit" class="btn destructive">Turn off</button>
+    </form>
+  </div>
+</div>
+
+{% if may_administer %}
+<div class="section">
+  <h2 class="section-title">People<span class="aside" id="people-scope"></span></h2>
+
+  <form class="field-row" id="invite-form">
+    <label class="field">
+      <span>Email</span>
+      <input type="email" id="invite-email" autocapitalize="off" spellcheck="false" required>
+    </label>
+    <label class="field">
+      <span>Role</span>
+      <select id="invite-role"></select>
+    </label>
+    <button type="submit" class="btn primary">Send an invite</button>
+  </form>
+
+  {# The token appears once and is not recoverable: only its hash is stored,
+     so a lost one is reissued rather than looked up. #}
+  <div class="notice good" id="invite-token" hidden></div>
+
+  <div class="scroller apart">
+    <table>
+      <thead>
+        <tr><th>Email</th><th>Role</th><th>Organisation</th><th class="nowrap">Status</th><th class="nowrap">Last sign-in</th><th></th></tr>
+      </thead>
+      <tbody id="people"><tr><td colspan="6" class="muted">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <p class="section-label apart">Open invites</p>
+  <div class="scroller">
+    <table>
+      <thead><tr><th>Email</th><th>Role</th><th>Organisation</th><th class="nowrap">Expires</th><th class="nowrap">State</th></tr></thead>
+      <tbody id="invites"><tr><td colspan="5" class="muted">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{# One line, where somebody can read it. The marks are on the Coverage board,
+   the Devices columns and the header, and a statement about somebody else's
+   trademark belongs in the product rather than only in a repository file.
+   `app/static/logos/CREDITS.md` has each one's source. #}
+<div class="section">
+  <h2 class="section-title">About</h2>
+  <p class="small muted">
+    Product names and logos are trademarks of their respective owners, shown
+    only to identify an integration. Desk is not affiliated with or endorsed
+    by any of them.
+  </p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>window.DESK.mayAdminister = {{ may_administer | default(false) | tojson }};</script>
+<script src="{{ asset('js/settings.js') }}"></script>
+{% endblock %}

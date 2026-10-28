@@ -1,0 +1,50 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0002",
+    "offset": 0,
+    "count": 4,
+    "expires": 1789656609.35
+  },
+  "results": [
+    {
+      "name": "Spooler",
+      "displayName": "Print Spooler",
+      "description": "This service spools print jobs and handles interaction with the printer.",
+      "startType": "AUTO_START",
+      "userName": "LocalSystem",
+      "state": "STOPPED",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "wuauserv",
+      "displayName": "Windows Update",
+      "description": "Enables the detection, download, and installation of updates.",
+      "startType": "DEMAND_START",
+      "userName": "LocalSystem",
+      "state": "STOPPED",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "MSSQLSERVER",
+      "displayName": "SQL Server (MSSQLSERVER)",
+      "description": "Provides storage, processing and controlled access of data.",
+      "startType": "AUTO_START_DELAYED",
+      "userName": "NT Service\\MSSQLSERVER",
+      "state": "STOPPED",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "RemoteRegistry",
+      "displayName": "Remote Registry",
+      "description": "Enables remote users to modify registry settings.",
+      "startType": "DISABLED",
+      "userName": "NT AUTHORITY\\LocalService",
+      "state": "STOPPED",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "lastActivityId": 700006,
+  "activities": [
+    {
+      "id": 700006,
+      "activityTime": 1788222600.0,
+      "deviceId": 1002,
+      "severity": "MODERATE",
+      "priority": "MEDIUM",
+      "seriesUid": "00000000-0000-4000-8000-000000700006",
+      "activityType": "CONDITION",
+      "statusCode": "RESET",
+      "status": "Reset",
+      "activityResult": "SUCCESS",
+      "sourceConfigUid": "00000000-0000-4000-8000-000000000001",
+      "sourceName": "Example condition",
+      "subject": "Example condition cleared",
+      "message": "Example condition is no longer met",
+      "type": "Condition",
+      "data": {
+        "message": {
+          "code": "example"
+        },
+        "resetReason": "CONDITION_NO_LONGER_MET"
+      }
+    },
+    {
+      "id": 700005,
+      "activityTime": 1787925900.0,
+      "deviceId": 1002,
+      "severity": "MODERATE",
+      "priority": "MEDIUM",
+      "seriesUid": "00000000-0000-4000-8000-000000700005",
+      "activityType": "CONDITION",
+      "statusCode": "RESET",
+      "status": "Reset",
+      "activityResult": "SUCCESS",
+      "sourceConfigUid": "00000000-0000-4000-8000-000000000001",
+      "sourceName": "Example condition",
+      "subject": "Example condition cleared",
+      "message": "Example condition is no longer met",
+      "type": "Condition",
+      "data": {
+        "message": {
+          "code": "example"
+        },
+        "resetReason": "CONDITION_NO_LONGER_MET"
+      }
+    },
+    {
+      "id": 700004,
+      "activityTime": 1787132400.0,
+      "deviceId": 1002,
+      "severity": "MODERATE",
+      "priority": "MEDIUM",
+      "seriesUid": "00000000-0000-4000-8000-000000700004",
+      "activityType": "CONDITION",
+      "statusCode": "TRIGGERED",
+      "status": "Triggered",
+      "activityResult": "SUCCESS",
+      "sourceConfigUid": "00000000-0000-4000-8000-000000000001",
+      "sourceName": "Example condition",
+      "subject": "Example condition cleared",
+      "message": "Example condition is no longer met",
+      "type": "Condition",
+      "data": {
+        "message": {
+          "code": "example"
+        },
+        "resetReason": "CONDITION_NO_LONGER_MET"
+      }
+    },
+    {
+      "id": 700003,
+      "activityTime": 1786504500.0,
+      "deviceId": 9999,
+      "severity": "MODERATE",
+      "priority": "MEDIUM",
+      "seriesUid": "00000000-0000-4000-8000-000000700003",
+      "activityType": "CONDITION",
+      "statusCode": "RESET",
+      "status": "Reset",
+      "activityResult": "SUCCESS",
+      "sourceConfigUid": "00000000-0000-4000-8000-000000000001",
+      "sourceName": "Example condition",
+      "subject": "Example condition cleared",
+      "message": "Example condition is no longer met",
+      "type": "Condition",
+      "data": {
+        "message": {
+          "code": "example"
+        },
+        "resetReason": "CONDITION_NO_LONGER_MET"
+      }
+    },
+    {
+      "id": 700002,
+      "activityTime": 1786504200.0,
+      "deviceId": 1005,
+      "severity": "MODERATE",
+      "priority": "MEDIUM",
+      "seriesUid": "00000000-0000-4000-8000-000000700002",
+      "activityType": "CONDITION",
+      "statusCode": "RESET",
+      "status": "Reset",
+      "activityResult": "SUCCESS",
+      "sourceConfigUid": "00000000-0000-4000-8000-000000000001",
+      "sourceName": "Example condition",
+      "subject": "Example condition cleared",
+      "message": "Example condition is no longer met",
+      "type": "Condition",
+      "data": {
+        "message": {
+          "code": "example"
+        },
+        "resetReason": "CONDITION_NO_LONGER_MET"
+      }
+    },
+    {
+      "id": 700001,
+      "activityTime": 1785794400.0,
+      "deviceId": 1002,
+      "severity": "MODERATE",
+      "priority": "MEDIUM",
+      "seriesUid": "00000000-0000-4000-8000-000000700001",
+      "activityType": "CONDITION",
+      "statusCode": "RESET",
+      "status": "Reset",
+      "activityResult": "SUCCESS",
+      "sourceConfigUid": "00000000-0000-4000-8000-000000000001",
+      "sourceName": "Example condition",
+      "subject": "Example condition cleared",
+      "message": "Example condition is no longer met",
+      "type": "Condition",
+      "data": {
+        "message": {
+          "code": "example"
+        },
+        "resetReason": "CONDITION_NO_LONGER_MET"
+      }
+    }
+  ]
+}

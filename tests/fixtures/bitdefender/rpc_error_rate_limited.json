@@ -1,0 +1,11 @@
+{
+  "id": "abc123",
+  "jsonrpc": "2.0",
+  "error": {
+    "code": -32003,
+    "message": "Too many requests",
+    "data": {
+      "details": "Rate limit exceeded. Maximum 100 requests per 60 seconds allowed."
+    }
+  }
+}

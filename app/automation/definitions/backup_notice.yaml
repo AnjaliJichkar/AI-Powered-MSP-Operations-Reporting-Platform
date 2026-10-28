@@ -1,0 +1,30 @@
+# Backup notices: the ticket's title and body, parsed by fixed rules per sender
+# (Veeam, N-able). Reads no tool. An unknown format gets no note.
+name: backup_notice
+title: Backup notices
+version: 1
+kind: note
+description: When a backup notice arrives, say whether it is a success (no action) or a failure, with the job and the error as the sender's email states them. Veeam and N-able formats are parsed; anything else gets no note.
+note_mode: preview
+
+triggers:
+  - key: backup_alert
+    kind: alert
+    title: a backup notice
+    rule:
+      source: Monitoring Alert
+      title_contains_any: [backup, veeam, n-able, cove, "[success]", "[warning]", "[failed]"]
+
+steps:
+  - id: compose
+    action: notes.backup_notice
+    title: "Autotask: the ticket's title and body"
+    inputs:
+      ticket: "{ticket.self}"
+  - id: post
+    action: autotask.add_note
+    inputs:
+      ticket_id: "{ticket.id}"
+      note: "{steps.compose.note}"
+
+writes: "Backup success notice: no action needed. — or — Backup failed: job <job>. Error: <error as the notice states it>."

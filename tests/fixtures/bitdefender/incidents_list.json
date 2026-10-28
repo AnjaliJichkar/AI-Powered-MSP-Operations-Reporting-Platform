@@ -1,0 +1,138 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": {
+    "total": 3,
+    "page": 1,
+    "perPage": 1000,
+    "pagesCount": 1,
+    "items": [
+      {
+        "incidentId": "6a1b2c3d4e5f67890abcde01",
+        "incidentNumber": 101,
+        "incidentType": "incident",
+        "company": {
+          "id": "64a0000000000000000000b1",
+          "name": "Acme Dental"
+        },
+        "status": "open",
+        "mainAction": "blocked",
+        "created": "2026-09-18T15:03:03+00:00",
+        "lastUpdated": "2026-09-19T09:14:22+00:00",
+        "lastProcessed": "2026-09-19T09:14:22+00:00",
+        "lastIncidentChange": "2026-09-19T09:14:22+00:00",
+        "severityScore": 40,
+        "incidentLink": "https://cloud.gravityzone.bitdefender.com/#!/incidents/view/6a1b2c3d4e5f67890abcde01",
+        "assignee": null,
+        "priority": "medium",
+        "attackTypes": [
+          "Malware"
+        ],
+        "details": {
+          "detectionName": "Trojan.GenericKD.Example",
+          "computerId": "64e000000000000000000001",
+          "computerName": "TL-AUS-WS14",
+          "computerFqdn": "tl-aus-ws14.acme.local",
+          "computerIp": "10.0.0.10",
+          "computerMacAddresses": [
+            "00163E7FD32E"
+          ],
+          "counters": {
+            "endpoints": 1,
+            "files": 2,
+            "processes": 3,
+            "domains": 0,
+            "registries": 0,
+            "events": 5,
+            "storages": 0
+          },
+          "incidentEvolution": [],
+          "partOf": []
+        }
+      },
+      {
+        "incidentId": "6a1b2c3d4e5f67890abcde02",
+        "incidentNumber": 102,
+        "incidentType": "incident",
+        "company": {
+          "id": "64a0000000000000000000b1",
+          "name": "Acme Dental"
+        },
+        "status": "closed",
+        "mainAction": "reported",
+        "created": "2026-09-15T08:00:00+00:00",
+        "lastUpdated": "2026-09-17T10:00:00+00:00",
+        "lastProcessed": "2026-09-17T10:00:00+00:00",
+        "lastIncidentChange": "2026-09-17T10:00:00+00:00",
+        "severityScore": 72,
+        "incidentLink": "https://cloud.gravityzone.bitdefender.com/#!/incidents/view/6a1b2c3d4e5f67890abcde02",
+        "assignee": null,
+        "priority": "high",
+        "attackTypes": [
+          "Credential Access"
+        ],
+        "details": {
+          "detectionName": "Trojan.GenericKD.Example",
+          "computerId": "64e000000000000000000006",
+          "computerName": "TL-AUS-MAC03",
+          "computerFqdn": "tl-aus-mac03.acme.local",
+          "computerIp": "10.0.0.10",
+          "computerMacAddresses": [
+            "00163E7FD32E"
+          ],
+          "counters": {
+            "endpoints": 1,
+            "files": 2,
+            "processes": 3,
+            "domains": 0,
+            "registries": 0,
+            "events": 5,
+            "storages": 0
+          },
+          "incidentEvolution": [],
+          "partOf": []
+        }
+      },
+      {
+        "incidentId": "6a1b2c3d4e5f67890abcde03",
+        "incidentNumber": 103,
+        "incidentType": "incident",
+        "company": null,
+        "status": "open",
+        "mainAction": "partially_blocked",
+        "created": "2026-09-18T15:03:03+00:00",
+        "lastUpdated": "2026-09-19T09:14:22+00:00",
+        "lastProcessed": "2026-09-19T09:14:22+00:00",
+        "lastIncidentChange": "2026-09-19T09:14:22+00:00",
+        "severityScore": 12,
+        "incidentLink": "https://cloud.gravityzone.bitdefender.com/#!/incidents/view/6a1b2c3d4e5f67890abcde03",
+        "assignee": null,
+        "priority": "low",
+        "attackTypes": [
+          "Malware"
+        ],
+        "details": {
+          "detectionName": "Trojan.GenericKD.Example",
+          "computerId": "64e000000000000000000004",
+          "computerName": "TL-AUS-WS22",
+          "computerFqdn": "tl-aus-ws22.acme.local",
+          "computerIp": "10.0.0.10",
+          "computerMacAddresses": [
+            "00163E7FD32E"
+          ],
+          "counters": {
+            "endpoints": 1,
+            "files": 2,
+            "processes": 3,
+            "domains": 0,
+            "registries": 0,
+            "events": 5,
+            "storages": 0
+          },
+          "incidentEvolution": [],
+          "partOf": []
+        }
+      }
+    ]
+  }
+}

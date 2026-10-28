@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": 8001,
+      "ticketID": 9001,
+      "resourceID": 501,
+      "dateWorked": "2026-09-15T12:00:00Z",
+      "hoursWorked": 1.25,
+      "summaryNotes": "Rebuilt the Outlook profile.",
+      "startDateTime": "2026-09-15T12:00:00Z"
+    },
+    {
+      "id": 8002,
+      "ticketID": 9002,
+      "resourceID": 502,
+      "dateWorked": "2026-09-13T12:00:00Z",
+      "hoursWorked": 0.5,
+      "summaryNotes": "Re-added the printer queue.",
+      "startDateTime": "2026-09-13T12:00:00Z"
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Main Office",
+    "address": "1 Example Street",
+    "description": "Headquarters",
+    "id": 1
+  },
+  {
+    "name": "Branch",
+    "address": "2 Example Avenue",
+    "description": "",
+    "id": 2
+  }
+]

@@ -1,0 +1,312 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": {
+    "page": 1,
+    "perPage": 1000,
+    "pagesCount": 1,
+    "total": 6,
+    "hasMoreRecords": false,
+    "items": [
+      {
+        "id": "64e000000000000000000001",
+        "name": "TL-AUS-WS14",
+        "type": 5,
+        "parentId": "64c000000000000000000002",
+        "companyId": "64a0000000000000000000b1",
+        "details": {
+          "label": "",
+          "fqdn": "tl-aus-ws14.acme.local",
+          "groupId": "64c000000000000000000002",
+          "isManaged": true,
+          "machineType": 1,
+          "operatingSystemVersion": "Windows 11 Pro",
+          "ip": "192.0.2.10",
+          "macs": [
+            "00:16:3e:7f:d3:00"
+          ],
+          "ssid": "",
+          "isIsolated": false,
+          "managedWithBest": true,
+          "firstSeen": "2025-03-05T05:45:16",
+          "policy": {
+            "id": "64d000000000000000000003",
+            "name": "Standard workstation",
+            "applied": true
+          },
+          "modules": {
+            "antimalware": true,
+            "firewall": true,
+            "contentControl": true,
+            "powerUser": true,
+            "deviceControl": true,
+            "advancedThreatControl": true,
+            "applicationControl": false,
+            "encryption": false,
+            "networkAttackDefense": true,
+            "antiTampering": true,
+            "advancedAntiExploit": true,
+            "userControl": true,
+            "antiphishing": true,
+            "trafficScan": false,
+            "remoteEnginesScanning": false,
+            "riskManagement": true
+          },
+          "productOutdated": false,
+          "riskScore": {
+            "value": "13%",
+            "impact": "Low",
+            "misconfigurations": "100%",
+            "appVulnerabilities": "0%",
+            "humanRisks": "0%"
+          }
+        }
+      },
+      {
+        "id": "64e000000000000000000004",
+        "name": "TL-AUS-WS22",
+        "type": 5,
+        "parentId": "64c000000000000000000002",
+        "companyId": "64a0000000000000000000b1",
+        "details": {
+          "label": "",
+          "fqdn": "tl-aus-ws22.acme.local",
+          "groupId": "64c000000000000000000002",
+          "isManaged": true,
+          "machineType": 1,
+          "operatingSystemVersion": "Windows 11 Pro",
+          "ip": "192.0.2.11",
+          "macs": [
+            "00:16:3e:7f:d3:01"
+          ],
+          "ssid": "",
+          "isIsolated": false,
+          "managedWithBest": true,
+          "firstSeen": "2026-05-20T13:15:04",
+          "policy": {
+            "id": "64d000000000000000000003",
+            "name": "Standard workstation",
+            "applied": true
+          },
+          "modules": {
+            "antimalware": true,
+            "firewall": true,
+            "contentControl": true,
+            "powerUser": true,
+            "deviceControl": true,
+            "advancedThreatControl": true,
+            "applicationControl": false,
+            "encryption": false,
+            "networkAttackDefense": true,
+            "antiTampering": true,
+            "advancedAntiExploit": true,
+            "userControl": true,
+            "antiphishing": true,
+            "trafficScan": false,
+            "remoteEnginesScanning": false,
+            "riskManagement": true
+          },
+          "productOutdated": true,
+          "riskScore": {
+            "value": "61%",
+            "impact": "High",
+            "misconfigurations": "21%",
+            "appVulnerabilities": "79%",
+            "humanRisks": "0%"
+          }
+        }
+      },
+      {
+        "id": "64e000000000000000000005",
+        "name": "TL-AUS-DC01",
+        "type": 6,
+        "parentId": "64c000000000000000000002",
+        "companyId": "64a0000000000000000000b1",
+        "details": {
+          "label": "",
+          "fqdn": "tl-aus-dc01.acme.local",
+          "groupId": "64c000000000000000000002",
+          "isManaged": true,
+          "machineType": 2,
+          "operatingSystemVersion": "Windows Server 2022 Standard",
+          "ip": "192.0.2.12",
+          "macs": [
+            "00:16:3e:7f:d3:02"
+          ],
+          "ssid": "",
+          "isIsolated": false,
+          "managedWithBest": true,
+          "firstSeen": "2025-03-05T05:45:16",
+          "policy": {
+            "id": "64d000000000000000000003",
+            "name": "Standard workstation",
+            "applied": true
+          },
+          "modules": {
+            "antimalware": true,
+            "firewall": true,
+            "contentControl": true,
+            "powerUser": true,
+            "deviceControl": true,
+            "advancedThreatControl": true,
+            "applicationControl": false,
+            "encryption": true,
+            "networkAttackDefense": true,
+            "antiTampering": true,
+            "advancedAntiExploit": true,
+            "userControl": true,
+            "antiphishing": true,
+            "trafficScan": false,
+            "remoteEnginesScanning": false,
+            "riskManagement": true,
+            "patchManagement": true
+          },
+          "productOutdated": false,
+          "riskScore": {
+            "value": "63%",
+            "impact": "High",
+            "misconfigurations": "21%",
+            "appVulnerabilities": "79%",
+            "humanRisks": "0%"
+          }
+        }
+      },
+      {
+        "id": "64e000000000000000000006",
+        "name": "TL-AUS-MAC03",
+        "type": 5,
+        "parentId": "64c000000000000000000007",
+        "companyId": "64a0000000000000000000b1",
+        "details": {
+          "label": "",
+          "fqdn": "tl-aus-mac03.acme.local",
+          "groupId": "64c000000000000000000007",
+          "isManaged": true,
+          "machineType": 1,
+          "operatingSystemVersion": "macOS 14.5",
+          "ip": "192.0.2.13",
+          "macs": [
+            "00:16:3e:7f:d3:03"
+          ],
+          "ssid": "",
+          "isIsolated": false,
+          "managedWithBest": true,
+          "firstSeen": "2025-03-05T05:45:18",
+          "policy": {
+            "id": "64d000000000000000000003",
+            "name": "Standard workstation",
+            "applied": true
+          },
+          "modules": {
+            "antimalware": false,
+            "firewall": true,
+            "contentControl": true,
+            "powerUser": true,
+            "deviceControl": true,
+            "advancedThreatControl": true,
+            "applicationControl": false,
+            "encryption": false,
+            "networkAttackDefense": true,
+            "antiTampering": true,
+            "advancedAntiExploit": true,
+            "userControl": true,
+            "antiphishing": true,
+            "trafficScan": false,
+            "remoteEnginesScanning": false,
+            "riskManagement": true
+          },
+          "productOutdated": false,
+          "riskScore": {
+            "value": "63%",
+            "impact": "High",
+            "misconfigurations": "21%",
+            "appVulnerabilities": "79%",
+            "humanRisks": "0%"
+          }
+        }
+      },
+      {
+        "id": "64e000000000000000000008",
+        "name": "TL-AUS-WS07",
+        "type": 5,
+        "parentId": "64c000000000000000000009",
+        "companyId": "64a0000000000000000000b1",
+        "details": {
+          "label": "",
+          "fqdn": "tl-aus-ws07.acme.local",
+          "groupId": "64c000000000000000000009",
+          "isManaged": false,
+          "machineType": 1,
+          "operatingSystemVersion": "Windows 10 Pro",
+          "ip": "192.0.2.14",
+          "macs": [
+            "00:16:3e:7f:d3:04"
+          ],
+          "ssid": "",
+          "isIsolated": false,
+          "firstSeen": "",
+          "policy": {
+            "id": "64d000000000000000000010",
+            "name": "Standard workstation",
+            "applied": false
+          }
+        }
+      },
+      {
+        "id": "64e000000000000000000011",
+        "name": "TL-AUS-EXCH",
+        "type": 6,
+        "parentId": "64c000000000000000000002",
+        "companyId": "64a0000000000000000000b1",
+        "details": {
+          "label": "",
+          "fqdn": "tl-aus-exch.acme.local",
+          "groupId": "64c000000000000000000002",
+          "isManaged": true,
+          "machineType": 2,
+          "operatingSystemVersion": "Windows Server 2019 Standard",
+          "ip": "192.0.2.12",
+          "macs": [
+            "00:16:3e:7f:d3:02"
+          ],
+          "ssid": "",
+          "isIsolated": false,
+          "managedWithBest": true,
+          "firstSeen": "2025-03-05T05:45:16",
+          "policy": {
+            "id": "64d000000000000000000003",
+            "name": "Standard workstation",
+            "applied": true
+          },
+          "modules": {
+            "antimalware": true,
+            "firewall": true,
+            "contentControl": true,
+            "powerUser": true,
+            "deviceControl": true,
+            "advancedThreatControl": true,
+            "applicationControl": false,
+            "encryption": true,
+            "networkAttackDefense": true,
+            "antiTampering": true,
+            "advancedAntiExploit": true,
+            "userControl": true,
+            "antiphishing": true,
+            "trafficScan": false,
+            "remoteEnginesScanning": false,
+            "riskManagement": true,
+            "patchManagement": false
+          },
+          "productOutdated": false,
+          "riskScore": {
+            "value": "63%",
+            "impact": "High",
+            "misconfigurations": "21%",
+            "appVulnerabilities": "79%",
+            "humanRisks": "0%"
+          }
+        }
+      }
+    ]
+  }
+}

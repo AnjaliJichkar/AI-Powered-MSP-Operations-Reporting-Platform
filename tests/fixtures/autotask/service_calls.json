@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": 6101,
+      "companyID": 77,
+      "companyLocationID": 1,
+      "description": "Replace reception switch and re-patch",
+      "startDateTime": "2026-09-16T14:00:00Z",
+      "endDateTime": "2026-09-16T16:00:00Z",
+      "duration": 2.0,
+      "status": 1,
+      "isComplete": 0,
+      "createDateTime": "2026-09-10T09:00:00Z",
+      "creatorResourceID": 501,
+      "lastModifiedDateTime": "2026-09-10T09:00:00Z",
+      "canceledDateTime": null,
+      "canceledByResourceID": null,
+      "cancelationNoticeHours": null
+    },
+    {
+      "id": 6102,
+      "companyID": 77,
+      "companyLocationID": 1,
+      "description": "Quarterly onsite",
+      "startDateTime": "2026-09-17T09:00:00Z",
+      "endDateTime": "2026-09-17T12:00:00Z",
+      "duration": 3.0,
+      "status": 2,
+      "isComplete": 1,
+      "createDateTime": "2026-09-01T09:00:00Z",
+      "creatorResourceID": 502,
+      "lastModifiedDateTime": "2026-09-17T12:30:00Z",
+      "canceledDateTime": null,
+      "canceledByResourceID": null,
+      "cancelationNoticeHours": null
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

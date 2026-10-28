@@ -1,0 +1,54 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0009",
+    "offset": 0,
+    "count": null,
+    "expires": 1789656609.35
+  },
+  "results": [
+    {
+      "id": "99999999-9999-4999-9999-000000000001",
+      "productIdentifier": "example-product-1",
+      "title": "Edge (X64)",
+      "impact": "recommended",
+      "status": "INSTALLED",
+      "type": "PATCH",
+      "installedAt": 1787986400.0,
+      "deviceId": 1002,
+      "timestamp": 1787986400.0
+    },
+    {
+      "id": "99999999-9999-4999-9999-000000000002",
+      "productIdentifier": "example-product-2",
+      "title": "Edge (X64)",
+      "impact": "recommended",
+      "status": "INSTALLED",
+      "type": "PATCH",
+      "installedAt": 1788072800.0,
+      "deviceId": 1003,
+      "timestamp": 1788072800.0
+    },
+    {
+      "id": "99999999-9999-4999-9999-000000000003",
+      "productIdentifier": "example-product-3",
+      "title": "Microsoft Edge",
+      "impact": "recommended",
+      "status": "FAILED",
+      "type": "PATCH",
+      "installedAt": 1788159200.0,
+      "deviceId": 1004,
+      "timestamp": 1788159200.0
+    },
+    {
+      "id": "99999999-9999-4999-9999-000000000004",
+      "productIdentifier": "example-product-4",
+      "title": "Microsoft365 (X64)",
+      "impact": "recommended",
+      "status": "FAILED",
+      "type": "PATCH",
+      "installedAt": 1788245600.0,
+      "deviceId": 1001,
+      "timestamp": 1788245600.0
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0001",
+    "offset": 0,
+    "count": 5,
+    "expires": 1789656609.354843
+  },
+  "results": [
+    {
+      "name": "C:",
+      "driveLetter": "C:",
+      "label": "OS",
+      "deviceType": "Local Disk",
+      "fileSystem": "NTFS",
+      "autoMount": true,
+      "compressed": false,
+      "capacity": 511000000000,
+      "freeSpace": 20440000000,
+      "serialNumber": "1234ABCD",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0,
+      "bitLockerStatus": {
+        "conversionStatus": "FULLY_ENCRYPTED",
+        "encryptionMethod": "XTS_AES_128",
+        "protectionStatus": "PROTECTED",
+        "lockStatus": "UNLOCKED",
+        "initializedForProtection": true
+      }
+    },
+    {
+      "name": "C:",
+      "driveLetter": "C:",
+      "label": "OS",
+      "deviceType": "Local Disk",
+      "fileSystem": "NTFS",
+      "autoMount": true,
+      "compressed": false,
+      "capacity": 1000000000000,
+      "freeSpace": 612000000000,
+      "serialNumber": "5678EFGH",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0,
+      "bitLockerStatus": {
+        "conversionStatus": "FULLY_DECRYPTED",
+        "encryptionMethod": "NONE",
+        "protectionStatus": "UNPROTECTED",
+        "lockStatus": "UNLOCKED",
+        "initializedForProtection": false
+      }
+    },
+    {
+      "name": "D:",
+      "driveLetter": "D:",
+      "label": "Data",
+      "deviceType": "Local Disk",
+      "fileSystem": "NTFS",
+      "autoMount": true,
+      "compressed": false,
+      "capacity": 2000000000000,
+      "freeSpace": 90000000000,
+      "serialNumber": "9012IJKL",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0,
+      "bitLockerStatus": {
+        "conversionStatus": "FULLY_DECRYPTED",
+        "encryptionMethod": "NONE",
+        "protectionStatus": "UNPROTECTED",
+        "lockStatus": "UNLOCKED",
+        "initializedForProtection": false
+      }
+    },
+    {
+      "name": "E:",
+      "driveLetter": "E:",
+      "label": "USB",
+      "deviceType": "Removable Disk",
+      "fileSystem": "FAT32",
+      "autoMount": true,
+      "compressed": false,
+      "capacity": 32000000000,
+      "freeSpace": 1000000000,
+      "serialNumber": "USB00001",
+      "deviceId": 1005,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "/",
+      "driveLetter": "",
+      "label": "",
+      "deviceType": "part",
+      "fileSystem": "ext4",
+      "autoMount": true,
+      "compressed": false,
+      "capacity": 0,
+      "freeSpace": 0,
+      "serialNumber": "",
+      "deviceId": 1004,
+      "timestamp": 1788780600.0
+    },
+    {
+      "name": "C:",
+      "driveLetter": "C:",
+      "label": "OS",
+      "deviceType": "Local Disk",
+      "fileSystem": "NTFS",
+      "autoMount": true,
+      "compressed": false,
+      "capacity": 511000000000,
+      "freeSpace": 20440000000,
+      "serialNumber": "9999ZZZZ",
+      "deviceId": 1003,
+      "timestamp": 1788780600.0
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{% extends "_base.html" %}
+{% block title %}Run · Automations · Desk{% endblock %}
+
+{% block content %}
+{# One run: what it will change, who said yes, how far it has got, and Undo
+   while that is allowed. The page polls while the worker has the run, so
+   progress is live without anything running in the browser. #}
+<div class="crumb-row">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/automations">Automations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="here" id="crumb-title">run</span>
+  </nav>
+</div>
+
+<div class="page-head">
+  <div>
+    <h1 id="title">Run</h1>
+    <p class="meta" id="subtitle"><span>loading…</span></p>
+  </div>
+  <div class="row gap8">
+    <button type="button" class="btn primary" id="primary" hidden></button>
+    <div class="menu" id="more" hidden>
+      <button type="button" class="btn secondary" id="more-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="more-list">More ▾</button>
+      <div class="menu-list" id="more-list" role="menu" hidden></div>
+    </div>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+<div class="notice" id="notice" hidden></div>
+
+<div class="with-rail">
+  <div>
+    {# Once the run has started, what it is doing comes first; what it was
+       going to do is behind a disclosure, because by then it is history. #}
+    <div class="section" id="progress-section" hidden>
+      <h2 class="section-title">Progress<span class="aside" id="progress-sub"></span></h2>
+      <div class="list" id="progress"></div>
+    </div>
+
+    <div class="section" id="plan-section">
+      <h2 class="section-title" id="plan-title">What will change</h2>
+      <div class="list" id="plan"></div>
+    </div>
+
+    <details class="section" id="approved-section" hidden>
+      <summary>What was approved</summary>
+      <div class="list" id="approved-plan"></div>
+    </details>
+
+    <div class="section" id="approve-section" hidden>
+      <h2 class="section-title">Approval</h2>
+      <form id="approve-form" class="row" novalidate>
+        <label class="field">
+          <span>Who</span>
+          <select id="authoriser"></select>
+        </label>
+        <label class="field">
+          <span>How</span>
+          <select id="method">
+            <option value="phone">Phone</option>
+            <option value="email">Email</option>
+            <option value="teams">Teams</option>
+            <option value="in person">In person</option>
+          </select>
+        </label>
+        <label class="field" id="when-field" hidden>
+          <span>When</span>
+          <input type="datetime-local" id="authorised-at">
+        </label>
+        <button type="submit" class="btn primary">Approve</button>
+        <button type="button" class="btn link" id="change-time">Change time</button>
+      </form>
+      <p class="small bad-text" id="approve-says" hidden></p>
+    </div>
+  </div>
+
+  <aside class="rail">
+    <div>
+      <p class="section-label">Inputs</p>
+      <div id="inputs" class="small"></div>
+    </div>
+    <div>
+      <p class="section-label">Approval</p>
+      <div id="approval" class="small"></div>
+    </div>
+    <div>
+      <p class="section-label">Undo</p>
+      <div id="undo" class="small"></div>
+    </div>
+  </aside>
+</div>
+
+<details class="section how" id="how">
+  <summary>How this works</summary>
+  <ul class="small">
+    <li>The dry run shows what would change. Nothing changes yet.</li>
+    <li>The client's approver says yes; a second engineer records it.</li>
+    <li>Steps run in order in the background and stop at the first failure.</li>
+    <li>Undo puts steps back in reverse order, while the window is open.</li>
+  </ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script>window.DESK.runId = {{ run_id | tojson }};</script>
+<script src="{{ asset('js/automation_run.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": 9003,
+      "ticketNumber": "T20260914.0003",
+      "title": "New starter setup",
+      "description": "Reported by the site contact. New starter setup.",
+      "status": 5,
+      "priority": 4,
+      "companyID": 77,
+      "configurationItemID": 4002,
+      "contactID": null,
+      "assignedResourceID": 501,
+      "queueID": 8,
+      "createDate": "2026-09-14T12:00:00Z",
+      "lastActivityDate": "2026-09-16T12:00:00Z",
+      "dueDateTime": "2026-09-17T12:00:00Z",
+      "completedDate": null,
+      "resolution": null
+    }
+  ],
+  "pageDetails": {
+    "count": 1,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

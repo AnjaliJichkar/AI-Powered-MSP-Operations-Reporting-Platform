@@ -1,0 +1,21 @@
+# Local development database only. Not a deployment artefact.
+# The defaults are throwaway local values; override them in the environment.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-inputiv}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-inputiv}
+      POSTGRES_DB: ${POSTGRES_DB:-inputiv}
+    ports:
+      - "5432:5432"
+    volumes:
+      - inputiv_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inputiv"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  inputiv_pgdata:

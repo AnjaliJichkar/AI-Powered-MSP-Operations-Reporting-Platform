@@ -1,0 +1,64 @@
+{% extends "_base.html" %}
+{% block title %}Workflow · Automations · Desk{% endblock %}
+
+{% block content %}
+{# One workflow as this client has it: what starts it, what it checks, what
+   it writes, and its recent notes or runs. The full rules, the approval
+   rule, the settings and the trigger switches are behind Details. The
+   workflow switch and the mode live on the Automations page. #}
+<div class="crumb-row">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/automations">Automations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="here" id="crumb-title">workflow</span>
+  </nav>
+</div>
+
+<div class="page-head">
+  <div>
+    <h1 id="title">Workflow</h1>
+    <p class="meta" id="subtitle"><span>loading…</span></p>
+  </div>
+  <div class="row gap8">
+    <a class="btn secondary" id="runs-link" href="/automations">All runs</a>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+<div class="notice" id="notice" hidden></div>
+
+<div class="section card">
+  <h2 class="section-title">Starts when</h2>
+  <p id="starts"></p>
+</div>
+
+<div class="section card">
+  <h2 class="section-title">Checks</h2>
+  <div class="list" id="checks"></div>
+</div>
+
+<div class="section card">
+  <h2 class="section-title">Writes</h2>
+  <div class="list" id="writes"></div>
+</div>
+
+<div class="section card">
+  <h2 class="section-title" id="recent-title">Recent notes</h2>
+  <div class="list" id="recent"></div>
+</div>
+
+<details class="section" id="details">
+  <summary>Details</summary>
+  <div id="details-body" class="small"></div>
+</details>
+
+<details class="section how" id="how">
+  <summary>How this works</summary>
+  <ul class="small" id="how-lines"></ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script>window.DESK.workflowName = {{ workflow_name | tojson }};</script>
+<script src="{{ asset('js/automation_workflow.js') }}"></script>
+{% endblock %}

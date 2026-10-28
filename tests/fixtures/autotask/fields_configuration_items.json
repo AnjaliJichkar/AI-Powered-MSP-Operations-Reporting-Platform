@@ -1,0 +1,32 @@
+{
+  "fields": [
+    {
+      "name": "configurationItemType",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "1",
+          "label": "Workstation",
+          "isActive": true
+        },
+        {
+          "value": "2",
+          "label": "Server",
+          "isActive": true
+        },
+        {
+          "value": "3",
+          "label": "Network Device",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "referenceTitle",
+      "dataType": "string",
+      "isPickList": false,
+      "picklistValues": null
+    }
+  ]
+}

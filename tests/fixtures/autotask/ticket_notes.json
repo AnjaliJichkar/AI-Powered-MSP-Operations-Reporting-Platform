@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "id": 7001,
+      "ticketID": 9001,
+      "title": "Initial triage",
+      "description": "Confirmed the profile is corrupt. Rebuilding tomorrow.",
+      "noteType": 1,
+      "publish": 1,
+      "createDateTime": "2026-09-03T12:00:00Z",
+      "creatorResourceID": 501
+    },
+    {
+      "id": 7002,
+      "ticketID": 9001,
+      "title": "Update",
+      "description": "Profile rebuilt, monitoring for a day.",
+      "noteType": 1,
+      "publish": 1,
+      "createDateTime": "2026-09-15T12:00:00Z",
+      "creatorResourceID": 502
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

@@ -1,0 +1,59 @@
+{# The one page drawn without a session, so it has no shell: there is no user
+   to name in a header and no nav worth offering to somebody who cannot use
+   any of it. #}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · Desk</title>
+{% include "_theme.html" %}
+{# The same two stylesheets every other page loads, in the same order: the
+   sign-in page was on the older one alone, so the one page somebody sees
+   before anything else was the one page not on the design system. #}
+<link rel="stylesheet" href="{{ asset('app.css') }}">
+<link rel="stylesheet" href="{{ asset('aurora.css') }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%236255ce'/><text x='16' y='23' font-family='sans-serif' font-size='19' font-weight='600' fill='white' text-anchor='middle'>D</text></svg>">
+</head>
+<body class="aurora signin">
+
+{% from "_icons.html" import icon %}
+<main class="signin-card">
+  <div class="brand-row">
+    <span class="logo" aria-hidden="true">{{ icon("spark") }}</span>
+    <span class="brand">desk<span class="purple">.</span></span>
+  </div>
+  <p class="sub">Sign in to continue.</p>
+
+  <div class="notice bad" id="error" hidden></div>
+
+  <form id="signin" novalidate>
+    <label class="field">
+      <span>Email</span>
+      <input type="email" id="email" name="email" autocomplete="username"
+             autocapitalize="off" spellcheck="false" required autofocus>
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <input type="password" id="password" name="password"
+             autocomplete="current-password" required>
+    </label>
+
+    {# Hidden until the server says this account has a second factor. The
+       email and password stay filled in, so the next submit carries all
+       three rather than asking for the password again. #}
+    <label class="field" id="totp-field" hidden>
+      <span>Authenticator code</span>
+      <input type="text" id="totp" name="totp_code" inputmode="numeric"
+             autocomplete="one-time-code" maxlength="16" placeholder="123456">
+      <span class="help">Six digits from your authenticator app.</span>
+    </label>
+
+    <button type="submit" class="btn primary" id="submit">Sign in</button>
+  </form>
+</main>
+
+<script src="{{ asset('js/login.js') }}"></script>
+</body>
+</html>

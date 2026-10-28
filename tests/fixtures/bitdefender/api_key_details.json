@@ -1,0 +1,21 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": {
+    "enabledApis": [
+      "companies",
+      "licensing",
+      "packages",
+      "network",
+      "integrations",
+      "policies",
+      "maintenancewindows",
+      "reports",
+      "accounts",
+      "incidents",
+      "quarantine",
+      "patchmanagement"
+    ],
+    "createdAt": "2025-11-07T04:29:07"
+  }
+}

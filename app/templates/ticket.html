@@ -1,0 +1,203 @@
+{% extends "_base.html" %}
+{% block title %}{{ ticket_ref }} · Tickets · Desk{% endblock %}
+
+{% block content %}
+{# One ticket, as its own page with its own address.
+
+   The page shows one thing at a time: what Desk found, and what it read the
+   ticket as. The tool readings, the plan and the record of who did what are
+   tabs rather than panels stacked under it, and the ticket's own words and the
+   machine sit in the rail beside it, because they are what an engineer checks
+   the main column against rather than what they read first.
+
+   The breadcrumb carries the queue's own filters in the query string, so Back
+   to the queue is back to *that* queue. Previous and next step through the same
+   filtered queue. Nothing here is written to any vendor. #}
+<div class="crumb-row">
+  <nav class="breadcrumb" id="crumbs" aria-label="Breadcrumb">
+    <a href="/tickets" id="back-to-queue">Tickets</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="here" id="crumb-here">{{ ticket_ref }}</span>
+  </nav>
+  <span class="step" id="step-links"></span>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+
+<div class="page-head">
+  <div>
+    <h1 id="ws-title">{{ ticket_ref }}</h1>
+    {# One line of facts about the ticket, joined by the middle dot the
+       stylesheet draws: customer, priority, status, who has it, how it was
+       raised and when. Never a column of label/value rows. #}
+    <p class="meta" id="ws-sub"><span>opening…</span></p>
+  </div>
+  <div class="row gap8">
+    {# One primary action a page. Everything else an engineer can do from here
+       is in the menu beside it. #}
+    <div class="menu">
+      <button type="button" class="btn" id="more-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="more-list">More ▾</button>
+      <div class="menu-list" id="more-list" role="menu" hidden>
+        <button type="button" role="menuitem" id="enrich-refresh">Refresh tool readings</button>
+        <button type="button" role="menuitem" id="plan-copy" hidden>Copy plan as a note</button>
+        {% if is_staff %}
+        {# Staff only, and the endpoint behind it refuses a franchisee anyway:
+           the workflows that are on for this client and may be started by
+           hand, one item each, filled in when the menu opens. Choosing one
+           drafts a run with this ticket attached and opens it; nothing runs. #}
+        <div id="start-workflow" role="group" aria-label="Start a workflow">
+          <span class="menu-heading" id="start-workflow-heading">Start a workflow</span>
+          <div id="start-workflow-items"></div>
+        </div>
+        {% endif %}
+        <a role="menuitem" href="/tickets#how">How this page works</a>
+      </div>
+    </div>
+    {# Shown once there is something to copy, which is a staff session with a
+       suggestion on this ticket. #}
+    <button class="btn primary" id="suggestion-copy" type="button" hidden>Copy to Autotask</button>
+  </div>
+</div>
+
+<div class="tabs" role="tablist" id="ticket-tabs">
+  <button type="button" role="tab" data-tab="overview" aria-selected="true"
+          aria-controls="tab-overview" id="tab-button-overview">Overview</button>
+  <button type="button" role="tab" data-tab="readings" aria-selected="false"
+          aria-controls="tab-readings" id="tab-button-readings">Tool readings<span
+          class="count" id="readings-count"></span></button>
+  <button type="button" role="tab" data-tab="plan" aria-selected="false"
+          aria-controls="tab-plan" id="tab-button-plan">Plan<span class="count" id="plan-count"></span></button>
+  <button type="button" role="tab" data-tab="history" aria-selected="false"
+          aria-controls="tab-history" id="tab-button-history">History</button>
+</div>
+
+{# --- Overview: what Desk found, and the ticket beside it ------------------- #}
+<section id="tab-overview" class="with-rail" role="tabpanel" aria-labelledby="tab-button-overview">
+  <div class="column">
+    {# When the machine is not a confident match, that is the first thing on
+       the page and it is phrased as a question, not a panel halfway down. #}
+    <div class="question-box" id="ws-question" hidden></div>
+    <p class="small muted" id="ws-scrubbed" hidden></p>
+
+    {# The Desk note: what a note workflow built for this ticket from facts
+       read from the tools, with when each was read. In preview it has not
+       left the app — "Desk note, not posted" — and Post sends it to Autotask
+       as an internal note, Not useful dismisses it; both are the signed-in
+       engineer's and are audited. Nothing here is model text: the wording is
+       the workflow's and only the values change. #}
+    <section class="section" id="desk-notes" hidden></section>
+
+    {# What the agent made of this ticket. Inputiv staff only: the endpoint
+       behind it refuses a franchisee and the page asks for nothing unless the
+       session is staff, so their ticket page is what it always was.
+
+       On a share of tickets this asks two questions before it shows anything.
+       The engineer is not told which tickets those are or why — being told
+       changes the answer, and the answer is the only accuracy figure the gate
+       may use. #}
+    {# With no Desk block — a franchisee, or the forward shadow switched off —
+       the ticket's own words are the page's primary content rather than a
+       column of white space beside a rail. #}
+    <section class="section" id="ticket-main" hidden>
+      <h2 class="section-title">The ticket</h2>
+      <div id="ticket-main-body"></div>
+    </section>
+
+    <div id="suggestions" hidden>
+      <section class="section" id="findings-section" hidden>
+        <h2 class="section-title">What Desk found<span class="aside" id="suggestion-checked"></span></h2>
+        <p class="machine-line" id="machine-row" hidden></p>
+        {# The chooser the question opens, in place rather than elsewhere. #}
+        <div class="chooser" id="device-body" hidden></div>
+        <div class="finding-list" id="findings"></div>
+        <button type="button" class="action" id="findings-more" hidden></button>
+        <p class="small muted" id="not-assessed"></p>
+      </section>
+
+      <section class="section" id="next-step-section" hidden>
+        <p class="section-label">Suggested next step</p>
+        <div class="next-step" id="next-step"></div>
+      </section>
+
+      <section class="section" id="classification-section" hidden>
+        <h2 class="section-title">Desk read it as<span class="aside" id="suggestion-count"></span></h2>
+        {# One readable sentence with a dashed underline on each part that can
+           be changed; clicking a part opens the franchisee's own labels. #}
+        <p class="said-what" id="classification"></p>
+        <div class="said-what-actions">
+          <button type="button" class="btn" id="all-correct" hidden>✓ All correct</button>
+          <span class="small muted" id="all-correct-hint" hidden>or click any underlined part to change it</span>
+        </div>
+      </section>
+
+      <section class="section" id="blind-section" hidden>
+        <h2 class="section-title" id="blind-title">Quick check before suggestions</h2>
+        <div id="blind-questions"></div>
+      </section>
+
+      <div id="suggestion-empty" hidden></div>
+
+      <div class="card-foot" id="suggestion-foot" hidden>
+        <span class="small muted" id="card-verdict">Useful overall?</span>
+        <button type="button" class="icon" id="card-up" aria-label="This card was useful">👍</button>
+        <button type="button" class="icon" id="card-down" aria-label="This card was not useful">👎</button>
+        <span class="spacer"></span>
+        <span class="small muted" id="suggestion-actioned"></span>
+      </div>
+    </div>
+  </div>
+
+  <aside class="rail">
+    <section>
+      <p class="section-label">Ticket</p>
+      <div id="ticket-body">reading…</div>
+    </section>
+    <section id="rail-machine" hidden>
+      <p class="section-label">Machine at a glance</p>
+      <div id="machine-glance"></div>
+      <button type="button" class="action" id="readings-open"></button>
+    </section>
+    <section>
+      <p class="section-label">Plan</p>
+      <div id="rail-plan"><span class="muted" id="plan-sub">No plan yet.</span>
+        <button type="button" class="action" id="plan-generate" disabled>Generate one</button></div>
+    </section>
+  </aside>
+</section>
+
+{# --- Tool readings --------------------------------------------------------- #}
+<section id="tab-readings" role="tabpanel" aria-labelledby="tab-button-readings" hidden>
+  <p class="subtitle" id="enrich-sub"></p>
+  <div id="enrichment-body"></div>
+</section>
+
+{# --- Plan ------------------------------------------------------------------ #}
+<section id="tab-plan" role="tabpanel" aria-labelledby="tab-button-plan" hidden>
+  <div id="plan-body"></div>
+</section>
+
+{# --- History --------------------------------------------------------------- #}
+<section id="tab-history" role="tabpanel" aria-labelledby="tab-button-history" hidden>
+  <div id="history-body"></div>
+</section>
+
+{# The readings as a panel over the page, for the reader who wants them without
+   leaving what they were looking at. A real dialog: focus goes into it, Esc and
+   the scrim close it, and the keyboard goes back to the link that opened it. #}
+<div class="scrim" id="readings-scrim" hidden></div>
+<div class="slide-out" id="readings-panel" role="dialog" aria-modal="true"
+     aria-labelledby="readings-panel-title" hidden>
+  <header>
+    <h2 id="readings-panel-title">Tool readings</h2>
+    <button type="button" class="action" id="readings-close">Close</button>
+  </header>
+  <div id="readings-panel-body"></div>
+</div>
+
+<script id="ticket-ref" type="application/json">{{ ticket_ref | tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/ticket.js') }}"></script>
+{% endblock %}

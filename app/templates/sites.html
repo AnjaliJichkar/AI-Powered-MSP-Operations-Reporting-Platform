@@ -1,0 +1,58 @@
+{% extends "_base.html" %}
+{% block title %}Sites · Desk{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Sites</h1>
+    <p class="meta" id="summary"></p>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+
+{# Three figures about the customers below, each counted from the same list. #}
+<div class="kpis" id="tiles"></div>
+<details class="small how-counted section" id="tiles-how" hidden></details>
+
+<div class="section card">
+  {# Sites are discovered by sync_sites and never typed in, so there is
+     nothing to add here and no button that would suggest otherwise. The one
+     control this page has sits above the list it changes, like every other
+     page's. #}
+  <h2 class="section-title">Customers</h2>
+  <div class="filter-bar">
+    {# One tool at a time is the question the six columns used to answer all
+       at once. Asking it here keeps the table to one row per customer. #}
+    <div class="field">
+      <label for="tool-filter">Integration</label>
+      <select id="tool-filter">
+        <option value="">All tools</option>
+        <option value="ninjaone">NinjaOne</option>
+        <option value="autotask">Autotask</option>
+        <option value="bitdefender">Bitdefender</option>
+        <option value="connectsecure">ConnectSecure</option>
+        <option value="cove">Cove</option>
+        <option value="microsoft365">Microsoft 365</option>
+      </select>
+    </div>
+    <label class="inline small">
+      <input type="checkbox" id="include-inactive">
+      Show inactive
+    </label>
+  </div>
+  <div class="scroller">
+    <table id="sites">
+      <thead id="head"></thead>
+      <tbody id="rows">
+        <tr><td class="muted">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-footer"><span id="shown"></span></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/sites.js') }}"></script>
+{% endblock %}

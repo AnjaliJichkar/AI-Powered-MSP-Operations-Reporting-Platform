@@ -1,0 +1,78 @@
+{
+  "id": 1002,
+  "uid": "33333333-3333-4333-8333-000000001002",
+  "organizationId": 42,
+  "locationId": 7,
+  "nodeClass": "WINDOWS_WORKSTATION",
+  "nodeRoleId": 3,
+  "rolePolicyId": 11,
+  "approvalStatus": "APPROVED",
+  "offline": true,
+  "systemName": "TL-AUS-WS14",
+  "dnsName": "tl-aus-ws14.acme.local",
+  "created": 1750000000.0,
+  "lastContact": 1787911200.0,
+  "lastUpdate": 1787911200.0,
+  "ipAddresses": [
+    "10.20.30.14",
+    "fe80::1c2d:3e4f:5a6b:7c8d"
+  ],
+  "macAddresses": [
+    "00:1A:2B:3C:4D:14"
+  ],
+  "publicIP": "203.0.113.14",
+  "os": {
+    "manufacturer": "Microsoft Corporation",
+    "name": "Microsoft Windows 11 Pro Edition",
+    "architecture": "64-bit",
+    "lastBootTime": 1787500000.0,
+    "buildNumber": "22631",
+    "releaseId": "23H2",
+    "servicePackMajorVersion": 0,
+    "servicePackMinorVersion": 0,
+    "locale": "en-US",
+    "language": "English (United States)",
+    "needsReboot": true
+  },
+  "system": {
+    "name": "TL-AUS-WS14",
+    "manufacturer": "Dell Inc.",
+    "model": "OptiPlex 7010",
+    "biosSerialNumber": "ABC1234",
+    "serialNumber": "ABC1234",
+    "domain": "acme.local",
+    "domainRole": "Member Workstation",
+    "numberOfProcessors": 1,
+    "totalPhysicalMemory": 17179869184,
+    "virtualMachine": false,
+    "chassisType": "Desktop"
+  },
+  "memory": {
+    "capacity": 17179869184
+  },
+  "processors": [
+    {
+      "architecture": "x64",
+      "maxClockSpeed": 3400,
+      "clockSpeed": 3400,
+      "name": "12th Gen Intel(R) Core(TM) i5-12500",
+      "numCores": 6,
+      "numLogicalCores": 12
+    }
+  ],
+  "volumes": [
+    {
+      "name": "C:",
+      "label": "OS",
+      "deviceType": "Local Disk",
+      "fileSystem": "NTFS",
+      "autoMount": true,
+      "compressed": false,
+      "capacity": 511000000000,
+      "freeSpace": 20440000000,
+      "serialNumber": "1234ABCD"
+    }
+  ],
+  "lastLoggedInUser": "ACME\\sarah.chen",
+  "deviceType": "Desktop"
+}

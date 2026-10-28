@@ -1,0 +1,46 @@
+{% extends "_base.html" %}
+{% block title %}Report · Automations · Desk{% endblock %}
+
+{% block content %}
+{# The latest report a scheduled workflow built, read only. The chronic
+   devices report: machines with three or more alert tickets in the period,
+   by alert kind, with the tickets. Nothing here is written to Autotask. #}
+<div class="crumb-row">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="/automations">Automations</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span class="here" id="crumb-title">report</span>
+  </nav>
+</div>
+
+<div class="page-head">
+  <div>
+    <h1 id="title">Report</h1>
+    <p class="meta" id="subtitle"><span>loading…</span></p>
+  </div>
+  <div class="row gap8">
+    <a class="btn secondary" id="workflow-link" href="/automations">Workflow</a>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+<div class="notice" id="notice" hidden></div>
+
+<div class="section card">
+  <div class="scroller"><table class="table" id="devices"></table></div>
+</div>
+
+<details class="section how" id="how">
+  <summary>How this works</summary>
+  <ul class="small">
+    <li>Built every 30 days from the alert tickets, each matched to its device.</li>
+    <li>A device is listed at three or more alert tickets.</li>
+    <li>A page in Desk. Nothing is written to Autotask.</li>
+  </ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script>window.DESK.workflowName = {{ workflow_name | tojson }};</script>
+<script src="{{ asset('js/automation_report.js') }}"></script>
+{% endblock %}

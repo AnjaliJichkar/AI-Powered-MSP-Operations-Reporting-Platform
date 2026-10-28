@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "id": 7003,
+      "ticketID": 424242,
+      "title": "Not ours",
+      "description": "Belongs to another company's ticket.",
+      "noteType": 1,
+      "publish": 1,
+      "createDateTime": "2026-09-14T12:00:00Z",
+      "creatorResourceID": 501
+    }
+  ],
+  "pageDetails": {
+    "count": 1,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

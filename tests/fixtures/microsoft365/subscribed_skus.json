@@ -1,0 +1,29 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#subscribedSkus",
+  "value": [
+    {
+      "id": "aaaa_6fd2c87f-b296-42f0-b197-1e91e994b900",
+      "skuId": "6fd2c87f-b296-42f0-b197-1e91e994b900",
+      "skuPartNumber": "ENTERPRISEPACK",
+      "capabilityStatus": "Enabled",
+      "consumedUnits": 18,
+      "prepaidUnits": {"enabled": 25, "suspended": 0, "warning": 0}
+    },
+    {
+      "id": "aaaa_f30db892-07e9-47e9-837c-80727f46fd3d",
+      "skuId": "f30db892-07e9-47e9-837c-80727f46fd3d",
+      "skuPartNumber": "FLOW_FREE",
+      "capabilityStatus": "Enabled",
+      "consumedUnits": 3,
+      "prepaidUnits": {"enabled": 10000, "suspended": 0, "warning": 0}
+    },
+    {
+      "id": "aaaa_c5928f49-12ba-48f7-ada3-0d743a3601d5",
+      "skuId": "c5928f49-12ba-48f7-ada3-0d743a3601d5",
+      "skuPartNumber": "VISIOCLIENT",
+      "capabilityStatus": "Warning",
+      "consumedUnits": 4,
+      "prepaidUnits": {"enabled": 2, "suspended": 0, "warning": 2}
+    }
+  ]
+}

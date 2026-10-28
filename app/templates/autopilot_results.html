@@ -1,0 +1,174 @@
+{% extends "_base.html" %}
+{% block title %}Autopilot · Desk</div>
+{% endblock %}
+
+{% block content %}
+{# What the shadow runs say, read against the gate. Read only, all the way
+   down: there is no button here that starts, stops or changes a run, and the
+   router behind the page holds no state-changing route to put one on. The
+   forward-shadow switch is reported in the subtitle as a **status** naming the
+   setting that turns it on, because a page somebody can start a live poll from
+   is a page somebody starts a live poll from by accident.
+
+   The page answers one question above the fold — may the agent act yet — in a
+   sentence, four rows and the one comparison that decides it. Everything that
+   is working rather than answer is behind a tab.
+
+   Every figure carries the definition the server sent with it, on hover and in
+   the figure's own title, for the reason the ticket statistics do: a definition
+   written on the page and a number computed on the server drift apart. #}
+<div class="page-head">
+  <div>
+    <h1>Autopilot</h1>
+    <p class="meta" id="subtitle"><span>loading…</span></p>
+  </div>
+  <div class="row gap8">
+    <div class="menu">
+      <button type="button" class="btn" id="more-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="more-list">More ▾</button>
+      <div class="menu-list wide" id="more-list" role="menu" hidden>
+        <label class="field">
+          <span>Run</span>
+          <select id="run"><option value="">Loading…</option></select>
+        </label>
+        <label class="field">
+          <span>Compare with</span>
+          <select id="against"><option value="">Just this run</option></select>
+        </label>
+        <p class="small muted">Read only. Nothing here starts, stops or changes a run.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+
+{# The answer to the only question this page is asked. One sentence, and the
+   next thing somebody would do about it. #}
+{# The verdict and the criteria behind it are one thing, so they are one card:
+   the sentence, then the rows it was decided from. #}
+<div class="section card">
+  <div id="headline" hidden>
+    <p class="headline-sentence" id="headline-sentence"></p>
+    <p class="small" id="headline-next" hidden></p>
+  </div>
+
+  {# The four criteria, as rows: what it is, where it stands against its
+     target, and the one word for how it is doing. #}
+  <div class="list" id="gate"></div>
+
+{# The gap the whole measurement rests on: an engineer who has read a
+   suggestion is agreeing with it, and only the blind answer says whether it
+   was right. Both numbers, on one line, so the distance between them is on the
+   page rather than in somebody's head. #}
+<p class="gap-line" id="gap-line" hidden></p>
+
+{# While the sample is unfinished this is the next thing to do, so it stays on
+   the main view rather than behind a tab. #}
+<p class="small" id="labelling-line" hidden></p>
+</div>
+
+<div class="section card">
+<div class="tabs" role="tablist" id="results-tabs">
+  <button type="button" role="tab" data-tab="live" aria-selected="true"
+          aria-controls="tab-live" id="tab-button-live">Live reviews</button>
+  <button type="button" role="tab" data-tab="past" aria-selected="false"
+          aria-controls="tab-past" id="tab-button-past">Past tickets</button>
+  <button type="button" role="tab" data-tab="findings" aria-selected="false"
+          aria-controls="tab-findings" id="tab-button-findings">Findings</button>
+  <button type="button" role="tab" data-tab="cost" aria-selected="false"
+          aria-controls="tab-cost" id="tab-button-cost">Cost</button>
+</div>
+
+{# --- Live reviews: what is happening on tickets now ------------------------ #}
+<section id="tab-live" role="tabpanel" aria-labelledby="tab-button-live">
+  <p class="meta" id="live-sub"></p>
+  <div id="live-body"></div>
+  <div class="section" id="readiness">
+    <h2 class="section-title">Level 1 readiness<span class="aside">reported, never gated</span></h2>
+    <div id="readiness-body"></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">The forward shadow<span class="aside" id="forward-switch"></span></h2>
+    <div id="forward-body"></div>
+  </div>
+</section>
+
+{# --- Past tickets: the replay, and everything read off it ------------------ #}
+<section id="tab-past" role="tabpanel" aria-labelledby="tab-button-past" hidden>
+  <div class="section">
+    <h2 class="section-title">Accuracy and coverage at each confidence<span class="aside" id="past-summary"></span></h2>
+    <p class="small muted">The tuning period is where a threshold may be chosen; the test period is read once, afterwards.</p>
+    <div id="thresholds"></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">Where the answers were right and wrong<span class="aside" id="breakdown-sub"></span></h2>
+    <div id="breakdown"></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">Where the tickets came from</h2>
+    <p class="small muted">What people judged is the measurement; the two proxies are stand-ins and are named as such.</p>
+    <div id="origin"></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">Grouping</h2>
+    <p class="small muted">How much the run joined, and what the spot-check made of it.</p>
+    <div id="grouping"></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">The ten most confident errors<span class="aside">ticket ids only</span></h2>
+    <div id="errors"></div>
+  </div>
+  <div class="section" id="compare" hidden>
+    <h2 class="section-title">Two runs, same period<span class="aside" id="compare-sub"></span></h2>
+    <div class="notice" id="compare-differs" hidden></div>
+    <div id="compare-body"></div>
+  </div>
+</section>
+
+{# --- Findings: which of them earn their place ------------------------------ #}
+<section id="tab-findings" role="tabpanel" aria-labelledby="tab-button-findings" hidden>
+  <p class="small muted">How often each kind was on a card, and how often an engineer said it was worth the space. This is what decides which to keep, reword or drop.</p>
+  <div id="findings-body"></div>
+</section>
+
+{# --- Cost: what each run spent -------------------------------------------- #}
+<section id="tab-cost" role="tabpanel" aria-labelledby="tab-button-cost" hidden>
+  <div class="section">
+    <h2 class="section-title">This run<span class="aside">fresh input, cached input and output are three prices, so they are three numbers</span></h2>
+    <div id="cost"></div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">Every run on this client<span class="aside" id="runs-sub"></span></h2>
+    <div class="scroller">
+      <table id="runs">
+        <thead><tr>
+          <th>Started</th><th>Mode</th><th>Variant</th><th>Model</th><th>Prompt</th>
+          <th class="num">Tickets</th><th class="num">By rule</th><th class="num">Errors</th>
+          <th>State</th><th class="num">Cost</th>
+        </tr></thead>
+        <tbody><tr><td colspan="10" class="muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+{# One link, and how the page decides behind it. #}
+<details class="section" id="how">
+  <summary>How this page decides</summary>
+  <ul class="small">
+    <li><strong>Accuracy is always printed beside coverage.</strong> A threshold trades one for the other, so either number alone can be made to look like anything. A ticket the agent declined is out of the accuracy denominator and counted against coverage: declining is not a wrong answer, and it is not a free one either.</li>
+    <li><strong>The threshold is chosen on the development period by a rule fixed in advance</strong> — the lowest threshold where accuracy is at least 88% and coverage at least 40% — and then read on the holdout. The chart marks it. Choosing it by looking at the holdout reads about three points higher and means nothing.</li>
+    <li><strong>A proxy is not a score.</strong> Where a ticket came from has no ground truth in any table we hold, so the gate is read against the labelled sample and nothing else. The unassigned-ticket and alert-queue agreements are shown because they are informative and are labelled as proxies every time.</li>
+    <li><strong>Not measured is its own verdict.</strong> It means the evidence is not there yet and says what is missing — "labelling 0 of 200" — rather than being folded into a fail.</li>
+    <li><strong>Approval is not accuracy.</strong> An engineer who has read a suggestion is agreeing with it; only a blind answer says whether it was right. Both are on the page, a line apart, and only the blind one is read by the gate.</li>
+    <li><strong>Nothing on this page changes anything.</strong> The forward shadow's switch is a setting a person edits; this page reports which way it is set and what it has seen.</li>
+    <li><strong>Every number has its definition on hover</strong>, sent by the server beside the number it describes.</li>
+  </ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/charts.js') }}"></script>
+<script src="{{ asset('js/autopilot_results.js') }}"></script>
+{% endblock %}

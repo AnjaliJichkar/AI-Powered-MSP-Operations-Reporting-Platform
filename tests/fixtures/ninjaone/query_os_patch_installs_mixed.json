@@ -1,0 +1,87 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0002",
+    "offset": 0,
+    "count": null,
+    "expires": 1789656609.35
+  },
+  "results": [
+    {
+      "id": "88888888-8888-4888-8888-000000000001",
+      "name": "2026-09 Cumulative Update for Windows 11 Version 23H2 (KB5060000)",
+      "severity": "IMPORTANT",
+      "status": "FAILED",
+      "type": "SECURITY_UPDATES",
+      "installedAt": 1788700000.0,
+      "deviceId": 1002,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060000"
+    },
+    {
+      "id": "88888888-8888-4888-8888-000000000002",
+      "name": "2026-09 Cumulative Update for Windows Server 2022 (KB5060001)",
+      "severity": "IMPORTANT",
+      "status": "FAILED",
+      "type": "SECURITY_UPDATES",
+      "installedAt": 1788750000.0,
+      "deviceId": 1001,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060001"
+    },
+    {
+      "id": "88888888-8888-4888-8888-000000000003",
+      "name": "Intel - Net - 1.2.3.4",
+      "severity": "OPTIONAL",
+      "status": "FAILED",
+      "type": "DRIVER_UPDATES",
+      "installedAt": 1788600000.0,
+      "deviceId": 1002,
+      "timestamp": 1788780600.0,
+      "kbNumber": ""
+    },
+    {
+      "id": "88888888-8888-4888-8888-000000000101",
+      "name": "2026-09 Cumulative Update for Windows 11 Version 23H2 (KB5060000)",
+      "severity": "IMPORTANT",
+      "status": "INSTALLED",
+      "type": "SECURITY_UPDATES",
+      "installedAt": 1788710000.0,
+      "deviceId": 1003,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060000"
+    },
+    {
+      "id": "88888888-8888-4888-8888-000000000102",
+      "name": "2026-09 Cumulative Update for Windows 11 Version 23H2 (KB5060000)",
+      "severity": "IMPORTANT",
+      "status": "INSTALLED",
+      "type": "SECURITY_UPDATES",
+      "installedAt": 1788720000.0,
+      "deviceId": 1005,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060000"
+    },
+    {
+      "id": "88888888-8888-4888-8888-000000000103",
+      "name": "Security Intelligence Update for Microsoft Defender Antivirus",
+      "severity": "NONE",
+      "status": "INSTALLED",
+      "type": "UNKNOWN",
+      "installedAt": 1788730000.0,
+      "deviceId": 1001,
+      "timestamp": 1788780600.0,
+      "kbNumber": ""
+    },
+    {
+      "id": "88888888-8888-4888-8888-000000000104",
+      "name": "2026-09 .NET Framework Rollup (KB5060002)",
+      "severity": "IMPORTANT",
+      "status": "INSTALLED",
+      "type": "UPDATE_ROLLUPS",
+      "installedAt": 1788740000.0,
+      "deviceId": 1003,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060002"
+    }
+  ]
+}

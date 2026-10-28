@@ -1,0 +1,44 @@
+[
+  {
+    "uid": "11111111-1111-4111-8111-000000000001",
+    "deviceId": 1002,
+    "message": "Device has not checked in for 10 days",
+    "subject": "Agent offline",
+    "createTime": 1787918400.0,
+    "updateTime": 1787918400.0,
+    "sourceType": "CONDITION_AGENT_OFFLINE",
+    "sourceName": "Agent Offline",
+    "severity": "MAJOR",
+    "priority": "HIGH",
+    "conditionName": "Agent Offline",
+    "device": {
+      "id": 1002,
+      "organizationId": 42,
+      "locationId": 7,
+      "systemName": "TL-AUS-WS14",
+      "displayName": "TL-AUS-WS14",
+      "nodeClass": "WINDOWS_WORKSTATION"
+    }
+  },
+  {
+    "uid": "11111111-1111-4111-8111-000000000002",
+    "deviceId": 1003,
+    "message": "Volume C: is at 96% capacity",
+    "subject": "Low disk space",
+    "createTime": 1788760800.0,
+    "updateTime": 1788760800.0,
+    "sourceType": "CONDITION_AGENT_OFFLINE",
+    "sourceName": "Disk Free Space",
+    "severity": "MODERATE",
+    "priority": "MEDIUM",
+    "conditionName": "Disk Free Space",
+    "device": {
+      "id": 1003,
+      "organizationId": 42,
+      "locationId": 7,
+      "systemName": "TL-AUS-WS22",
+      "displayName": "TL-AUS-WS22",
+      "nodeClass": "WINDOWS_WORKSTATION"
+    }
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "items": [
+    {
+      "id": 9201,
+      "ticketNumber": "T20260901.0201",
+      "title": "Cannot open Outlook",
+      "description": "Reported by the site contact. Outlook disconnects every morning.",
+      "status": 5,
+      "priority": 3,
+      "companyID": 77,
+      "configurationItemID": 4001,
+      "contactID": 601,
+      "assignedResourceID": 501,
+      "queueID": 8,
+      "createDate": "2026-09-01T09:00:00Z",
+      "lastActivityDate": "2026-09-02T10:00:00Z",
+      "dueDateTime": "2026-09-30T12:00:00Z",
+      "completedDate": "2026-09-02T10:00:00Z",
+      "resolution": null,
+      "firstResponseDueDateTime": null,
+      "firstResponseDateTime": "2026-09-01T09:00:00Z",
+      "resolvedDueDateTime": null,
+      "resolvedDateTime": "2026-09-02T10:00:00Z",
+      "serviceLevelAgreementID": 3
+    },
+    {
+      "id": 9202,
+      "ticketNumber": "T20260915.0202",
+      "title": "Outlook again",
+      "description": "Reported by the site contact. Outlook disconnects every morning.",
+      "status": 8,
+      "priority": 2,
+      "companyID": 77,
+      "configurationItemID": 4001,
+      "contactID": 601,
+      "assignedResourceID": 501,
+      "queueID": 8,
+      "createDate": "2026-09-15T09:00:00Z",
+      "lastActivityDate": "2026-09-15T09:00:00Z",
+      "dueDateTime": "2026-09-30T12:00:00Z",
+      "completedDate": null,
+      "resolution": null,
+      "firstResponseDueDateTime": null,
+      "firstResponseDateTime": "2026-09-15T09:00:00Z",
+      "resolvedDueDateTime": null,
+      "resolvedDateTime": null,
+      "serviceLevelAgreementID": 3
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

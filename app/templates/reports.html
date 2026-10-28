@@ -1,0 +1,49 @@
+{# Business reviews.
+
+   Two audiences read this page and they are not shown the same thing. Inputiv
+   staff see a review while it is being made: drafts, findings held for a second
+   tool, the fact-id trace under every sentence, and the internal and demo
+   decks. A franchisee sees a review only once it has been released, and then
+   only the words their customer's own deck says.
+
+   The two are separate render paths in reports.js rather than one view with
+   parts switched off, so a control that could only ever earn a refusal is never
+   drawn and a field the released shape does not carry is never read.
+
+   The page is a skeleton on purpose. Which shape comes back is the endpoint's
+   decision — it resolves the session itself — so the controls and the review
+   are both written from what it returned, and this template decides nothing. #}
+{% extends "_base.html" %}
+
+{% block title %}Reports · Desk{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Business reviews</h1>
+    <p class="meta" id="lede"></p>
+  </div>
+</div>
+
+<div class="notice" id="message" hidden></div>
+
+{# What this client has: three figures counted from the list of reviews. #}
+<div class="kpis" id="tiles"></div>
+{# How a review is made, behind one link. It was four lines across the top of
+   the page, which is a method nobody asked for in front of the work. #}
+<details class="small how-counted section" id="tiles-how" hidden></details>
+
+{# The toolbars: generating and rendering for staff, the picker alone for a
+   franchisee. Written by the script, which knows which audience it is for.
+   On a card, because they are controls over the review below them and not
+   four boxes loose on the page. #}
+<div class="section card">
+  <div id="controls" class="stack"></div>
+</div>
+
+<div id="review" class="stack"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/reports.js') }}"></script>
+{% endblock %}

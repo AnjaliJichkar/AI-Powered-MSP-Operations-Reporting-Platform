@@ -1,0 +1,67 @@
+# Disk space: when a disk-space alert arrives, read every volume's free space
+# and size, whether the machine is online, and how often it has alerted for
+# disk in the last thirty days. The volumes are the core fact; the state and
+# the count are one line each when they could not be read.
+name: disk_space
+title: Disk space
+version: 1
+kind: note
+description: When a disk-space alert arrives, read every volume's free space and size, whether the machine is online, and how often it has alerted for disk in the last thirty days.
+note_mode: preview
+
+triggers:
+  - key: disk_alert
+    kind: alert
+    title: a disk space alert
+    rule:
+      source: Monitoring Alert
+      title_contains_any: [disk space, disk free, low disk, free space, volume full]
+
+steps:
+  - id: device
+    action: devices.resolve
+    inputs:
+      ticket: "{ticket.self}"
+  - id: volumes
+    action: ninjaone.read_volumes
+    inputs:
+      device: "{steps.device.device}"
+    when:
+      value: "{steps.device.confident}"
+      equals: true
+  - id: state
+    action: ninjaone.read_device
+    title: "NinjaOne: device status, last contact"
+    inputs:
+      device: "{steps.device.device}"
+    when:
+      - value: "{steps.device.confident}"
+        equals: true
+      - value: "{steps.volumes.ok}"
+        equals: true
+  - id: history
+    action: autotask.find_related_tickets
+    title: "Autotask: the device's disk alerts, last 30 days"
+    inputs:
+      device: "{steps.device.device}"
+      days: 30
+    when:
+      - value: "{steps.device.confident}"
+        equals: true
+      - value: "{steps.volumes.ok}"
+        equals: true
+  - id: compose
+    action: notes.disk_space
+    inputs:
+      ticket: "{ticket.self}"
+      device: "{steps.device.device}"
+      volumes: "{steps.volumes.read}"
+      state: "{steps.state.read}"
+      history: "{steps.history.read}"
+  - id: post
+    action: autotask.add_note
+    inputs:
+      ticket_id: "{ticket.id}"
+      note: "{steps.compose.note}"
+
+writes: "<volume>: <free> GB free of <size> GB (<percent>%). … Device is <online|offline> (last contact <time>). <n> disk alerts on this device in 30 days. [when above 2]"

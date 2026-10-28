@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1001,
+    "uid": "00000000-0000-4000-8000-000000001001",
+    "organizationId": 42,
+    "locationId": 7,
+    "nodeClass": "WINDOWS_SERVER",
+    "offline": false,
+    "systemName": "TL-AUS-DC01",
+    "displayName": "TL-AUS-DC01",
+    "dnsName": "tl-aus-dc01.example.internal",
+    "created": 1754222400.0,
+    "lastContact": 1788780600.0,
+    "lastUpdate": 1788780600.0,
+    "approvalStatus": "APPROVED",
+    "tags": []
+  },
+  {
+    "id": 1002,
+    "uid": "00000000-0000-4000-8000-000000001002",
+    "organizationId": 42,
+    "locationId": 7,
+    "nodeClass": "WINDOWS_WORKSTATION",
+    "offline": true,
+    "systemName": "TL-AUS-WS14",
+    "displayName": "TL-AUS-WS14",
+    "dnsName": "tl-aus-ws14.example.internal",
+    "created": 1754222400.0,
+    "lastContact": 1787911200.0,
+    "lastUpdate": 1787911200.0,
+    "approvalStatus": "APPROVED",
+    "tags": []
+  }
+]

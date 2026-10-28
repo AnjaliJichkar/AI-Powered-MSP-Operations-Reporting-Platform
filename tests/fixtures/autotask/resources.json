@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "id": 501,
+      "firstName": "Dana",
+      "lastName": "Okafor",
+      "email": "dana.okafor@example.invalid",
+      "isActive": true,
+      "userName": "dan.p",
+      "title": "Service Desk Engineer",
+      "resourceType": "Employee"
+    },
+    {
+      "id": 502,
+      "firstName": "Sam",
+      "lastName": "Ellis",
+      "email": "sam.ellis@example.invalid",
+      "isActive": true,
+      "userName": "mia.r",
+      "title": "L3 Engineer",
+      "resourceType": "Employee"
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

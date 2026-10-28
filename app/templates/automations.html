@@ -1,0 +1,83 @@
+{% extends "_base.html" %}
+{% block title %}Automations · Desk{% endblock %}
+
+{% block content %}
+{# The workflows for this client with their switches and modes, the runs, the
+   notes. Inputiv staff only: the endpoints behind this page refuse a
+   franchisee, and the nav never shows them the entry. Nothing on this page
+   runs a step — a run is drafted here and done by the worker. #}
+<div class="page-head">
+  <div>
+    <h1>Automations</h1>
+    <p class="meta" id="summary"><span>loading…</span></p>
+  </div>
+  <div class="row gap8">
+    <button type="button" class="btn primary" id="start" hidden>Start practice run</button>
+    <div class="menu">
+      <button type="button" class="btn secondary" id="more-button" aria-expanded="false"
+              aria-haspopup="true" aria-controls="more-list">More ▾</button>
+      <div class="menu-list" id="more-list" role="menu" hidden>
+        <button type="button" role="menuitem" id="halt">Pause all</button>
+        <button type="button" role="menuitem" id="clear-halt" hidden>Resume all</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+<div class="notice" id="halted" hidden></div>
+
+{# The tabs and whatever they show sit on one card, as every other
+   page's list does. #}
+<div class="section card">
+  <div class="tabs" role="tablist" id="automation-tabs">
+    <button type="button" role="tab" data-tab="workflows" aria-selected="true"
+            aria-controls="tab-workflows" id="tab-button-workflows">Workflows</button>
+    <button type="button" role="tab" data-tab="runs" aria-selected="false"
+            aria-controls="tab-runs" id="tab-button-runs">Runs<span class="count" id="runs-count"></span></button>
+    <button type="button" role="tab" data-tab="notes" aria-selected="false"
+            aria-controls="tab-notes" id="tab-button-notes">Notes<span class="count" id="notes-count"></span></button>
+  </div>
+  <section id="tab-workflows" role="tabpanel" aria-labelledby="tab-button-workflows">
+    <div class="list" id="workflows"></div>
+  </section>
+  <section id="tab-runs" role="tabpanel" aria-labelledby="tab-button-runs" hidden>
+    <div class="list" id="runs"></div>
+    {# The trigger log answers "why did that ticket not start a run"; read far
+       less often than the runs, so it sits behind a disclosure under them. #}
+    <details class="section" id="trigger-log-details">
+      <summary>Trigger log<span class="count" id="triggers-count"></span></summary>
+      <div class="list" id="trigger-log"></div>
+    </details>
+  </section>
+  <section id="tab-notes" role="tabpanel" aria-labelledby="tab-button-notes" hidden>
+    <div class="tabs" role="tablist" id="notes-tabs">
+      <button type="button" role="tab" data-notes-tab="workflow" aria-selected="true"
+              aria-controls="notes-by-workflow-panel">By workflow</button>
+      <button type="button" role="tab" data-notes-tab="week" aria-selected="false"
+              aria-controls="notes-by-week-panel">By week</button>
+    </div>
+    <div id="notes-by-workflow-panel" role="tabpanel">
+      <div class="scroller"><table class="table" id="notes-by-workflow"></table></div>
+    </div>
+    <div id="notes-by-week-panel" role="tabpanel" hidden>
+      <div class="scroller"><table class="table" id="notes-by-week"></table></div>
+    </div>
+  </section>
+</div>
+
+<details class="section how" id="how">
+  <summary>How this works</summary>
+  <ul class="small">
+    <li>A workflow is fixed steps in code. No AI.</li>
+    <li>A run needs a dry run and the client's approval first.</li>
+    <li>A note is built from tool readings and posted as its mode says.</li>
+    <li>Pause all stops new runs and all posting.</li>
+    <li>Every step is on the audit log.</li>
+  </ul>
+</details>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/automations.js') }}"></script>
+{% endblock %}

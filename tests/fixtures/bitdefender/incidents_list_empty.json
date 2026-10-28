@@ -1,0 +1,11 @@
+{
+  "id": "0df7568c-59c1-48e0-a31b-18d83e6d9810",
+  "jsonrpc": "2.0",
+  "result": {
+    "total": 0,
+    "page": 1,
+    "perPage": 100,
+    "pagesCount": 0,
+    "items": []
+  }
+}

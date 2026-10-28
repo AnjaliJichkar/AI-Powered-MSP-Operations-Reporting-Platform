@@ -1,0 +1,54 @@
+# Device back online: when a device-down alert arrives, read whether the
+# machine is back, when it was last seen and last booted, and whether anything
+# else is alerting on it. The device's state is the core fact; the open alerts
+# are one line when they could not be read.
+name: device_online
+title: Device back online
+version: 1
+kind: note
+description: When a device-down alert arrives, read whether the machine is back, when it was last seen and last booted, and whether anything else is alerting on it, so the engineer opens the ticket knowing whether there is still a problem.
+note_mode: preview
+
+triggers:
+  - key: down_alert
+    kind: alert
+    title: a device or server down alert
+    rule:
+      source: Monitoring Alert
+      title_contains_any: [offline, device down, server down, not responding, unreachable, no contact]
+
+steps:
+  - id: device
+    action: devices.resolve
+    inputs:
+      ticket: "{ticket.self}"
+  - id: state
+    action: ninjaone.read_device
+    inputs:
+      device: "{steps.device.device}"
+    when:
+      value: "{steps.device.confident}"
+      equals: true
+  - id: alerts
+    action: ninjaone.read_open_alerts
+    inputs:
+      device: "{steps.device.device}"
+    when:
+      - value: "{steps.device.confident}"
+        equals: true
+      - value: "{steps.state.ok}"
+        equals: true
+  - id: compose
+    action: notes.device_online
+    inputs:
+      ticket: "{ticket.self}"
+      device: "{steps.device.device}"
+      state: "{steps.state.read}"
+      alerts: "{steps.alerts.read}"
+  - id: post
+    action: autotask.add_note
+    inputs:
+      ticket_id: "{ticket.id}"
+      note: "{steps.compose.note}"
+
+writes: "Device <device> is back online: last contact <time> (alert raised <time>, down about <n> min). Last boot <time>. No other open alerts. — or — Device <device> is still offline: last contact <time> (about <n> min ago). Last boot <time>."

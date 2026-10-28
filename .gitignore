@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Environment — never commit real credentials
+.env
+.env.*
+!.env.example
+
+# Local
+*.log
+.DS_Store
+
+.claude/
+.gstack/
+
+# Rendered reports hold customer data.
+var/
+
+# customer reference material, never committed
+docs/reference/*_report.pdf

@@ -1,0 +1,20 @@
+# Chronic devices report: every thirty days, the machines with three or more
+# alert tickets in the period, by alert kind, with the tickets. A page in
+# Desk; nothing is written to Autotask.
+name: chronic_devices
+title: Chronic devices report
+version: 1
+kind: report
+description: Monthly, the machines with three or more alert tickets in the last thirty days, by alert kind, with the tickets. A page in Desk; nothing is written to Autotask.
+
+triggers:
+  - key: monthly
+    kind: schedule
+    title: a monthly report
+    every: 30 days
+
+steps:
+  - id: report
+    action: reports.chronic_devices
+
+writes: "A table per device: alert kind, ticket count, the tickets with status."

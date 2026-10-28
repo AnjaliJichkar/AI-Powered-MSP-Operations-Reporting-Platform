@@ -1,0 +1,78 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0001",
+    "offset": 0,
+    "count": null,
+    "expires": 1789656609.354843
+  },
+  "results": [
+    {
+      "id": "44444444-4444-4444-8444-000000000001",
+      "name": "2026-09 Cumulative Update for Windows 11 (KB5060000)",
+      "severity": "IMPORTANT",
+      "status": "APPROVED",
+      "type": "SECURITY_UPDATES",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060000"
+    },
+    {
+      "id": "44444444-4444-4444-8444-000000000002",
+      "name": "2026-09 Cumulative Update for Windows 11 (KB5060000)",
+      "severity": "IMPORTANT",
+      "status": "APPROVED",
+      "type": "SECURITY_UPDATES",
+      "deviceId": 1003,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060000"
+    },
+    {
+      "id": "44444444-4444-4444-8444-000000000003",
+      "name": "2026-09 Cumulative Update for Windows Server (KB5060001)",
+      "severity": "CRITICAL",
+      "status": "APPROVED",
+      "type": "SECURITY_UPDATES",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060001"
+    },
+    {
+      "id": "44444444-4444-4444-8444-000000000004",
+      "name": "Intel - Net - 1.2.3.4",
+      "severity": "OPTIONAL",
+      "status": "REJECTED",
+      "type": "DRIVER_UPDATES",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "id": "44444444-4444-4444-8444-000000000005",
+      "name": "Realtek - Audio - 6.0.9",
+      "severity": "OPTIONAL",
+      "status": "MANUAL",
+      "type": "DRIVER_UPDATES",
+      "deviceId": 1005,
+      "timestamp": 1788780600.0
+    },
+    {
+      "id": "44444444-4444-4444-8444-000000000006",
+      "name": "Security Intelligence Update for Microsoft Defender Antivirus (KB2267602)",
+      "severity": "IMPORTANT",
+      "status": "APPROVED",
+      "type": "DEFINITION_UPDATES",
+      "deviceId": 1005,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB2267602"
+    },
+    {
+      "id": "44444444-4444-4444-8444-000000000007",
+      "name": "2026-09 .NET Framework Rollup (KB5060002)",
+      "severity": "IMPORTANT",
+      "status": "APPROVED",
+      "type": "UPDATE_ROLLUPS",
+      "deviceId": 1003,
+      "timestamp": 1788780600.0,
+      "kbNumber": "KB5060002"
+    }
+  ]
+}

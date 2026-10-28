@@ -1,0 +1,34 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0002",
+    "offset": 0,
+    "count": 4,
+    "expires": 1789656609.35
+  },
+  "results": [
+    {
+      "deviceId": 1001,
+      "fields": {
+        "assetTag": "ACME-0001"
+      }
+    },
+    {
+      "deviceId": 1002,
+      "fields": {
+        "assetTag": "ACME-0014"
+      }
+    },
+    {
+      "deviceId": 1003,
+      "fields": {
+        "assetTag": null
+      }
+    },
+    {
+      "deviceId": 1005,
+      "fields": {
+        "assetTag": ""
+      }
+    }
+  ]
+}

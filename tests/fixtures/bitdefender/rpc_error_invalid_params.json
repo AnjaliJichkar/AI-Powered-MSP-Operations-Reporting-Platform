@@ -1,0 +1,11 @@
+{
+  "id": "abc123",
+  "jsonrpc": "2.0",
+  "error": {
+    "code": -32602,
+    "message": "Invalid params",
+    "data": {
+      "details": "Invalid value for 'filters[status]' parameter: ' . bogus . '. The value should be a string or an array of a combination of these strings: open, closed, in_progress, false_positive, closed_mdr_reviewed"
+    }
+  }
+}

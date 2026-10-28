@@ -1,0 +1,63 @@
+{
+  "lastActivityId": 990004,
+  "lastNodeActivityId": 990004,
+  "activities": [
+    {
+      "id": 990004,
+      "activityTime": 1788779000.0,
+      "deviceId": 1002,
+      "activityType": "NINJA_REMOTE",
+      "statusCode": "COMPLETED",
+      "status": "Session terminated",
+      "message": "Remote control session ended by technician",
+      "type": "NinjaOne Remote"
+    },
+    {
+      "id": 990003,
+      "activityTime": 1788778000.0,
+      "deviceId": 1002,
+      "activityType": "NINJA_REMOTE",
+      "statusCode": "STARTED",
+      "status": "Session started",
+      "message": "Remote control session started",
+      "type": "NinjaOne Remote",
+      "data": {
+        "message": {
+          "code": "remote_session_started",
+          "params": {
+            "user": "tech@example.invalid"
+          }
+        }
+      }
+    },
+    {
+      "id": 990002,
+      "activityTime": 1788700000.0,
+      "deviceId": 1002,
+      "activityType": "ACTION",
+      "statusCode": "SOFTWARE_UPDATED",
+      "status": "Software Updated",
+      "message": "Google Chrome updated to 129.0.6668.59",
+      "type": "Action",
+      "data": {
+        "message": {
+          "code": "software_updated",
+          "params": {
+            "software_name": "Google Chrome",
+            "version": "129.0.6668.59"
+          }
+        }
+      }
+    },
+    {
+      "id": 990001,
+      "activityTime": 1788600000.0,
+      "deviceId": 1002,
+      "activityType": "MONITOR",
+      "statusCode": "COMPLETED",
+      "status": "Completed",
+      "message": "Disk Free Space condition cleared",
+      "type": "Monitor"
+    }
+  ]
+}

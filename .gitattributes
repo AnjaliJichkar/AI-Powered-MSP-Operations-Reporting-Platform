@@ -1,0 +1,9 @@
+# Workflow definitions are LF on every machine, in the repository and in the
+# working tree, whatever `core.autocrlf` is set to. They are read by the
+# engine and reviewed as text, so a diff between two checkouts should be a
+# diff in the workflow and never in the line endings.
+#
+# Nothing depends on this: a definition's hash is of its parsed, canonical
+# form (`app/automation/library.py`), so the same definition hashes the same
+# whatever bytes a checkout wrote. This keeps the files themselves one thing.
+app/automation/definitions/*.yaml text eol=lf

@@ -1,0 +1,76 @@
+{% extends "_base.html" %}
+{% block title %}Integrations · Desk{% endblock %}
+
+{% block content %}
+{# Which tools this franchisee is on, and when each last answered.
+
+   Nothing on this page calls a vendor. Every figure is a row we wrote at the
+   time: a credential exists or it does not, so many customers are mapped, and
+   a read succeeded or failed on a date. A button that checked all six live
+   would answer about this moment rather than about the work the product does,
+   and would make opening a page six vendor calls deep. #}
+<div class="page-head">
+  <div>
+    <h1>Integrations</h1>
+    <p class="meta" id="summary"></p>
+  </div>
+</div>
+
+<div class="notice bad" id="error" hidden></div>
+
+<div class="kpis" id="tiles"></div>
+
+<div class="list-head integrations-head">
+  <h2 class="section-title">Tools</h2>
+  {# Six cards is where a page stops being a list you can see at once. The box
+     is drawn only when there are enough of them to be worth searching. #}
+  <label class="search" id="search-box" hidden>
+    <span class="visually-hidden">Search integrations</span>
+    <input class="input search-input" type="search" id="search"
+           placeholder="Search integrations" autocomplete="off" spellcheck="false">
+  </label>
+</div>
+
+<div class="integration-grid" id="cards">
+  <p class="muted">Loading…</p>
+</div>
+
+<details class="section" id="how">
+  <summary>How this page decides</summary>
+  <ul class="small">
+    <li><strong>Set up</strong> means a credential for this franchisee exists for that
+      connector. It says nothing about whether the credential still works.</li>
+    <li><strong>Customers mapped</strong> is how many of this franchisee's end customers
+      have an organisation mapped on that tool. They are discovered by the site sync and
+      never typed in — except Microsoft 365, where each customer's tenant is mapped by
+      hand, because a directory token cannot enumerate the others.</li>
+    <li><strong>Answering</strong> means the most recent read of that tool succeeded, and
+      <strong>Failing</strong> that every read of it in the window did not. Both are facts
+      about reads we made, not a check run when this page loads; a tool nobody has asked
+      anything of reads as "no reads", which is what it is rather than a verdict on the
+      vendor.</li>
+    <li><strong>The window is the last 30 days.</strong> A success in August is not evidence
+      that something works today.</li>
+  </ul>
+</details>
+
+{# The detail, in the panel the Devices page already opens a row into: one
+   at a time, over the grid, with the keyboard kept in it. A card's detail is
+   a place you step into and come back from, and the grid behind it keeps its
+   scroll position and its search. #}
+<div class="panel-scrim" id="drawer-scrim" hidden></div>
+<aside class="side-panel" id="drawer" role="dialog" aria-modal="true"
+       aria-labelledby="drawer-title" hidden>
+  <header>
+    <div class="who"><h2 id="drawer-title"></h2></div>
+    <button type="button" class="icon-btn ghost" id="drawer-close" title="Close">
+      {% from "_icons.html" import icon %}{{ icon("close") }}<span class="sr-only">Close</span>
+    </button>
+  </header>
+  <div class="panel-body" id="drawer-body"></div>
+</aside>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ asset('js/integrations.js') }}"></script>
+{% endblock %}

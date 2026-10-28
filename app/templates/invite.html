@@ -1,0 +1,88 @@
+{# Accepting an invitation.
+
+   Public and shell-less, like sign in: there is no session yet and nobody to
+   name in a header. What the page shows instead is who invited them and into
+   what, because a link asking for a password should say whose it is.
+
+   The token is in the path, which is how an invite link has to work. It is
+   single-use and short-lived, the page loads nothing from another origin, and
+   the form posts the token in a body rather than carrying it onward. #}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if lookup.usable %}Set your password{% else %}Invitation{% endif %} · Desk</title>
+{% include "_theme.html" %}
+<link rel="stylesheet" href="{{ asset('app.css') }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%236255ce'/><text x='16' y='23' font-family='sans-serif' font-size='19' font-weight='600' fill='white' text-anchor='middle'>D</text></svg>">
+</head>
+<body class="signin">
+
+<main class="signin-card">
+  <div class="wordmark">Desk</div>
+
+  {% if not lookup.usable %}
+    {# An ordinary end for a link somebody was sent, not an error. It says what
+       happened and what to do, and offers the one thing that might work. #}
+    <p class="sub">Invitation</p>
+    <div class="notice bad">{{ lookup.message }}</div>
+    <p class="small muted" style="margin-top: var(--space-4)">
+      <a href="{{ login_path }}">Go to sign in</a>
+    </p>
+  {% else %}
+    <p class="sub">
+      {% if invited_by %}
+        <strong>{{ invited_by }}</strong> invited you to join
+      {% else %}
+        You have been invited to join
+      {% endif %}
+      <strong>{{ organisation_name }}</strong> on Desk, as {{ role_label }}.
+    </p>
+
+    <div class="notice" style="margin-bottom: var(--space-4)">
+      Your account will be <strong>{{ email }}</strong>. Choose a password and you are in.
+      <span class="small muted">This link works once, and expires {{ expires }}.</span>
+    </div>
+
+    <div class="notice bad" id="error" hidden></div>
+
+    <form id="accept" novalidate>
+      <label class="field">
+        <span>Your name <span class="help">Optional. Shown to Inputiv, not to customers.</span></span>
+        <input type="text" id="display-name" name="display_name" maxlength="200"
+               autocomplete="name">
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <input type="password" id="password" name="password"
+               autocomplete="new-password" required autofocus>
+        {# Length is the rule the server enforces; the rest of what this shows
+           is advice. See app/static/js/invite.js. #}
+        <span class="strength" id="strength" hidden>
+          <span class="bar"><span class="fill" id="strength-fill"></span></span>
+          <span class="label" id="strength-label"></span>
+        </span>
+        <span class="help" id="password-help">At least 12 characters. Length is the only rule;
+          a phrase of a few words beats a short one with symbols in it.</span>
+      </label>
+
+      <label class="field">
+        <span>Password again</span>
+        <input type="password" id="confirm" name="confirm"
+               autocomplete="new-password" required>
+        <span class="help" id="confirm-help"></span>
+      </label>
+
+      <button type="submit" class="btn primary" id="submit">Set my password and sign in</button>
+    </form>
+  {% endif %}
+</main>
+
+{% if lookup.usable %}
+<script>window.DESK_INVITE = { token: {{ token | tojson }}, email: {{ email | tojson }} };</script>
+<script src="{{ asset('js/invite.js') }}"></script>
+{% endif %}
+</body>
+</html>

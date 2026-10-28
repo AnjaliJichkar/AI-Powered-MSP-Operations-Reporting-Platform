@@ -1,0 +1,66 @@
+{
+  "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#groups",
+  "value": [
+    {
+      "id": "g1111111-1111-1111-1111-111111111111",
+      "displayName": "Finance team",
+      "mail": "finance@contoso.example",
+      "mailEnabled": true,
+      "securityEnabled": false,
+      "groupTypes": ["Unified"],
+      "resourceProvisioningOptions": ["Team"],
+      "visibility": "Private",
+      "createdDateTime": "2024-03-01T09:00:00Z",
+      "members@odata.count": 12,
+      "members": [{"id": "11111111-1111-1111-1111-111111111111"}]
+    },
+    {
+      "id": "g2222222-2222-2222-2222-222222222222",
+      "displayName": "All staff",
+      "mail": "allstaff@contoso.example",
+      "mailEnabled": true,
+      "securityEnabled": false,
+      "groupTypes": [],
+      "resourceProvisioningOptions": [],
+      "createdDateTime": "2021-01-05T09:00:00Z",
+      "members@odata.count": 24,
+      "members": []
+    },
+    {
+      "id": "g3333333-3333-3333-3333-333333333333",
+      "displayName": "VPN users",
+      "mail": null,
+      "mailEnabled": false,
+      "securityEnabled": true,
+      "groupTypes": [],
+      "resourceProvisioningOptions": [],
+      "createdDateTime": "2023-07-07T09:00:00Z",
+      "members@odata.count": 9,
+      "members": []
+    },
+    {
+      "id": "g4444444-4444-4444-4444-444444444444",
+      "displayName": "Project Falcon",
+      "mail": "falcon@contoso.example",
+      "mailEnabled": true,
+      "securityEnabled": true,
+      "groupTypes": [],
+      "resourceProvisioningOptions": [],
+      "createdDateTime": "2025-02-02T09:00:00Z",
+      "members@odata.count": 4,
+      "members": []
+    },
+    {
+      "id": "g5555555-5555-5555-5555-555555555555",
+      "displayName": "Marketing",
+      "mail": "marketing@contoso.example",
+      "mailEnabled": true,
+      "securityEnabled": false,
+      "groupTypes": ["Unified"],
+      "resourceProvisioningOptions": [],
+      "createdDateTime": "2024-11-11T09:00:00Z",
+      "members@odata.count": 6,
+      "members": []
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{# Ask: the conversation.
+
+   Two columns inside the shell — the engineer's own threads on the left, one
+   thread on the right — and nothing else. The page is deliberately empty of
+   data: the header, the client and who is signed in belong to the shell, and
+   every number below arrives from an endpoint that resolves the session
+   itself.
+
+   `flush` takes the shell's padding off, because the feed scrolls and the
+   composer sits on the bottom edge of the area rather than floating inside
+   it. #}
+{% extends "_base.html" %}
+
+{% block title %}Ask · Desk{% endblock %}
+{% block main_class %} flush{% endblock %}
+
+{% block content %}
+{% from "_icons.html" import icon %}
+{# The rail is closed unless somebody asks for it. A column of past questions
+   beside an empty page is a column of nothing, and beside a conversation it
+   is 260px the answer could have used; the history button brings it back and
+   the page remembers nothing about it between loads. #}
+<div class="ask" id="ask" data-rail="closed">
+  <aside class="thread-list" id="thread-rail" aria-label="Conversations">
+    <button type="button" class="btn" id="new-thread">New conversation</button>
+    <div id="threads" class="list"></div>
+  </aside>
+
+  <div class="ask-main">
+    <div class="ask-head">
+      <button type="button" class="icon-btn ghost" id="toggle-rail"
+              aria-controls="thread-rail" aria-expanded="false" hidden
+              title="Past conversations">
+        {{ icon("history") }}<span class="sr-only">Past conversations</span>
+      </button>
+      <button type="button" class="icon-btn ghost" id="new-thread-top"
+              title="Start a new conversation">
+        {{ icon("plus") }}<span class="sr-only">Start a new conversation</span>
+      </button>
+    </div>
+
+    {# A conversation is a box that scrolls, so it is a box somebody can put
+       the keyboard into: without `tabindex` the only focusable thing on the
+       page is the composer, PageDown there moves a caret, and the answers
+       could be reached with a wheel and in no other way. Named, because a
+       tab stop nobody can hear is worse than none. #}
+    <div class="feed" id="feed" tabindex="0" role="region"
+         aria-label="Conversation"></div>
+
+    {# One card: the box, then a footer line saying how to send it beside the
+       button that sends it. The button used to sit against the right edge of
+       the box, which made a two-line question push it off centre. #}
+    <div class="composer">
+      <form id="ask-form">
+        <textarea id="message" rows="3" aria-label="Your question"
+                  placeholder="Ask about devices, tickets or security…"></textarea>
+        <div class="composer-footer">
+          <p class="hint" id="hint">Enter to send, Shift+Enter for a new line. A conversation is about one client.</p>
+          <button type="submit" class="btn primary" id="send">Ask</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{# The answer is markdown written by a model over a customer's own data, so it
+   is parsed and then sanitised before it is ever inserted. Both libraries are
+   pinned. #}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script src="{{ asset('js/ask.js') }}"></script>
+{% endblock %}

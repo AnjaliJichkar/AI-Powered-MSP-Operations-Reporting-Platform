@@ -1,0 +1,51 @@
+{
+  "items": [
+    {
+      "id": 77,
+      "companyName": "Acme Dental",
+      "companyNumber": "ACME01",
+      "companyType": 1,
+      "classification": 4,
+      "isActive": true,
+      "phone": "512-555-0100",
+      "address1": "100 Main St",
+      "address2": "Suite 200",
+      "city": "Austin",
+      "state": "TX",
+      "postalCode": "78701",
+      "countryID": 237,
+      "webAddress": "https://acme.example",
+      "ownerResourceID": 501,
+      "parentCompanyID": null,
+      "createDate": "2022-05-01T14:00:00Z",
+      "lastActivityDate": "2026-09-16T11:00:00Z",
+      "lastTrackedModifiedDateTime": "2026-09-16T11:00:00Z",
+      "createdByResourceID": 501,
+      "billToAddressToUse": 1,
+      "billToCity": "Austin",
+      "billToState": "TX",
+      "billToZipCode": "78701",
+      "billToCountryID": 237,
+      "billingAddress1": "100 Main St",
+      "billingAddress2": "Suite 200",
+      "companyCategoryID": 1,
+      "currencyID": 1,
+      "invoiceEmailMessageID": 1,
+      "invoiceTemplateID": 1,
+      "isClientPortalActive": true,
+      "isEnabledForComanaged": false,
+      "isTaskFireActive": false,
+      "isTaxExempt": false,
+      "quoteEmailMessageID": 1,
+      "quoteTemplateID": 1,
+      "taxRegionID": 1,
+      "marketSegmentID": 11
+    }
+  ],
+  "pageDetails": {
+    "count": 1,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

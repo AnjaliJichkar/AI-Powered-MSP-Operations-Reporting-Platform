@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "id": 6301,
+      "serviceCallTicketID": 6201,
+      "resourceID": 501
+    },
+    {
+      "id": 6302,
+      "serviceCallTicketID": 6202,
+      "resourceID": 502
+    },
+    {
+      "id": 6303,
+      "serviceCallTicketID": 6203,
+      "resourceID": 502
+    }
+  ],
+  "pageDetails": {
+    "count": 3,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

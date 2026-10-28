@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "id": 8001,
+      "companyID": 77,
+      "contractName": "Managed Services - Acme",
+      "status": 1,
+      "contractType": 7,
+      "startDate": "2025-01-01T00:00:00Z",
+      "endDate": "2026-12-31T00:00:00Z"
+    },
+    {
+      "id": 8002,
+      "companyID": 77,
+      "contractName": "Block Hours 2024",
+      "status": 0,
+      "contractType": 4,
+      "startDate": "2024-01-01T00:00:00Z",
+      "endDate": "2024-12-31T00:00:00Z"
+    },
+    {
+      "id": 8003,
+      "companyID": 77,
+      "contractName": "M365 Licensing",
+      "status": 1,
+      "contractType": 7,
+      "startDate": "2025-06-01T00:00:00Z",
+      "endDate": null
+    }
+  ],
+  "pageDetails": {
+    "count": 3,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

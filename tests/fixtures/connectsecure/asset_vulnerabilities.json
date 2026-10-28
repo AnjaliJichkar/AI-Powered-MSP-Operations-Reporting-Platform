@@ -1,0 +1,223 @@
+{
+ "status": true,
+ "total": 7,
+ "data": [
+  {
+   "asset_ids": [
+    1001
+   ],
+   "base_score": 9.8,
+   "company_ids": [
+    501
+   ],
+   "critical_problems": 228,
+   "description": "",
+   "discovered": "2026-02-03T16:02:21.189787Z",
+   "epss_score": 0.03,
+   "exploitability_score": 3.9,
+   "high_problems": 0,
+   "host_name": "TL-AUS-DC01",
+   "impact_score": 5.9,
+   "ip": "192.0.2.10",
+   "last_discovered_time": "2026-09-22T14:27:47.700729Z",
+   "low_problems": 0,
+   "medium_problems": 0,
+   "name": "TL-AUS-WS59",
+   "port": null,
+   "problem_id": 700001,
+   "problem_name": "CVE-2026-1111",
+   "severity": "Critical",
+   "software_name": [
+    "Mozilla Firefox (x64 en-US)"
+   ],
+   "total_count": 8278,
+   "total_problems": 1
+  },
+  {
+   "asset_ids": [
+    1002
+   ],
+   "base_score": 9.8,
+   "company_ids": [
+    501
+   ],
+   "critical_problems": 228,
+   "description": "",
+   "discovered": "2025-03-03T15:05:21.969541Z",
+   "epss_score": 0.01,
+   "exploitability_score": 3.9,
+   "high_problems": 0,
+   "host_name": "TL-AUS-WS14",
+   "impact_score": 5.9,
+   "ip": "192.0.2.12",
+   "last_discovered_time": "2026-09-21T22:37:58.780807Z",
+   "low_problems": 0,
+   "medium_problems": 0,
+   "name": "TL-AUS-WS59",
+   "port": null,
+   "problem_id": 700001,
+   "problem_name": "CVE-2026-1111",
+   "severity": "Critical",
+   "software_name": [
+    "Mozilla Firefox (x64 en-US)"
+   ],
+   "total_count": 8278,
+   "total_problems": 1
+  },
+  {
+   "asset_ids": [
+    1003
+   ],
+   "base_score": 9.8,
+   "company_ids": [
+    501
+   ],
+   "critical_problems": 228,
+   "description": "",
+   "discovered": "2025-12-16T20:44:12.605207Z",
+   "epss_score": 0.03,
+   "exploitability_score": 3.9,
+   "high_problems": 0,
+   "host_name": "TL-AUS-WS22",
+   "impact_score": 5.9,
+   "ip": "192.0.2.13",
+   "last_discovered_time": "2026-09-22T13:32:24.396462Z",
+   "low_problems": 0,
+   "medium_problems": 0,
+   "name": "TL-AUS-WS59",
+   "port": null,
+   "problem_id": 700003,
+   "problem_name": "CVE-2026-3333",
+   "severity": "Critical",
+   "software_name": [
+    "Google Chrome"
+   ],
+   "total_count": 8278,
+   "total_problems": 1
+  },
+  {
+   "asset_ids": [
+    1001
+   ],
+   "base_score": 7.1,
+   "company_ids": [
+    501
+   ],
+   "critical_problems": 0,
+   "description": "",
+   "discovered": "2026-09-01T01:12:39.047964Z",
+   "epss_score": 0.01,
+   "exploitability_score": 1.8,
+   "high_problems": 6196,
+   "host_name": "TL-AUS-DC01",
+   "impact_score": 5.2,
+   "ip": "192.0.2.14",
+   "last_discovered_time": "2026-09-22T14:30:40.129737Z",
+   "low_problems": 0,
+   "medium_problems": 0,
+   "name": "TL-AUS-WS59",
+   "port": null,
+   "problem_id": 700004,
+   "problem_name": "CVE-2026-4444",
+   "severity": "High",
+   "software_name": [
+    "Microsoft Windows 11"
+   ],
+   "total_count": 8278,
+   "total_problems": 1
+  },
+  {
+   "asset_ids": [
+    1002
+   ],
+   "base_score": 7.1,
+   "company_ids": [
+    501
+   ],
+   "critical_problems": 0,
+   "description": "",
+   "discovered": "2026-09-01T01:12:39.047964Z",
+   "epss_score": 0.01,
+   "exploitability_score": 1.8,
+   "high_problems": 6196,
+   "host_name": "TL-AUS-WS14",
+   "impact_score": 5.2,
+   "ip": "192.0.2.14",
+   "last_discovered_time": "2026-09-22T14:30:40.129737Z",
+   "low_problems": 0,
+   "medium_problems": 0,
+   "name": "TL-AUS-WS59",
+   "port": null,
+   "problem_id": 700005,
+   "problem_name": "CVE-2026-5555",
+   "severity": "High",
+   "software_name": [
+    "Zoom Workplace"
+   ],
+   "total_count": 8278,
+   "total_problems": 1
+  },
+  {
+   "asset_ids": [
+    1003
+   ],
+   "base_score": 5.5,
+   "company_ids": [
+    501
+   ],
+   "critical_problems": 0,
+   "description": "",
+   "discovered": "2026-09-17T15:57:44.140692Z",
+   "epss_score": 0.06,
+   "exploitability_score": 1.8,
+   "high_problems": 0,
+   "host_name": "TL-AUS-WS22",
+   "impact_score": 3.6,
+   "ip": "192.0.2.15",
+   "last_discovered_time": "2026-09-17T16:08:39.951907Z",
+   "low_problems": 0,
+   "medium_problems": 1709,
+   "name": "TL-AUS-WS59",
+   "port": null,
+   "problem_id": 700006,
+   "problem_name": "CVE-2026-6666",
+   "severity": "Medium",
+   "software_name": [
+    "Adobe Flash Player"
+   ],
+   "total_count": 8278,
+   "total_problems": 1
+  },
+  {
+   "asset_ids": [
+    1001
+   ],
+   "base_score": 3.3,
+   "company_ids": [
+    501
+   ],
+   "critical_problems": 0,
+   "description": "",
+   "discovered": "2026-02-02T23:32:24.239449Z",
+   "epss_score": 0,
+   "exploitability_score": 1.8,
+   "high_problems": 0,
+   "host_name": "TL-AUS-DC01",
+   "impact_score": 1.4,
+   "ip": "192.0.2.16",
+   "last_discovered_time": "2026-09-22T13:57:12.05111Z",
+   "low_problems": 145,
+   "medium_problems": 0,
+   "name": "TL-AUS-WS59",
+   "port": null,
+   "problem_id": 700007,
+   "problem_name": "CVE-2026-7777",
+   "severity": "Low",
+   "software_name": [
+    "OpenSSL"
+   ],
+   "total_count": 8278,
+   "total_problems": 1
+  }
+ ]
+}

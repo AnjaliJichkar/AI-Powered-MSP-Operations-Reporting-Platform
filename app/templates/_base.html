@@ -1,0 +1,243 @@
+{# The shell every signed-in page is drawn in, on the Aurora design.
+
+   Server-rendered, so the header is right on the first paint: who is signed
+   in, what their role is and which client they are on are known before the
+   HTML is written, and there is no moment where the page shows a blank header
+   and then fills it in.
+
+   That is the only thing rendered from data here. Everything on a page below
+   the shell arrives from a JSON endpoint that resolves the session itself, so
+   a template is never the thing deciding what somebody may see.
+
+   `nav` names the current page so the left nav can mark it. #}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Desk{% endblock %}</title>
+{% from "_icons.html" import icon %}
+{# `with context`, because the mark map is one list in Python and this
+   reads it rather than keeping a second copy. #}
+{% from "_logos.html" import mark with context %}
+{% include "_theme.html" %}
+{# Stamped with each file's own mtime, so an edit reaches the browser and an
+   unchanged file is served from cache (`asset` in app/interfaces/web.py).
+   `aurora.css` is the design system and loads last, so where it and the older
+   stylesheet describe the same thing it wins. #}
+<link rel="stylesheet" href="{{ asset('app.css') }}">
+<link rel="stylesheet" href="{{ asset('aurora.css') }}">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%237053d7'/><text x='16' y='23' font-family='sans-serif' font-size='19' font-weight='600' fill='white' text-anchor='middle'>d</text></svg>">
+</head>
+<body class="aurora">
+<a class="sr-only" href="#main">Skip to content</a>
+
+<aside class="sidebar" id="shell-nav" aria-label="Sections">
+  <div class="brand-row">
+    <span class="logo" aria-hidden="true">{{ icon("spark") }}</span>
+    <span class="brand">desk<span class="purple">.</span></span>
+    {# Narrows the nav to its icons, remembered in this browser. Drawn only
+       where the nav is always on screen: under 980px it is already narrow. #}
+    <button type="button" class="icon-btn ghost collapse" id="nav-collapse"
+            aria-controls="shell-nav" aria-expanded="true" title="Collapse sections">
+      {{ icon("collapse") }}
+      <span class="sr-only">Collapse sections</span>
+    </button>
+  </div>
+
+  <nav class="nav">
+    {% for item in nav_items %}
+      <a href="{{ item.href }}" aria-label="{{ item.label }}" title="{{ item.label }}"
+         class="{% if item.key == nav %}active{% endif %}"
+         {% if item.key == nav %}aria-current="page"{% endif %}>
+        {{ icon(item.icon) }}<span class="nav-label">{{ item.label }}</span>
+      </a>
+    {% endfor %}
+  </nav>
+
+  <div class="sidebar-bottom">
+    {# What the application may do to a client's tools. Read-only on every
+       page but the Automations ones, which say so in the other direction:
+       a page that can write is the one where it matters. #}
+    {% if writes_here %}
+      <div class="sidebar-status">
+        <span class="amber">●&nbsp; Write actions</span><br>
+        A run writes only through an approved workflow, after somebody approves it.
+      </div>
+    {% else %}
+      <div class="sidebar-status">
+        <span class="green">●&nbsp; Read-only</span><br>
+        Desk answers from live tool calls and says so when it cannot find something.
+      </div>
+    {% endif %}
+
+    <button type="button" class="user-card" id="user-menu-open"
+            aria-haspopup="menu" aria-expanded="false">
+      <span class="avatar" aria-hidden="true">{{ user.email[0] | upper }}</span>
+      <span class="user-info grow">
+        <strong>{{ user.name or user.email }}</strong>
+        <small>{{ role_label }}</small>
+      </span>
+      {{ icon("down") }}
+      <span class="sr-only">Account: {{ user.email }}</span>
+    </button>
+  </div>
+</aside>
+
+<div class="nav-scrim" id="nav-scrim" hidden></div>
+
+<div class="shell">
+  {# A demo client is a fictional franchisee served by fake vendors, and every
+     number on every page under this strip is made up. It is said once, at the
+     top of the frame, rather than on each page — and only for a demo client,
+     from `Client.kind`, never from a setting somebody could leave on. #}
+  {% if client_is_demo %}
+  <p class="demo-strip">Demo workspace <span>Sample data only</span></p>
+  {% endif %}
+  <header class="topbar">
+    <button type="button" class="icon-btn ghost mobile-menu" id="nav-toggle"
+            aria-controls="shell-nav" aria-expanded="false">
+      {{ icon("menu") }}<span class="sr-only">Sections</span>
+    </button>
+
+    {% if client %}
+      {# Inputiv staff may switch; a franchisee has exactly one client and a
+         picker would imply otherwise, so theirs is the same block with no
+         control on it. #}
+      <button type="button" class="client-switch" id="client-switch"
+              {% if not may_switch_client %}disabled{% endif %}>
+        {% if has_logo %}
+          <img class="avatar" src="/branding/logo?v={{ client.slug }}" alt="">
+        {% else %}
+          <span class="avatar" aria-hidden="true">{{ client.name[0] | upper }}</span>
+        {% endif %}
+        <span>
+          <small>Client workspace</small>
+          <strong>{{ client.name }}</strong>
+        </span>
+        {% if may_switch_client %}{{ icon("down") }}{% endif %}
+      </button>
+    {% elif may_switch_client %}
+      <button type="button" class="client-switch" id="client-switch">
+        <span class="avatar" aria-hidden="true">?</span>
+        <span><small>Client workspace</small><strong>Choose a client…</strong></span>
+        {{ icon("down") }}
+      </button>
+    {% endif %}
+
+    {# Everywhere this role may go, in one list: the pages in the nav beside
+       it, and the clients the switcher already offers. It invents neither. #}
+    <button type="button" class="btn global-search" id="palette-open" aria-haspopup="dialog">
+      {{ icon("search") }}
+      <span class="search-label">Search or ask…</span>
+      <span class="key" aria-hidden="true">Ctrl K</span>
+      <span class="sr-only">Go to a page or client</span>
+    </button>
+
+    {% if tool_status %}
+      {# Which tools this customer is set up on. A dot says whether Desk can
+         read that tool for them — not whether the vendor is healthy, which is
+         a live check this page does not make and will not imply. #}
+      <div class="live-tools" id="live-tools">
+        {% for tool in tool_status %}
+          <button type="button" title="{{ tool.title }}">
+            {{ mark(tool.key) }}
+            <span class="dot {{ tool.tone }}" aria-hidden="true"></span>
+            <span class="sr-only">{{ tool.title }}</span>
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# Light or dark, remembered in this browser. The label says which one
+       pressing it gives you, and script keeps that true. #}
+    <button type="button" class="icon-btn ghost" id="theme-toggle" aria-pressed="false">
+      <span class="theme-icon" data-theme-icon="dark">{{ icon("moon") }}</span>
+      <span class="theme-icon" data-theme-icon="light" hidden>{{ icon("sun") }}</span>
+      <span class="sr-only" id="theme-label">Use the dark theme</span>
+    </button>
+  </header>
+
+  <main class="main{% block main_class %}{% endblock %}" id="main">
+    {% if second_factor_required %}
+    <div class="notice bad">
+      <strong>Add a second factor to continue.</strong> Inputiv staff on this deployment sign in with an authenticator app. Until yours is enrolled, every page but this one and <a href="/settings">Settings</a> is refused.
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+{# The account menu and the palette are hung off the end of the body rather
+   than inside the shell, so neither can be clipped by a box it sits in. Both
+   are placed and filled by common.js. #}
+<div class="header-menu" id="user-menu" role="menu" hidden>
+  <div class="header-menu-head">
+    <strong>{{ user.name or user.email }}</strong>
+    <span>{{ user.email }}</span>
+    <span>{{ role_label }}{% if organisation %} · {{ organisation.name }}{% endif %}</span>
+  </div>
+  <a class="menu-item" role="menuitem" href="/settings">
+    <span class="glyph">{{ icon("settings") }}</span>Settings
+  </a>
+  <button type="button" class="menu-item" role="menuitem" id="sign-out">
+    <span class="glyph">{{ icon("exit") }}</span>Sign out
+  </button>
+</div>
+
+{% if may_switch_client %}
+{# The clients this session may work on. Filled by common.js from the same
+   endpoint the palette reads, and empty in the markup on purpose: which
+   franchisees exist is not something a template decides. #}
+<div class="header-menu" id="client-menu" role="menu" hidden></div>
+{% endif %}
+
+{# The two drawings the palette's rows use. Kept here rather than as path
+   strings in common.js, so every icon in the product is in one file and a
+   script clones markup instead of carrying a second copy of it. #}
+<template id="icon-page">{{ icon("arrow") }}</template>
+<template id="icon-client">{{ icon("sites") }}</template>
+<template id="icon-chevron">{{ icon("chevron") }}</template>
+
+<div class="palette" id="palette" hidden>
+  <div class="palette-box" role="dialog" aria-modal="true" aria-label="Go to a page or client">
+    <input type="search" id="palette-input" autocomplete="off" spellcheck="false"
+           placeholder="Go to a page or client…" aria-label="Go to a page or client"
+           aria-controls="palette-results">
+    <div class="palette-results" id="palette-results" role="listbox"></div>
+    <p class="palette-foot">↑ ↓ to move · Enter to open · Esc to close</p>
+  </div>
+</div>
+
+<script>
+  /* The only server-rendered state the page scripts read. The CSRF token
+     belongs to this session and is sent on everything that changes state; it
+     is not in a cookie, because the session cookie is the thing script cannot
+     read and this has to be readable. */
+  window.DESK = {
+    csrfToken: {{ csrf_token | tojson }},
+    role: {{ user.role | tojson }},
+    email: {{ user.email | tojson }},
+    name: {{ user.name | tojson }},
+    maySwitchClient: {{ may_switch_client | tojson }},
+    client: {{ client_json | safe }},
+    /* How each vendor is drawn, from the one map in `app/interfaces/web.py`,
+       so a script and a template cannot disagree about a mark. */
+    vendorMarks: {{ vendor_marks_json | safe }},
+    loginPath: {{ login_path | tojson }},
+    /* The pages this role may open, which is the nav it is shown. The palette
+       reads this rather than scraping the markup, so an entry inside a
+       collapsed group is still reachable. */
+    pages: {{ nav_json | safe }}
+  };
+  /* Where this client's vendor consoles live, so a page can link out to a
+     record by the id it already holds. Derived from the client's own
+     connector settings and never guessed; empty where we hold no address we
+     recognise. */
+  window.DESK_CONSOLES = {{ consoles_json | safe }};
+</script>
+<script src="{{ asset('js/common.js') }}"></script>
+<script src="{{ asset('js/states.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "items": [
+    {
+      "id": 7701,
+      "ticketID": 9301,
+      "title": "Update",
+      "description": "Power-cycled the printer and re-added the port; back online.",
+      "noteType": 1,
+      "publish": 1,
+      "createDateTime": "2026-09-14T11:00:00Z",
+      "lastActivityDate": "2026-09-14T11:00:00Z",
+      "creatorResourceID": 501,
+      "createdByContactID": null
+    },
+    {
+      "id": 7702,
+      "ticketID": 9304,
+      "title": "Root cause",
+      "description": "Spooler crashes whenever the Brother printer driver loads. Replaced with the universal driver.",
+      "noteType": 1,
+      "publish": 1,
+      "createDateTime": "2026-07-10T15:00:00Z",
+      "lastActivityDate": "2026-07-10T15:00:00Z",
+      "creatorResourceID": 501,
+      "createdByContactID": null
+    },
+    {
+      "id": 7703,
+      "ticketID": 9304,
+      "title": "Follow up",
+      "description": "Printer still fine a week on.",
+      "noteType": 1,
+      "publish": 1,
+      "createDateTime": "2026-07-17T15:00:00Z",
+      "lastActivityDate": "2026-07-17T15:00:00Z",
+      "creatorResourceID": 501,
+      "createdByContactID": null
+    },
+    {
+      "id": 7704,
+      "ticketID": 9999,
+      "title": "Other tenant company",
+      "description": "A printer note on a ticket that is not this client's.",
+      "noteType": 1,
+      "publish": 1,
+      "createDateTime": "2026-09-01T09:00:00Z",
+      "lastActivityDate": "2026-09-01T09:00:00Z",
+      "creatorResourceID": 501,
+      "createdByContactID": null
+    }
+  ],
+  "pageDetails": {
+    "count": 4,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

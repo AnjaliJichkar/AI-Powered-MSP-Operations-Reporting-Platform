@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1005,
+    "uid": "00000000-0000-4000-8000-000000001005",
+    "organizationId": 42,
+    "locationId": 7,
+    "nodeClass": "WINDOWS_WORKSTATION",
+    "offline": false,
+    "systemName": "TL-AUS-WS07",
+    "displayName": "TL-AUS-WS07",
+    "dnsName": "tl-aus-ws07.example.internal",
+    "created": 1754222400.0,
+    "lastContact": 1788357600.0,
+    "lastUpdate": 1788357600.0,
+    "approvalStatus": "APPROVED",
+    "tags": []
+  }
+]

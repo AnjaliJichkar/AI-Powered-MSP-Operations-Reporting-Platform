@@ -1,0 +1,64 @@
+# Antivirus / EDR threat: when a Bitdefender or Blackpoint threat alert
+# arrives, read the endpoint's protection state and what Bitdefender found and
+# did. The endpoint state is the core fact — except for a Blackpoint (MDR)
+# alert, whose core is the instruction to investigate: it goes on to the
+# detections without the state (notes.threat_gate) and always ends with the
+# MDR line.
+name: threat
+title: Antivirus / EDR threat
+version: 1
+kind: note
+description: When a Bitdefender or Blackpoint threat alert arrives, read the endpoint's protection state, what Bitdefender found and what it did, and whether it was detected again within a day. A Blackpoint (MDR) alert always ends with the instruction to investigate before closing.
+note_mode: preview
+
+triggers:
+  - key: threat_alert
+    kind: alert
+    title: a Bitdefender or Blackpoint threat alert
+    rule:
+      source: Monitoring Alert
+      title_contains_any: [malware, threat, quarantin, ransomware, infect, blackpoint, mdr]
+
+steps:
+  - id: device
+    action: devices.resolve
+    inputs:
+      ticket: "{ticket.self}"
+  - id: protection
+    action: bitdefender.read_protection
+    inputs:
+      device: "{steps.device.device}"
+    when:
+      value: "{steps.device.confident}"
+      equals: true
+  - id: gate
+    action: notes.threat_gate
+    inputs:
+      ticket: "{ticket.self}"
+      protection: "{steps.protection.read}"
+    when:
+      value: "{steps.device.confident}"
+      equals: true
+  - id: detections
+    action: bitdefender.read_threats
+    title: "Bitdefender: detections, last 24 h"
+    inputs:
+      device: "{steps.device.device}"
+      hours: 24
+    when:
+      value: "{steps.gate.read_detections}"
+      equals: true
+  - id: compose
+    action: notes.threat
+    inputs:
+      ticket: "{ticket.self}"
+      device: "{steps.device.device}"
+      protection: "{steps.protection.read}"
+      detections: "{steps.detections.read}"
+  - id: post
+    action: autotask.add_note
+    inputs:
+      ticket_id: "{ticket.id}"
+      note: "{steps.compose.note}"
+
+writes: "Bitdefender: <device> is <state> (last seen <time>); malware in the last 24 h: <yes|no>; still infected: <yes|no>; isolated: <yes|no>. What Bitdefender found and did in the last 24 h: <detection — action (time)>. Re-detected: <n> detections in 24 h. [Blackpoint:] MDR alert: review required, do not close without investigation."

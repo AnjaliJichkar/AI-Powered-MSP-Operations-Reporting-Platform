@@ -1,0 +1,21 @@
+{
+  "fields": [
+    {
+      "name": "status",
+      "dataType": "integer",
+      "isPickList": true,
+      "picklistValues": [
+        {
+          "value": "0",
+          "label": "Inactive",
+          "isActive": true
+        },
+        {
+          "value": "1",
+          "label": "Active",
+          "isActive": true
+        }
+      ]
+    }
+  ]
+}

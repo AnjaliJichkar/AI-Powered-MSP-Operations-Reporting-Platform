@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": 8003,
+      "ticketID": 424242,
+      "resourceID": 501,
+      "dateWorked": "2026-09-14T12:00:00Z",
+      "hoursWorked": 3.0,
+      "summaryNotes": "Another client's work.",
+      "startDateTime": "2026-09-14T12:00:00Z"
+    }
+  ],
+  "pageDetails": {
+    "count": 1,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

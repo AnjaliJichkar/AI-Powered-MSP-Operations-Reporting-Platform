@@ -1,0 +1,4 @@
+{
+  "resultCode": "TOO_MANY_REQUESTS",
+  "errorMessage": "Rate limit exceeded"
+}

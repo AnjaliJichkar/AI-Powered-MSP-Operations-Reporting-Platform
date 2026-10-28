@@ -1,0 +1,42 @@
+{
+  "cursor": {
+    "name": "cursorNameFromNinjaOne0001",
+    "offset": 0,
+    "count": 4,
+    "expires": 1789656609.354843
+  },
+  "results": [
+    {
+      "productName": "Bitdefender Endpoint Security Tools Antimalware",
+      "productState": "ON",
+      "definitionStatus": "Up-to-Date",
+      "version": "7.9.8.1",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    },
+    {
+      "productName": "Microsoft Defender Antivirus",
+      "productState": "OFF",
+      "definitionStatus": "Up-to-Date",
+      "version": "4.18.2409.9",
+      "deviceId": 1001,
+      "timestamp": 1788780600.0
+    },
+    {
+      "productName": "Bitdefender Endpoint Security Tools Antimalware",
+      "productState": "ON",
+      "definitionStatus": "Out-of-Date",
+      "version": "7.9.8.1",
+      "deviceId": 1002,
+      "timestamp": 1788780600.0
+    },
+    {
+      "productName": "Bitdefender Endpoint Security Tools Antimalware",
+      "productState": "ON",
+      "definitionStatus": "Up-to-Date",
+      "version": "7.9.8.1",
+      "deviceId": 1005,
+      "timestamp": 1788780600.0
+    }
+  ]
+}

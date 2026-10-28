@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "id": 7001,
+      "companyID": 77,
+      "referenceTitle": "TL-AUS-DC01",
+      "referenceNumber": "AT-0001",
+      "serialNumber": "SRV1234",
+      "rmmDeviceAuditHostname": "tl-aus-dc01",
+      "rmmDeviceAuditLastUser": "ACME\\svc-backup",
+      "rmmDeviceAuditOperatingSystem": "Microsoft Windows Server 2022 Standard",
+      "rmmDeviceAuditIPAddress": "10.20.30.1",
+      "configurationItemType": 2,
+      "installDate": "2024-03-01T00:00:00Z",
+      "warrantyExpirationDate": "2027-03-01T00:00:00Z",
+      "isActive": true
+    },
+    {
+      "id": 7002,
+      "companyID": 77,
+      "referenceTitle": "TL-AUS-WS14",
+      "referenceNumber": "AT-0014",
+      "serialNumber": "ABC1234",
+      "rmmDeviceAuditHostname": "tl-aus-ws14",
+      "rmmDeviceAuditLastUser": "ACME\\sarah.chen",
+      "rmmDeviceAuditOperatingSystem": "Microsoft Windows 11 Pro Edition",
+      "rmmDeviceAuditIPAddress": "10.20.30.14",
+      "configurationItemType": 1,
+      "installDate": "2024-03-01T00:00:00Z",
+      "warrantyExpirationDate": "2027-03-01T00:00:00Z",
+      "isActive": true
+    }
+  ],
+  "pageDetails": {
+    "count": 2,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

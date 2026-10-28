@@ -1,0 +1,33 @@
+{
+  "items": [
+    {
+      "id": 9304,
+      "ticketNumber": "T20260709.0304",
+      "title": "Print jobs vanish",
+      "description": "Jobs leave the queue and nothing comes out.",
+      "status": 5,
+      "priority": 2,
+      "companyID": 77,
+      "configurationItemID": 4001,
+      "contactID": 6001,
+      "assignedResourceID": 501,
+      "queueID": 29682859,
+      "createDate": "2026-07-09T10:00:00Z",
+      "lastActivityDate": "2026-07-10T16:00:00Z",
+      "dueDateTime": "2026-09-12T12:00:00Z",
+      "completedDate": "2026-07-10T16:00:00Z",
+      "resolution": null,
+      "firstResponseDueDateTime": "2026-09-02T16:00:00Z",
+      "firstResponseDateTime": "2026-07-09T10:00:00Z",
+      "resolvedDueDateTime": "2026-09-12T12:00:00Z",
+      "resolvedDateTime": "2026-07-10T16:00:00Z",
+      "serviceLevelAgreementID": 3
+    }
+  ],
+  "pageDetails": {
+    "count": 1,
+    "requestCount": 500,
+    "prevPageUrl": null,
+    "nextPageUrl": null
+  }
+}

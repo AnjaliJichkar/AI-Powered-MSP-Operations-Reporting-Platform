@@ -1,0 +1,1576 @@
+/* Aurora: the design system, ported from the mockup.
+ *
+ * The tokens, the component styles and the layout are the mockup's and are
+ * reused deliberately. **None of its data is**: not a client, a site, a
+ * device, a person, a ticket or a figure. Every number on a page comes from
+ * an endpoint that computed it.
+ *
+ * It loads after `app.css`, so where the two describe the same thing this one
+ * wins and the page moves over. Pages are rebuilt on these components one at
+ * a time; until a page is, it keeps whatever of `app.css` this does not
+ * override.
+ *
+ * Two palettes of the same names. **Every colour is a token**: a literal
+ * colour in a rule below is a rule that is light-theme only and nobody finds
+ * out until somebody switches.
+ */
+
+/* --- Inter, self-hosted ------------------------------------------------------
+ *
+ * One variable file, latin only, served from `static/fonts/` — no request
+ * leaves the page, which is the point: a font fetched from a third party is a
+ * third party told which customer is reading which page.
+ *
+ * Latin only because the product is in English, and the other subsets are
+ * another 300KB in every deploy for glyphs nothing renders. `swap` so the
+ * page is readable before the file lands. SIL Open Font License; the licence
+ * is beside the file.
+ */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* --- the palettes ------------------------------------------------------------ */
+
+:root {
+  color-scheme: dark;
+  --bg: #11151f;
+  --side: #171c28;
+  --panel: #1b2130;
+  --raised: #242c3d;
+  --hover: #2b3448;
+  --line: #323c50;
+  --text: #eef1f8;
+  --muted: #a7b2c7;
+  --accent: #b2a8ff;
+  --blue: #a6bcff;
+  --green: #8dc9ab;
+  --amber: #edc27e;
+  --red: #f39aa7;
+  --shadow: 0 2px 8px #16213a04;
+  --gradient: linear-gradient(105deg, #5379f9, #7e59eb);
+  /* One height for every control that sits beside another: an input, a
+     select and the button at the end of the same row. Three heights in
+     one row is what the Settings invite row had — a 36px input, a 39px
+     select and a 36px button, two of them with different corners. */
+  --control: 38px;
+  --sidebar: 232px;
+  --radius: 12px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f7fb;
+  --side: #fff;
+  --panel: #fff;
+  --raised: #f2f3f8;
+  --hover: #eceef6;
+  --line: #e3e6ef;
+  --text: #232b3f;
+  --muted: #626d83;
+  --accent: #6255ce;
+  --blue: #385bb3;
+  --green: #39745d;
+  --amber: #95641b;
+  --red: #b44351;
+  --shadow: 0 2px 8px #16213a04;
+}
+
+/* Somebody who has never chosen follows their system. The guard is what makes
+   a stored choice stick: without it this would beat `data-theme="light"`. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f6f7fb;
+    --side: #fff;
+    --panel: #fff;
+    --raised: #f2f3f8;
+    --hover: #eceef6;
+    --line: #e3e6ef;
+    --text: #232b3f;
+    --muted: #626d83;
+    --accent: #6255ce;
+    --blue: #385bb3;
+    --green: #39745d;
+    --amber: #95641b;
+    --red: #b44351;
+    --shadow: 0 2px 8px #16213a04;
+  }
+}
+
+/* --- the page ---------------------------------------------------------------- */
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.55 Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.aurora h1 { font-size: 30px; line-height: 1.2; letter-spacing: -1px; font-weight: 650; margin: 0; }
+.aurora h2 { font-size: 18px; letter-spacing: -0.3px; font-weight: 650; margin: 0; }
+.aurora h3 { font-size: 14px; font-weight: 650; margin: 0; }
+.aurora p { margin: 0; }
+.aurora small, .aurora .meta { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.aurora .muted { color: var(--muted); }
+.aurora .mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; }
+.aurora .eyebrow { font-size: 10px; letter-spacing: 1.2px; font-weight: 650; }
+
+.aurora .icon {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.aurora .row { display: flex; align-items: center; gap: 12px; }
+.aurora .between { justify-content: space-between; }
+.aurora .gap8 { gap: 8px; }
+.aurora .wrap { flex-wrap: wrap; }
+.aurora .grow { flex: 1; min-width: 0; }
+.aurora .stack { display: grid; gap: 16px; }
+
+/* --- controls ----------------------------------------------------------------- */
+
+.aurora .btn,
+.aurora .icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 8px;
+  min-height: var(--control);
+  padding: 9px 13px;
+  font-size: 11px;
+  font-weight: 550;
+  color: inherit;
+  cursor: pointer;
+  box-shadow: 0 1px 2px #192b4710;
+  text-decoration: none;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+.aurora .btn:hover:not(:disabled),
+.aurora .icon-btn:hover:not(:disabled) { background: var(--hover); border-color: var(--muted); }
+.aurora .btn .icon { width: 15px; height: 15px; }
+.aurora .icon-btn { padding: 8px; width: 36px; flex-shrink: 0; border-radius: 8px; }
+.aurora .btn.ghost, .aurora .icon-btn.ghost { background: transparent; box-shadow: none; }
+.aurora .btn.primary {
+  background: var(--gradient);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 3px 9px #7661e82b;
+}
+/* The fill is restated, and that is the whole of this rule's job besides the
+   lift. `background` is a shorthand and resets `background-image`, so the
+   plain hover above — `.aurora .btn:hover:not(:disabled)`, which outranks
+   `.aurora .btn.primary` by one class — took the gradient off every primary
+   button the moment a pointer crossed it and left `color: #fff` on a
+   near-white fill: 1.07:1, which is not a contrast ratio, it is an invisible
+   label. Nothing errored and the button still worked. */
+.aurora .btn.primary:hover:not(:disabled) {
+  background: var(--gradient);
+  filter: brightness(1.05);
+  box-shadow: 0 5px 15px #7661e838;
+}
+.aurora .btn:disabled, .aurora .icon-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+/* The handful of types that are *not* text boxes, rather than the ones that
+   are — the same rule app.css states and for the same reason. The list it
+   replaced named `text`, `search` and nothing else, so every `email`,
+   `password`, `number` and `date` box in the product fell through to the
+   older stylesheet and came out a different height with different corners.
+   The Settings invite row showed all of it at once.
+
+   **One `:not()` holding the list, not nine of them.** A chain of nine
+   counts as nine attribute selectors and outweighs every rule that then
+   tries to narrow one of these boxes: written the long way it beat
+   `.aurora input.search-input` and stretched the Coverage search box to
+   1090px, which wrapped the toolbar onto two lines. A selector list
+   inside one `:not()` counts only once, for its most specific argument. */
+.aurora .input,
+.aurora select,
+.aurora textarea,
+.aurora input:not(
+    [type="checkbox"], [type="radio"], [type="file"], [type="submit"],
+    [type="button"], [type="reset"], [type="image"], [type="range"], [type="color"]
+  ) {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  padding: 10px 12px;
+  width: 100%;
+  /* An exact height and not a floor: a floor leaves each control the size
+     its own padding and line box make it, which is how an input, a select
+     and a button sharing one row came out 41, 39 and 38 pixels tall. */
+  height: var(--control);
+  font: inherit;
+  font-size: 12px;
+}
+/* The one control that is not one line, so it keeps the height its content
+   and its `rows` give it. */
+.aurora textarea { height: auto; min-height: calc(var(--control) * 2); }
+.aurora .input::placeholder, .aurora textarea::placeholder, .aurora input::placeholder { color: #8792a6; }
+/* `width: 100%` with `max-width: 330px` is the mockup's, and the older
+   stylesheet's own input rule sets `max-width: 100%` after it — so the cap
+   is written here where it cannot be overtaken, and the box stops being the
+   whole toolbar. */
+.aurora .search-input,
+.aurora input.search-input { max-width: 330px; width: 330px; flex: 0 0 auto; }
+
+.aurora .key {
+  font-size: 9px;
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-left: auto;
+  background: var(--panel);
+  color: var(--muted);
+}
+
+/* A focus ring that is visible on every ground in both themes. */
+.aurora button:focus-visible,
+.aurora a:focus-visible,
+.aurora input:focus-visible,
+.aurora select:focus-visible,
+.aurora textarea:focus-visible,
+.aurora summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* --- status, as a badge ------------------------------------------------------- */
+
+.aurora .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--raised);
+  color: var(--muted);
+  border: 0;
+}
+.aurora .badge.green { background: color-mix(in srgb, var(--green) 10%, transparent); color: var(--green); }
+.aurora .badge.purple { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+.aurora .badge.amber { background: color-mix(in srgb, var(--amber) 10%, transparent); color: var(--amber); }
+.aurora .badge.red { background: color-mix(in srgb, var(--red) 10%, transparent); color: var(--red); }
+.aurora .badge.blue { background: color-mix(in srgb, var(--blue) 10%, transparent); color: var(--blue); }
+
+/* A status, on the tint of its own meaning. Still a dot and a word — the word
+   is what carries the meaning for a reader who cannot tell the colours apart,
+   and `stateWord` cannot be called without one — but the pair now sits in a
+   pill rather than loose in the cell, which is what stops a column of
+   statuses reading as a column of sentences.
+
+   Two of these are deliberately not pills: a status inside a line of prose,
+   and one on a card that is already the colour of its meaning. */
+.aurora .state {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.55;
+  white-space: nowrap;
+  background: var(--raised);
+  color: var(--muted);
+}
+.aurora .state .word { color: inherit; }
+.aurora .state.good { background: color-mix(in srgb, var(--green) 10%, transparent); color: var(--green); }
+.aurora .state.warn { background: color-mix(in srgb, var(--amber) 10%, transparent); color: var(--amber); }
+.aurora .state.bad { background: color-mix(in srgb, var(--red) 10%, transparent); color: var(--red); }
+.aurora .state.accent { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent); }
+
+/* Two places a pill is wrong, and both of them are lines rather than cells:
+   a status *inside* a sentence, where a pill is a lump in the middle of the
+   words, and a line that *is* the status — the ticket rail's "Machine at a
+   glance" draws each fact as a paragraph with a dot in front of it, and a
+   stack of those as pills is a stack of boxes saying nothing a reader asked
+   for. The dot keeps the colour of its own tone either way. */
+.aurora p .state,
+.aurora li .state,
+.aurora .sentence .state,
+.aurora p.state,
+.aurora li.state,
+.aurora div.state {
+  padding: 0;
+  background: none;
+  color: inherit;
+}
+
+.aurora .green { color: var(--green); }
+.aurora .amber { color: var(--amber); }
+.aurora .red { color: var(--red); }
+.aurora .purple { color: var(--accent); }
+.aurora .blue { color: var(--blue); }
+
+/* --- surfaces ----------------------------------------------------------------- */
+
+.aurora .panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+/* A row of tiles fills the width, whatever the count. A four-column grid
+   leaves a three-tile page with a quarter of the row empty, which reads as a
+   tile that failed to load. Flex with one basis gives each row of however
+   many it holds an equal share of the whole width, and wraps at the basis:
+   three tiles are three columns, seven are four and then three. */
+.aurora .kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 16px;
+  margin-bottom: 25px;
+}
+.aurora .kpis > * { min-width: 0; }
+/* The wash in the corner is a background on the tile itself, not a
+   pseudo-element placed outside it. A box positioned past the edge — by a
+   negative offset or by a transform — is part of the tile's scrollable area
+   even where `overflow: hidden` clips it, so every tile measured 15px wider
+   than it could show and read as a tile with something hidden in it. A
+   background never does that, and nothing needs clipping. */
+.aurora .kpi {
+  --tile-accent: var(--accent);
+  /* Three layers, all backgrounds: the bar that says what kind of figure this
+     is, the wash in the corner, and the card. A background is clipped by the
+     border radius and costs the box nothing, which a positioned element does
+     not — see the note above. */
+  padding: 23px 20px 20px;
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(var(--tile-accent) 0 0) no-repeat top left / 100% 3px,
+    radial-gradient(circle 45px at calc(100% + 15px) -20px, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%),
+    var(--panel);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.aurora .kpi .value {
+  font-size: 30px;
+  font-weight: 650;
+  letter-spacing: -0.9px;
+  line-height: 1.2;
+  color: var(--tile-accent);
+  margin: 12px 0 6px;
+  font-variant-numeric: tabular-nums;
+}
+/* A figure with no meaning attached is the page's ink, not the accent: a tile
+   that is only a count should not read as one that is telling you something. */
+.aurora .kpi:not(.good):not(.warn):not(.bad) .value { color: var(--text); }
+/* Three lines, in that order: what it counts, the figure, and the one line
+   under it. They are spans on a card that is a button, so each is told to
+   be a line of its own — otherwise the caption runs on beside the figure. */
+.aurora .kpi .meta,
+.aurora .kpi .value,
+.aurora .kpi small { display: block; }
+.aurora .kpi .meta {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  /* Two lines, always: a row of seven has two labels that wrap and five
+     that do not, and figures at two heights read as two rows. */
+  min-height: 3.2em;
+}
+.aurora .kpi small { font-size: 12px; line-height: 1.6; }
+
+/* A KPI card that is also the filter it describes. It keeps the card's shape
+   and gains the two things a control needs: it looks pressable, and it says
+   when it is pressed. */
+.aurora button.kpi {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.aurora button.kpi:hover { border-color: var(--accent); }
+.aurora button.kpi[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.aurora .kpi.good { --tile-accent: var(--green); }
+.aurora .kpi.warn { --tile-accent: var(--amber); }
+.aurora .kpi.bad { --tile-accent: var(--red); }
+
+/* The row of column names above a list that is not a table. Same grid as the
+   rows under it, so the names sit over the columns they name. */
+.aurora .list-head {
+  display: grid;
+  gap: 16px;
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--muted);
+}
+
+/* --- one ticket ------------------------------------------------------------------- */
+
+/* The two columns are cards, like every list and every panel in the product.
+   They were sections on the open ground, so the page an engineer spends the
+   day in was the one page with no edges on it. */
+/* The first child is the column, whatever it is called. **Not `.main`**: that
+   is the shell's own page container, which centres itself inside a max-width,
+   and borrowing the name shrank the automation run's column to the width of
+   its shortest card. */
+.aurora .with-rail > :first-child,
+.aurora .with-rail > .rail {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 24px 26px;
+  align-self: start;
+}
+/* A rail block is held apart by space and a hairline, not by a card inside a
+   card: cards do not nest. */
+.aurora .with-rail > .rail > section + section {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.aurora .with-rail .section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+
+/* One tool's readings: its mark and name, then its answers. Held apart by
+   space and a hairline rather than by a card each — cards do not nest, and
+   six boxes down a tab is six boxes. */
+.aurora .reading-group + .reading-group {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.aurora .reading-group h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.aurora .reading-group .brand-mark { width: 18px; height: 18px; }
+/* The readings tab is a panel like the Overview's columns are. */
+.aurora #tab-readings > #enrichment-body {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 24px 26px;
+}
+
+/* The tabs sit above both columns and carry the hairline across the page. */
+.aurora #ticket-tabs { margin-bottom: 22px; }
+
+/* --- sign in ---------------------------------------------------------------------- */
+
+/* The one page without a shell, on the same design system as the rest: the
+   same ground, the same wordmark, a card with the same edge and corners as
+   every other card in the product. */
+.aurora.signin { background: radial-gradient(ellipse 720px 440px at 70% 10%, #b4b8ff18, transparent), var(--bg); }
+.aurora .signin-card {
+  max-width: 400px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 34px;
+}
+.aurora .signin-card .brand-row { padding: 0 0 6px; }
+.aurora .signin-card .sub { color: var(--muted); font-size: 12px; margin: 0 0 26px; }
+.aurora .signin-card form { display: grid; gap: 18px; }
+.aurora .signin-card .btn { width: 100%; }
+
+/* --- Ask ------------------------------------------------------------------------- */
+
+/* Ask is the one page whose frame is the viewport.
+ *
+ * Everywhere else the window scrolls, which is what a page of records wants:
+ * the list is the page and the page is as long as the list. A conversation is
+ * not that. The question box belongs on the bottom edge of the screen and the
+ * answers scroll behind it — so `flush`, which the page already declares,
+ * makes the shell exactly the viewport and hands the only scrollbar to the
+ * feed. It is read off the page's own class rather than declared a second
+ * time on the shell, because two declarations of one fact can disagree.
+ *
+ * Both halves are needed and **neither errors without the other**: a box that
+ * is meant to scroll needs `overflow-y` *and* a height it cannot exceed, and
+ * `min-height: 0` on every flex parent between them is what stops each one
+ * refusing to shrink below its content. The feed has had `overflow-y: auto`
+ * all along; with nothing above it bounded, it grew to 2,508px inside a
+ * 900px window, the window took the scrollbar this stylesheet says it must
+ * not have, and the composer sat 2,750px down the document. Nothing reported
+ * an error at any point — the page simply could not be read. */
+.aurora .shell:has(> .main.flush) {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+/* The strip and the bar are the frame's own rows and keep their height; only
+   the page below them is given what is left. */
+.aurora .shell:has(> .main.flush) > .demo-strip,
+.aurora .shell:has(> .main.flush) > .topbar { flex: 0 0 auto; }
+.aurora .main.flush {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  max-width: none;
+  /* `.main` centres itself with `margin: auto` and a reading width, which is
+     right for a page of records and wrong here twice over: as a flex item an
+     auto cross-axis margin cancels the stretch, so the column took its
+     content's width and sat 752px wide in the middle of a 1,208px frame with
+     the conversation and the question box both inside it. */
+  margin: 0;
+}
+/* The feed is focusable so it can be paged with a keyboard, which means it
+   can carry the ring. It draws inside, because the box reaches the edges of
+   the frame and an offset ring would be clipped by it. */
+.aurora .feed:focus-visible { outline-offset: -2px; }
+
+/* The rail is a column only while it is open. Closed, the conversation has
+   the whole width — which is what an answer full of device names needs. */
+.aurora .ask { grid-template-columns: minmax(0, 1fr); }
+.aurora .ask[data-rail="open"] { grid-template-columns: 260px minmax(0, 1fr); }
+.aurora .ask[data-rail="closed"] .thread-list { display: none; }
+
+/* History and a new conversation, where the mockup has them. Two buttons and
+   no words: both carry a title and a label for a screen reader. */
+.aurora .ask-head {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 18px 32px 0;
+  /* Above the composer, which the empty state draws first. */
+  order: -2;
+}
+
+/* The composer is a card with a footer: the box, then how to send it beside
+   the button that sends it. */
+.aurora .composer form { display: block; max-width: none; }
+.aurora .composer textarea {
+  width: 100%;
+  height: auto;
+  min-height: 84px;
+  resize: vertical;
+  padding: 14px;
+  font-size: 14px;
+}
+.aurora .composer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+}
+.aurora .composer .hint { margin: 0; font-size: 11px; color: var(--muted); max-width: none; }
+
+/* --- Ask, with nothing asked yet ------------------------------------------------- */
+
+/* The question box is the page, not a strip along the bottom of it. With no
+   conversation open the column starts at the top and the composer is drawn
+   first, as a card: somebody who opens Ask has come to type, and everything
+   under it — the figures, the four examples — is what to type about. */
+.aurora .ask-main[data-empty] { justify-content: flex-start; padding-top: 30px; }
+.aurora .ask-main[data-empty] .composer {
+  order: -1;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 30px;
+}
+.aurora .ask-main[data-empty] .composer textarea { border: 0; box-shadow: none; }
+/* The composer's own margin is the air under it; the feed adds none. */
+.aurora .ask-main[data-empty] .feed { padding-top: 0; justify-content: flex-start; }
+/* Nothing in the empty state is capped at a reading measure: the tiles
+   and the four examples are a grid, and a grid narrower than its page
+   leaves a column of blank beside it. */
+.aurora .ask-main[data-empty] .empty { max-width: none; }
+.aurora .ask-main[data-empty] .composer form { max-width: none; }
+/* Two by two: four examples in a row of three and a row of one is a row
+   of one, which reads as a leftover. */
+.aurora .suggestions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* A heading over the examples, with a section's air above it rather than
+   sitting on the line that explains the figures. */
+.aurora .ask-main[data-empty] .section-label {
+  margin: 30px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* A tile is a card like every other, and a link to the page that computed the
+   figure on it. */
+.aurora a.kpi { text-decoration: none; color: inherit; display: block; }
+.aurora a.kpi:hover { border-color: var(--accent); }
+
+/* An example to press: the question, and the arrow saying it goes somewhere. */
+.aurora .suggestion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.aurora .suggestion .go {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: var(--raised);
+  color: var(--muted);
+}
+.aurora .suggestion:hover .go { background: var(--accent); color: #fff; }
+.aurora .suggestion .go .icon { width: 15px; height: 15px; }
+
+/* The controls line up on their own bottom edge, because a toolbar may hold
+   a bare button beside a `.field` whose label sits above it, and a button
+   centred on all of that floats up beside the words. Where every control
+   is the same height this is the same as centring them. */
+/* A toolbar straight under a section heading needs the air a paragraph
+   would have given it. */
+.aurora .section-title + .toolbar { margin-top: 14px; }
+.aurora .toolbar .inline { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; }
+.aurora .toolbar .inline input { width: 16px; height: 16px; accent-color: var(--accent); }
+
+.aurora .toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 17px;
+  flex-wrap: wrap;
+}
+
+/* --- forms -------------------------------------------------------------------- */
+
+/* A label sits above its control, 8px over it, and reads as a label rather
+   than as muted help text — the mockup's 12px at 550 in the page's own ink.
+   The older stylesheet drew it a size smaller and in the muted colour, which
+   on a form of three fields reads as three captions and no headings. */
+.aurora .field { display: grid; gap: 8px; min-width: 0; }
+.aurora .field > span {
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--text);
+  line-height: 1.5;
+}
+.aurora .field .help {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* A row of fields with a button at the end. The controls line up on their own
+   bottom edge, not on the middle of the whole field, because the labels above
+   them are different heights and a button centred on all that floats up
+   beside the words instead of sitting beside the boxes.
+
+   It is its own class and not `.row`, which the shell and the page headers use
+   for a row of things that genuinely are centred on each other. One name for
+   two alignments is how the invite row came to put its button 12px above the
+   inputs it belongs to. */
+.aurora .field-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+.aurora .field-row > .field { flex: 1 1 200px; }
+.aurora .field-row > .btn { flex: 0 0 auto; }
+
+/* A `.stack` is a column of things with air between them; a button in one is
+   its own width rather than the column's, because a grid child stretches and
+   a full-width "Set up an authenticator" is a banner, not a button. */
+.aurora .stack > .btn, .aurora .stack > .action { justify-self: start; }
+
+/* A block that needs the air of a new section above it without being one. */
+.aurora .apart { margin-top: 26px; }
+
+/* Settings is forms and nothing else, so the widths are set once here
+   rather than inline on one of them. A form is read down a column: a
+   password box the width of a 1440px window is not easier to type in,
+   and an empty email box that wide reads as the page rather than as a
+   field. The row of three is wider because it holds three. */
+.aurora .settings form { max-width: 560px; }
+.aurora .settings .field-row { max-width: 720px; }
+/* The sentence under a heading and the first control under it are not the
+   same thing and do not sit together. A paragraph inside a `.stack` is
+   spaced by the stack, so only the section's own are named here. */
+.aurora .settings .section > p { margin-bottom: 18px; }
+
+/* --- tables -------------------------------------------------------------------- */
+
+.aurora .table-wrap {
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  max-height: 65vh;
+}
+.aurora table { border-collapse: collapse; width: 100%; text-align: left; white-space: nowrap; font-size: 12px; }
+/* The header row is shaded, which is what tells it from the first row of data
+   when the table runs past the top of the frame and the header sticks.
+   Capitals at this size are a label rather than a word to read: a column name
+   is one or two words and is scanned, not parsed. */
+.aurora th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  padding: 14px 18px;
+}
+.aurora td { padding: 15px 18px; border-top: 1px solid var(--line); font-size: 11px; }
+.aurora tr:hover td { background: color-mix(in srgb, var(--accent) 3%, transparent); }
+.aurora td .meta { font-size: 11px; display: block; margin-top: 5px; }
+.aurora th .tool-column,
+.aurora .list-head .tool-column { text-transform: none; letter-spacing: 0; font-size: 11px; }
+
+.aurora .table-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 14px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* The action at the end of a row: a bordered square with a chevron in it.
+   Square because it is one target among many down the right-hand edge, and
+   bordered because an unbordered glyph in a table reads as part of the data. */
+.aurora td .icon-btn {
+  width: 36px;
+  min-height: 36px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--muted);
+}
+.aurora td .icon-btn:hover { background: var(--raised); color: var(--text); border-color: var(--muted); }
+
+/* The same square at the end of a row that is itself a link. The row already
+   opens on a click anywhere in it; this is what says so before the click. */
+.aurora .list-row .go {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--muted);
+  justify-self: end;
+}
+.aurora .list-row .go svg { width: 15px; height: 15px; }
+.aurora .list-row:hover .go { background: var(--raised); color: var(--text); border-color: var(--muted); }
+.aurora .table-wrap .link { color: var(--text); font-weight: 550; }
+.aurora .table-wrap .link:hover { color: var(--accent); }
+.aurora .link { border: 0; background: none; color: var(--blue); padding: 0; text-align: left; font: inherit; cursor: pointer; }
+.aurora .link:hover { text-decoration: underline; }
+
+.aurora .tabs {
+  display: flex;
+  gap: 25px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+  overflow: auto;
+}
+.aurora .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  padding: 12px 0;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.aurora .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.aurora .tab .badge,
+.aurora .tab .count,
+.aurora .tabs button .count,
+.aurora .tabs a .count {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--raised);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.55;
+}
+.aurora .tabs button,
+.aurora .tabs a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  padding-top: 12px;
+}
+.aurora .tabs .count { margin-left: 0; }
+
+/* --- a vendor's mark ------------------------------------------------------------
+ *
+ * The product logos identify the integrations. They are third-party marks,
+ * used to name the tool a column or a tile is about, and the attribution is in
+ * `app/static/logos/CREDITS.md` beside the files.
+ */
+.aurora .brand-mark {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 5px;
+  padding: 2px;
+  flex-shrink: 0;
+}
+/* A vendor with no artwork of ours to show gets a tile with its initial on
+   it: plainly our drawing, claiming nothing, and the same size and shape as
+   the real marks beside it so a row of tools still reads as a row. */
+.aurora .brand-mark.mono {
+  display: inline-grid;
+  place-items: center;
+  background: var(--tint, var(--accent));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1;
+  padding: 0;
+  border: 0;
+}
+
+.aurora .tool-column { display: inline-flex; align-items: center; gap: 7px; }
+.aurora .tool-column .brand-mark { width: 16px; height: 16px; padding: 1px; }
+
+/* --- the shell ------------------------------------------------------------------ */
+
+.aurora .sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--sidebar);
+  background: var(--side);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+  transition: width 0.2s, transform 0.2s;
+  padding: 27px 16px 18px;
+}
+.aurora .brand-row { display: flex; align-items: center; gap: 10px; padding: 0 12px 34px; }
+.aurora .brand { font-size: 28px; letter-spacing: -1.4px; font-weight: 700; }
+.aurora .brand .purple { color: #7962ed; }
+.aurora .logo {
+  display: inline-grid;
+  place-items: center;
+  height: 38px;
+  width: 38px;
+  border-radius: 11px;
+  background: linear-gradient(140deg, #5d82ff, #7259e7);
+  box-shadow: 0 3px 9px #685de722;
+  color: #fff;
+  flex-shrink: 0;
+}
+.aurora .sidebar .collapse { margin-left: auto; width: 28px; min-height: 28px; padding: 4px; }
+
+.aurora .nav { display: grid; gap: 7px; }
+.aurora .nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 9px;
+  position: relative;
+  text-decoration: none;
+}
+.aurora .nav a:hover { background: var(--raised); color: var(--text); }
+.aurora .nav a.active { background: #7b65e912; color: var(--accent); }
+.aurora .nav a.active::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 3px 3px 0;
+}
+.aurora .nav a .icon { width: 18px; height: 18px; }
+
+.aurora .sidebar-bottom { margin-top: auto; padding-top: 20px; }
+.aurora .sidebar-status {
+  background: linear-gradient(135deg, #7c67e90a, #5683f507);
+  border: 1px solid #7a6ae515;
+  padding: 13px;
+  margin-bottom: 16px;
+  border-radius: 11px;
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.aurora .user-card {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  cursor: pointer;
+  color: inherit;
+}
+.aurora .user-card strong { font-size: 11px; display: block; }
+.aurora .user-card small { font-size: 9px; display: block; }
+/* --- a person, and the tools a customer is on ---------------------------------
+ *
+ * Two small marks that do the same job in different columns: give a row
+ * something to find by shape rather than by reading it. Neither carries
+ * meaning on its own — the name and the vendor's name are printed beside
+ * them — and neither is ever the only thing in its cell.
+ */
+.aurora .person { display: inline-flex; align-items: center; gap: 9px; min-width: 0; }
+.aurora .person-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  /* The hue is a hash of the name (`avatarHue` in common.js); the lightness
+     is the theme's, so the same person is recognisable in both and neither
+     pair is ever below AA. */
+  background: hsl(var(--avatar-h, 250) 30% 22%);
+  color: hsl(var(--avatar-h, 250) 58% 80%);
+  border: 1px solid hsl(var(--avatar-h, 250) 26% 31%);
+}
+:root[data-theme="light"] .aurora .person-avatar {
+  background: hsl(var(--avatar-h, 250) 44% 94%);
+  color: hsl(var(--avatar-h, 250) 46% 32%);
+  border-color: hsl(var(--avatar-h, 250) 38% 87%);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .aurora .person-avatar {
+    background: hsl(var(--avatar-h, 250) 44% 94%);
+    color: hsl(var(--avatar-h, 250) 46% 32%);
+    border-color: hsl(var(--avatar-h, 250) 38% 87%);
+  }
+}
+
+/* The tools a customer is on, one chip each. The vendor's mark and the
+   vendor's name: the mark is what the eye finds and the name is what says
+   which tool, because nobody is expected to know six logos. */
+.aurora .tool-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.aurora .tool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 7px;
+  border-radius: 5px;
+  background: var(--raised);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+.aurora .tool-chip .brand-mark { width: 16px; height: 16px; border-radius: 4px; font-size: 9px; }
+
+.aurora .avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 650;
+  background: #f0eafa;
+  color: #7951bb;
+  border: 1px solid #e9def8;
+  flex-shrink: 0;
+}
+:root[data-theme="dark"] .aurora .user-card .avatar { background: #8068a526; border-color: #8068a52b; color: #c3a6ed; }
+:root[data-theme="dark"] .aurora .client-switch > .avatar { background: #557bb52b; border-color: #557bb52b; color: #a2bbf0; }
+
+.aurora .shell {
+  margin-left: var(--sidebar);
+  min-height: 100vh;
+  background: radial-gradient(ellipse 720px 440px at 75% 12%, #b4b8ff13, transparent), var(--bg);
+  transition: margin 0.2s;
+}
+/* Said once, at the top of the frame, for a demo client. Not a warning and
+   not decoration: a statement that every number below it is invented. */
+.aurora .demo-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 7px 36px;
+  font-size: 11px;
+  font-weight: 550;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--panel));
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+}
+.aurora .demo-strip::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.aurora .demo-strip span { color: var(--muted); font-weight: 400; }
+.aurora .demo-strip span::before { content: "· "; }
+
+.aurora .topbar {
+  position: sticky;
+  top: 0;
+  height: 76px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  padding: 0 36px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  backdrop-filter: blur(18px);
+}
+.aurora .client-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 7px 12px 7px 7px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: inherit;
+  cursor: pointer;
+}
+.aurora .client-switch small { display: block; font-size: 8px; text-transform: uppercase; letter-spacing: 0.8px; }
+.aurora .client-switch strong { font-size: 11px; font-weight: 600; }
+.aurora .client-switch > .avatar { background: #eff3ff; color: #5269bb; border-color: #e3e9fb; }
+.aurora .client-switch > .icon { width: 14px; margin-left: 8px; }
+
+.aurora .global-search {
+  margin-left: auto;
+  border: 0;
+  background: var(--raised);
+  height: 36px;
+  min-height: 36px;
+  width: 225px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  justify-content: flex-start;
+  box-shadow: none;
+}
+.aurora .global-search .icon { width: 16px; }
+
+.aurora .live-tools { display: flex; gap: 7px; border-right: 1px solid var(--line); padding-right: 18px; }
+.aurora .live-tools button { background: none; border: 0; padding: 0; position: relative; cursor: pointer; }
+.aurora .live-tools .brand-mark { width: 23px; height: 23px; padding: 3px; border-radius: 5px; }
+.aurora .live-tools .dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+}
+.aurora .live-tools .dot.ok { background: var(--green); }
+.aurora .live-tools .dot.warn { background: var(--amber); }
+.aurora .live-tools .dot.bad { background: var(--red); }
+.aurora .live-tools .dot.neutral { background: var(--muted); }
+
+.aurora .topbar > .icon-btn { width: 32px; min-height: 32px; border: 0; }
+.aurora .topbar > .user-card { width: auto; }
+.aurora .topbar > .user-card .avatar { width: 30px; height: 30px; }
+
+.aurora .main { padding: 30px 32px 48px; max-width: 1600px; margin: auto; }
+/* The header sits on a card, like everything else on the page, with the
+   mockup's wash in the corner behind the title. The wash is a background on
+   the card and not a box placed over it: a pseudo-element with a negative
+   offset counts towards the scrollable width even where it is clipped, which
+   is the bug that made every KPI tile 15px wider than it could show. */
+.aurora .page-head {
+  display: flex;
+  /* Named rather than inherited, because the older stylesheet stacks this
+     block and centres it: two rules describing one header is two layouts, and
+     the page came out with its title and its buttons down the middle. */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 26px 30px;
+  text-align: left;
+  background:
+    radial-gradient(ellipse 620px 320px at 95% 0%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 72%),
+    var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.aurora .page-head > div { min-width: 0; }
+.aurora .page-head p { color: var(--muted); font-size: 13px; margin-top: 8px; }
+/* A page that is its own scroller (Ask) keeps its header off the card: the
+   feed below it is the surface there, and two cards stacked read as a seam. */
+.aurora .main.flush .page-head { padding: 0; background: none; border: 0; box-shadow: none; }
+
+/* Narrowed to its icons. The words go off screen rather than out of the
+   document: `display: none` takes a label out of the accessibility tree too,
+   and nine links whose only content is an aria-hidden icon are nine links
+   called nothing. */
+:root[data-nav="collapsed"] { --sidebar: 76px; }
+:root[data-nav="collapsed"] .aurora .sidebar { padding-inline: 12px; }
+:root[data-nav="collapsed"] .aurora .nav a { justify-content: center; padding: 12px; }
+:root[data-nav="collapsed"] .aurora .brand-row { padding-inline: 7px; justify-content: center; }
+:root[data-nav="collapsed"] .aurora .nav-label,
+:root[data-nav="collapsed"] .aurora .brand,
+:root[data-nav="collapsed"] .aurora .sidebar-status,
+:root[data-nav="collapsed"] .aurora .user-info {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* --- Integrations -----------------------------------------------------------------
+ *
+ * A card a tool. What there is to say about one integration is a paragraph —
+ * what Desk uses it for, what it reads, when it last answered — and a table
+ * row is the wrong shape for a paragraph: the six-column table this replaced
+ * had a sentence's worth of meaning spread across five cells and nothing to
+ * say what any of it was for.
+ *
+ * Three across at 1440 and two at 1280, by the card's own minimum rather than
+ * a count: a column that cannot hold a sentence is not a column.
+ */
+.aurora .integration-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: 18px;
+}
+.aurora .integration-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.aurora .integration-card[hidden] { display: none; }
+.aurora .integration-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+/* The mark and the name, bigger than anywhere else in the product, because
+   on this page the tool is the subject rather than a column heading. The
+   vendors publish wordmarks and we do not hold them, so the name is set
+   beside the mark rather than redrawn as one. */
+.aurora .integration-brand { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.aurora .integration-brand .brand-mark { width: 30px; height: 30px; border-radius: 8px; font-size: 13px; }
+.aurora .integration-name {
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+.aurora .integration-category {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 2px 0 0;
+}
+.aurora .integration-purpose { font-size: 13px; line-height: 1.7; color: var(--muted); }
+
+/* What Desk actually reads from the tool. Only reads the connector makes: a
+   chip for a capability the vendor has and we do not use is a claim this page
+   cannot keep. */
+.aurora .read-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.aurora .read-chip {
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: var(--raised);
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.aurora .integration-meta { font-size: 11px; color: var(--muted); }
+.aurora .integration-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  margin-top: auto;
+}
+.aurora .integration-foot .small { font-size: 11px; color: var(--muted); }
+/* A failure is the last line on the card and not the first: the tool is
+   answering or it is not, which the pill above already says, and when it last
+   did not is detail under it. */
+.aurora .integration-failure {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--red);
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.aurora .integrations-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0 0 16px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+}
+.aurora .integrations-head .search-input { width: 240px; }
+
+/* The drawer's own blocks: a heading and one thing under it. */
+.aurora .drawer-block + .drawer-block {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.aurora .drawer-block h3 { font-size: 12px; font-weight: 600; margin: 0 0 12px; }
+.aurora .drawer-block p { font-size: 13px; line-height: 1.75; color: var(--muted); }
+.aurora .drawer-reads { list-style: none; margin: 0; padding: 0; }
+.aurora .drawer-reads li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 0;
+  font-size: 12px;
+}
+.aurora .drawer-reads li + li { border-top: 1px solid var(--line); }
+.aurora .drawer-read-what { flex: 1; min-width: 0; color: var(--text); }
+.aurora .drawer-customers {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 4px 16px;
+}
+.aurora .drawer-customers li { font-size: 12px; color: var(--text); }
+/* What somebody with the database in front of them runs. Inputiv staff only:
+   a franchisee cannot run it, and a command they cannot use is noise. */
+.aurora .drawer-command {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  background: var(--raised);
+  border-radius: 8px;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* --- Coverage ------------------------------------------------------------------- */
+
+.aurora .coverage-state {
+  padding: 4px 7px 4px 5px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.aurora .coverage-state svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.aurora .coverage-state.ok { color: var(--green); background: color-mix(in srgb, var(--green) 10%, transparent); }
+.aurora .coverage-state.partial { color: var(--amber); background: color-mix(in srgb, var(--amber) 10%, transparent); }
+.aurora .coverage-state.missing { color: var(--red); background: color-mix(in srgb, var(--red) 10%, transparent); }
+.aurora .coverage-state.unknown { color: var(--muted); background: var(--raised); }
+/* In the matrix it is a glyph alone: twenty-five rows of six tinted pills is
+   a wall, and the column header is what says which tool each one is about. */
+.aurora .coverage-state.compact {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  justify-content: center;
+}
+.aurora .coverage-state.compact svg { width: 20px; height: 20px; }
+
+.aurora .coverage-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.aurora .coverage-summary-card {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.aurora .coverage-summary-card .brand-mark {
+  width: 26px;
+  height: 26px;
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #e3e6ef;
+  border-radius: 6px;
+}
+/* A monogram is the tile, so it keeps its own colour and its own edge: the
+   white plate and hairline above are a mount for somebody else's artwork and
+   drew an empty white square where the letter should have been. */
+.aurora .coverage-summary-card .brand-mark.mono {
+  background: var(--tint, var(--accent));
+  border: 0;
+  padding: 0;
+  font-size: 13px;
+}
+.aurora .coverage-summary-card h3 { font-size: 13px; }
+/* The row keeps the mark's height even for a tool we hold no mark for, so
+   five cards line up rather than four and a short one. */
+.aurora .coverage-summary-card .row { min-height: 26px; }
+.aurora .coverage-number {
+  font-size: 28px;
+  font-weight: 650;
+  letter-spacing: -0.7px;
+  margin: 22px 0 15px;
+  font-variant-numeric: tabular-nums;
+}
+.aurora .coverage-number span {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+  margin-left: 6px;
+}
+.aurora .coverage-bar {
+  height: 5px;
+  display: flex;
+  gap: 2px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--raised);
+}
+.aurora .coverage-bar i { background: #81a894; }
+.aurora .coverage-bar .partial { background: #d7ba84; }
+.aurora .coverage-bar .missing { background: #dc9ca5; }
+.aurora .coverage-breakdown {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+.aurora .coverage-section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 22px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.aurora .coverage-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.aurora .coverage-section-head p { margin-top: 5px; }
+.aurora .coverage-legend { display: flex; gap: 16px; }
+.aurora .coverage-legend .coverage-state { font-size: 11px; }
+
+/* A table in a scroller sizes to its content and lets the box scroll — the
+   rule app.css states for `.scroller`, restated here because `.aurora table`
+   sets `width: 100%` at the same specificity and, coming later, was winning:
+   the Devices table squeezed its columns and broke `Microsoft Windows 10 Pro`
+   over two lines instead of scrolling. */
+.aurora .scroller > table { width: max-content; min-width: 100%; }
+
+/* The box scrolls; the columns do not shrink. `table-layout: fixed` with
+   `white-space: nowrap` is the mistake `.scroller > table` in app.css is
+   written against: the columns are squeezed to the box, the cell text is
+   clipped by it, and because nothing overflows the wrapper never scrolls —
+   so at 1280 the header read `ConnectSeci` and `Microsoft 36` with no
+   scrollbar anywhere to say there was more. Nothing is truncated. */
+.aurora .coverage-matrix table { width: max-content; min-width: 100%; }
+.aurora .coverage-matrix th:first-child { width: 26%; }
+.aurora .coverage-matrix th:last-child { width: 12%; }
+.aurora .coverage-matrix th:not(:first-child),
+.aurora .coverage-matrix td:not(:first-child) { text-align: center; }
+.aurora .coverage-matrix td:first-child { white-space: normal; }
+.aurora .coverage-matrix .site-name { line-height: 1.5; text-align: left; font-size: 13px; }
+/* A tool column's header is the mark and the name on one line, so the two
+   never fall out of step the way a name over a sub-label does. */
+.aurora .coverage-matrix th .tool-column { justify-content: center; }
+/* Only the padding: sentence case at 11px is now every table's header, not
+   this board's exception. */
+.aurora .coverage-matrix th { padding: 14px 18px; }
+.aurora .coverage-matrix td { padding: 15px 18px; }
+
+.aurora .review-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 12px;
+  padding: 4px;
+  cursor: pointer;
+}
+.aurora .review-link .icon { width: 13px; height: 13px; }
+
+.aurora .coverage-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 18px;
+  max-width: 860px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.aurora .coverage-note .icon { width: 16px; height: 16px; margin-top: 2px; }
+
+/* The drawer's two parts, hidden until a narrow screen asks for them. The
+   button is the way in and the scrim is the way out; above the breakpoint
+   the nav is permanently on screen, so a button to reveal it is a control
+   that does nothing — which is what it was, sitting beside a full-width
+   sidebar at 1440. `wireNav` in common.js closes the drawer at the same
+   901px, so the two cannot disagree about when it exists. */
+.aurora .mobile-menu { display: none; }
+.aurora .nav-scrim { position: fixed; inset: 0; z-index: 35; background: var(--scrim); }
+
+/* --- narrow screens --------------------------------------------------------------- */
+
+@media (max-width: 1380px) {
+  /* Five tool cards fit a 1440 window and not a 1280 one: below this the
+     `251` and the `/ 254 computers` beside it fall onto two lines, which
+     reads as two figures rather than one. */
+  .aurora .coverage-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1200px) {
+  .aurora .main { padding: 24px; }
+  .aurora .topbar { padding: 0 24px; gap: 12px; }
+  .aurora .live-tools { display: none; }
+  .aurora .coverage-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .aurora .coverage-section-head { align-items: flex-start; flex-wrap: wrap; }
+}
+
+/* Narrow, but still wide enough for the nav to stay on screen: it keeps its
+   place and loses its words. Bounded below by the drawer's own breakpoint,
+   so the two never both apply — the drawer is the full nav, moved. */
+@media (max-width: 980px) and (min-width: 901px) {
+  :root { --sidebar: 76px; }
+  .aurora .sidebar { padding-inline: 12px; }
+  .aurora .brand, .aurora .nav-label, .aurora .sidebar-status, .aurora .user-info { display: none; }
+  .aurora .sidebar .nav a { justify-content: center; padding: 12px; }
+  .aurora .sidebar .brand-row { padding-inline: 7px; }
+  .aurora .global-search { width: 200px; }
+}
+
+/* Under 900px the nav is a drawer: the same nav, moved. It is off screen
+   until the button asks for it, the shell takes the whole width, and a
+   scrim over the page is the other way to close it. */
+@media (max-width: 900px) {
+  :root { --sidebar: 0px; }
+  .aurora .mobile-menu { display: inline-flex; }
+  .aurora .sidebar { width: 232px; transform: translateX(-100%); }
+  .aurora .sidebar[data-open="true"] { transform: none; box-shadow: 0 0 44px rgba(10, 14, 26, 0.3); }
+  .aurora .global-search { width: auto; flex: 1; }
+  .aurora .global-search .key { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora *, .aurora *::before, .aurora *::after { transition: none !important; }
+}
